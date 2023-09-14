@@ -5,7 +5,7 @@ tiltakspenger-utbetaling er en backend tjeneste som skal håndtere beregning og 
 
 Denne appen skal snakke med "dp-iversett" appen i utgangspunktet som igjen vil snakke med OS/UR (økonomi sin tjeneste) for å gjennomføre utbetalingen.
 
-Appen skal innhente de dagene bruker har været på et tiltak fra meldekortet og så sender info om utbetalingen/behandlingen til dp-iverksett. 
+Appen skal innhente de dagene bruker har vært på tiltaket fra meldekort og så sender info om utbetalingen/behandlingen til dp-iverksett. 
 
 En del av satsningen ["Flere i arbeid – P4"](https://memu.no/artikler/stor-satsing-skal-fornye-navs-utdaterte-it-losninger-og-digitale-verktoy/)
 
