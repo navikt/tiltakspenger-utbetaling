@@ -1,5 +1,8 @@
 val javaVersion = JavaVersion.VERSION_17
 val mockkVersion = "1.13.7"
+val ktorVersion = "2.3.4"
+val jacksonVersion = "2.15.2"
+val kotestVersion = "5.6.2"
 
 plugins {
     application
@@ -25,11 +28,36 @@ dependencies {
     // implementation("com.github.navikt:rapids-and-rivers:2022112407251669271100.df879df951cf")
     implementation("com.natpryce:konfig:1.6.10.0")
 
+    implementation("io.ktor:ktor-server-netty:$ktorVersion")
+    implementation("io.ktor:ktor-serialization-jackson:$ktorVersion")
+    implementation("io.ktor:ktor-server-content-negotiation:$ktorVersion")
+    implementation("io.ktor:ktor-server-call-id:$ktorVersion")
+    implementation("io.ktor:ktor-server-call-logging:$ktorVersion")
+    implementation("io.ktor:ktor-server-forwarded-header:$ktorVersion")
+    implementation("io.ktor:ktor-server-status-pages:$ktorVersion")
+
+    implementation("io.ktor:ktor-client-core:$ktorVersion")
+    implementation("io.ktor:ktor-client-cio:$ktorVersion")
+    implementation("io.ktor:ktor-client-content-negotiation:$ktorVersion")
+    implementation("io.ktor:ktor-client-logging:$ktorVersion")
+    implementation("io.ktor:ktor-http:$ktorVersion")
+    implementation("io.ktor:ktor-serialization:$ktorVersion")
+    implementation("io.ktor:ktor-serialization-jackson:$ktorVersion")
+    implementation("io.ktor:ktor-utils:$ktorVersion")
+
+    implementation("com.fasterxml.jackson.core:jackson-databind:$jacksonVersion")
+    implementation("com.fasterxml.jackson.core:jackson-annotations:$jacksonVersion")
+    implementation("com.fasterxml.jackson.datatype:jackson-datatype-jsr310:$jacksonVersion")
+
     testImplementation(platform("org.junit:junit-bom:5.10.0"))
     testImplementation("org.junit.jupiter:junit-jupiter")
     testImplementation("io.mockk:mockk:$mockkVersion")
+    testImplementation("io.ktor:ktor-client-mock-jvm:$ktorVersion")
     testImplementation("io.mockk:mockk-dsl-jvm:$mockkVersion")
     testImplementation("org.skyscreamer:jsonassert:1.5.1")
+    testImplementation("io.kotest:kotest-assertions-core:$kotestVersion")
+    testImplementation("io.kotest:kotest-assertions-json:$kotestVersion")
+    testImplementation("io.kotest:kotest-extensions:$kotestVersion")
 }
 
 configurations.all {
