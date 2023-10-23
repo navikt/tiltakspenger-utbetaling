@@ -12,6 +12,7 @@ import io.ktor.server.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.server.routing.routing
 import mu.KotlinLogging
 import no.nav.tiltakspenger.utbetaling.routes.healthRoutes
+import no.nav.tiltakspenger.utbetaling.routes.utbetaling.utbetaling
 
 fun main() {
     System.setProperty("logback.configurationFile", "egenLogback.xml")
@@ -40,6 +41,7 @@ fun Application.setupRouting() {
     jacksonSerialization()
     routing {
         healthRoutes()
+        utbetaling()
     }
 }
 
