@@ -2,3 +2,5 @@ kafka:
   pool: nav-dev
 endpoints:
   iverksett: https://tiltakspenger-iverksett.intern.dev.nav.no/
+scope:
+  iverksett: api://dev-gcp.teamdagpenger.tiltakspenger-iverksett/.default

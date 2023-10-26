@@ -8,7 +8,7 @@ class UtbetalingServiceImpl(
     private val iverksettKlient: IverksettKlient = IverksettKlient(applicationConfig),
 ) : UtbetalingService {
 
-    override fun sendUtbetalingTilIverksett(utbetalingDTOUt: UtbetalingDTOUt) {
-        iverksettKlient.iverksett()
+    override suspend fun sendUtbetalingTilIverksett(utbetalingDTOUt: UtbetalingDTOUt) {
+        iverksettKlient.iverksett(utbetalingDTOUt)
     }
 }

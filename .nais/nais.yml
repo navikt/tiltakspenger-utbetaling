@@ -28,6 +28,18 @@ spec:
     pool: {{ kafka.pool }}
   secureLogs:
     enabled: true
+    accessPolicy:
+      inbound:
+        rules:
+          - application: tiltakspenger-vedtak
+            namespace: tpts
+            cluster: {{ cluster }}
+      outbound:
+        rules:
+          - application: tiltakspenger-iverksett
+        external:
   env:
     - name: TILTAKSPENGER_IVERKSETT_ENDPOINT
       value: {{ endpoints.iverksett }}
+    - name: IVERKSETT_SCOPE
+      value: { { scope.iverksett } }

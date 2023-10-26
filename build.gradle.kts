@@ -3,6 +3,7 @@ val mockkVersion = "1.13.7"
 val ktorVersion = "2.3.4"
 val jacksonVersion = "2.15.2"
 val kotestVersion = "5.6.2"
+val tokenSupportVersion = "3.1.5"
 
 plugins {
     application
@@ -35,6 +36,10 @@ dependencies {
     implementation("io.ktor:ktor-server-call-logging:$ktorVersion")
     implementation("io.ktor:ktor-server-forwarded-header:$ktorVersion")
     implementation("io.ktor:ktor-server-status-pages:$ktorVersion")
+
+    // TokenX
+    implementation("no.nav.security:token-validation-ktor-v2:$tokenSupportVersion")
+    implementation("no.nav.security:token-client-core:$tokenSupportVersion")
 
     implementation("io.ktor:ktor-client-core:$ktorVersion")
     implementation("io.ktor:ktor-client-cio:$ktorVersion")
