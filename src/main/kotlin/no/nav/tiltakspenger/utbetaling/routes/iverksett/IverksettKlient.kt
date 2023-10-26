@@ -14,7 +14,7 @@ import org.slf4j.LoggerFactory
 class IverksettKlient(
     private val config: ApplicationConfig,
     private val client: HttpClient = HttpClient(),
-    private val iverksettCredentialsClient: IverksettCredentialsClient = IverksettCredentialsClient(config)
+    private val iverksettCredentialsClient: IverksettCredentialsClient = IverksettCredentialsClient(config),
 ) : Iverksett {
     private val iverksettEndpoint = config.property("endpoints.iverksett").getString()
     private val log = LoggerFactory.getLogger(this::class.java)
