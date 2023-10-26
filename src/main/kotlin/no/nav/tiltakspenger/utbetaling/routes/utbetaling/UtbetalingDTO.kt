@@ -1,15 +1,15 @@
 package no.nav.tiltakspenger.utbetaling.routes.utbetaling
 
-data class UtbetalingDTOUt (
+data class UtbetalingDTOUt(
     val sakId: String,
     val saksreferanse: String,
     val behandlingId: String,
     val personIdent: String,
     val vedtak: Vedtak,
-    val forrigeIverksetting: ForrigeIverksetting
+    val forrigeIverksetting: ForrigeIverksetting,
 )
 
-data class Vedtak (
+data class Vedtak(
     val vedtaksType: String = "RAMMEVEDTAK",
     val vedtakstidspunkt: String,
     val resultat: Resultat,
@@ -18,8 +18,8 @@ data class Vedtak (
     val utbetalinger: List<Utbetaling>,
 )
 
-data class ForrigeIverksetting (
-    val behandlingId: String
+data class ForrigeIverksetting(
+    val behandlingId: String,
 )
 
 enum class Resultat {
@@ -27,10 +27,10 @@ enum class Resultat {
 }
 
 enum class Stonadstype {
-    TILTAKSPENGER
+    TILTAKSPENGER,
 }
 
-data class Utbetaling (
+data class Utbetaling(
     val belopPerDag: Int,
     val fraOgMedDato: String,
     val tilOgMedDato: String,
