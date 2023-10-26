@@ -6,42 +6,34 @@ import com.fasterxml.jackson.module.kotlin.KotlinModule
 import io.ktor.serialization.jackson.jackson
 import io.ktor.server.application.Application
 import io.ktor.server.application.install
-import io.ktor.server.engine.embeddedServer
-import io.ktor.server.netty.Netty
 import io.ktor.server.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.server.routing.routing
 import mu.KotlinLogging
 import no.nav.tiltakspenger.utbetaling.routes.healthRoutes
+import no.nav.tiltakspenger.utbetaling.routes.utbetaling.UtbetalingServiceImpl
 import no.nav.tiltakspenger.utbetaling.routes.utbetaling.utbetaling
 
-fun main() {
+fun main(args: Array<String>) {
     System.setProperty("logback.configurationFile", "egenLogback.xml")
 
     val log = KotlinLogging.logger {}
     val securelog = KotlinLogging.logger("tjenestekall")
 
     Thread.setDefaultUncaughtExceptionHandler { _, e ->
-        log.error { "Uncaught exception logget i securelog" }
-        securelog.error(e) { e.message }
+        log.error { "Uncaught exceptgt5gt5gt5gt5ion logget i securelog" }
+        log.error(e) { e.message }
     }
 
-    log.info { "starting server" }
-    embeddedServer(
-        factory = Netty,
-        port = 8080,
-        module = Application::utbetaling,
-    ).start(true)
+    io.ktor.server.netty.EngineMain.main(args)
 }
 
-fun Application.utbetaling() {
-    setupRouting()
-}
+fun Application.module() {
+    val utbetalingService = UtbetalingServiceImpl(environment.config)
 
-fun Application.setupRouting() {
     jacksonSerialization()
     routing {
         healthRoutes()
-        utbetaling()
+        utbetaling(utbetalingService)
     }
 }
 

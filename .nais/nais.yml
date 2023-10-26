@@ -28,3 +28,6 @@ spec:
     pool: {{ kafka.pool }}
   secureLogs:
     enabled: true
+  env:
+    - name: TILTAKSPENGER_IVERKSETT_ENDPOINT
+      value: {{ endpoints.iverksett }}
