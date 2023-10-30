@@ -41,3 +41,5 @@ spec:
   env:
     - name: TILTAKSPENGER_IVERKSETT_ENDPOINT
       value: {{ endpoints.iverksett }}
+    - name: IVERKSETT_SCOPE
+      value: {{ scope.iverksett }}
