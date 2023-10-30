@@ -8,9 +8,6 @@ metadata:
 spec:
   image: {{ image }}
   port: 8080
-# Hvis det trengs en ingress så må den lages så den er ulik for dev og prod
-#  ingresses:
-#    - https://{{ name }}.intern.dev.nav.no
   azure:
     application:
       enabled: true
@@ -30,16 +27,16 @@ spec:
     pool: {{ kafka.pool }}
   secureLogs:
     enabled: true
-    accessPolicy:
-      inbound:
-        rules:
-          - application: tiltakspenger-vedtak
-            namespace: tpts
-            cluster: {{ cluster }}
-      outbound:
-        rules:
-          - application: tiltakspenger-iverksett
-        external:
+  accessPolicy:
+    inbound:
+      rules:
+        - application: tiltakspenger-vedtak
+          namespace: tpts
+          cluster: {{ cluster }}
+    outbound:
+      rules:
+        - application: tiltakspenger-iverksett
+      external:
   env:
     - name: TILTAKSPENGER_IVERKSETT_ENDPOINT
       value: {{ endpoints.iverksett }}
