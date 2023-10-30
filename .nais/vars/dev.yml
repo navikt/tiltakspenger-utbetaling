@@ -1,5 +1,7 @@
 kafka:
   pool: nav-dev
+ingress:
+  url: https://tiltakspenger-utbetaling.intern.dev.nav.no
 endpoints:
   iverksett: https://tiltakspenger-iverksett.intern.dev.nav.no/
 scope:
