@@ -6,7 +6,7 @@ import no.nav.tiltakspenger.utbetaling.auth.ClientConfig
 
 class IverksettCredentialsClient(
     config: ApplicationConfig,
-    httpClient: HttpClient = HttpClient(),
+    httpClient: HttpClient = httpClientWithRetry(timeout = 30L),
 ) {
     val iverksettScope = config.property("scope.iverksett").getString()
     private val oauth2CredentialsClient = checkNotNull(ClientConfig(config, httpClient).clients["azure"])
