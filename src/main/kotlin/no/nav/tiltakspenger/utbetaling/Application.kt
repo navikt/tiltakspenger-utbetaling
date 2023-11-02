@@ -20,7 +20,7 @@ fun main(args: Array<String>) {
     val securelog = KotlinLogging.logger("tjenestekall")
 
     Thread.setDefaultUncaughtExceptionHandler { _, e ->
-        log.error { "Uncaught exceptgt5gt5gt5gt5ion logget i securelog" }
+        log.error { "Uncaught exception logget i securelog" }
         log.error(e) { e.message }
     }
 

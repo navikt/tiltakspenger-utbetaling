@@ -7,8 +7,14 @@ import io.ktor.client.request.post
 import io.ktor.client.request.setBody
 import io.ktor.http.ContentType
 import io.ktor.server.config.ApplicationConfig
+import no.nav.tiltakspenger.utbetaling.routes.utbetaling.ForrigeIverksetting
+import no.nav.tiltakspenger.utbetaling.routes.utbetaling.Resultat
+import no.nav.tiltakspenger.utbetaling.routes.utbetaling.Stonadstype
+import no.nav.tiltakspenger.utbetaling.routes.utbetaling.Utbetaling
 import no.nav.tiltakspenger.utbetaling.routes.utbetaling.UtbetalingDTOUt
+import no.nav.tiltakspenger.utbetaling.routes.utbetaling.Vedtak
 import org.slf4j.LoggerFactory
+import java.util.UUID
 
 class IverksettKlient(
     private val config: ApplicationConfig,

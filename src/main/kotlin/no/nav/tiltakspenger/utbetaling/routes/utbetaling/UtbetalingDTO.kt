@@ -1,8 +1,9 @@
 package no.nav.tiltakspenger.utbetaling.routes.utbetaling
 
+import java.util.UUID
+
 data class UtbetalingDTOUt(
-    val sakId: String,
-    val saksreferanse: String,
+    val sakId: UUID,
     val behandlingId: String,
     val personIdent: String,
     val vedtak: Vedtak,
@@ -19,11 +20,11 @@ data class Vedtak(
 )
 
 data class ForrigeIverksetting(
-    val behandlingId: String,
+    val behandlingId: UUID,
 )
 
 enum class Resultat {
-    INNVILGET, AVSLAG
+    INNVILGET, AVSLÅTT
 }
 
 enum class Stonadstype {
@@ -36,24 +37,3 @@ data class Utbetaling(
     val tilOgMedDato: String,
     val stonadstype: Stonadstype,
 )
-
-/*
-"vedtak": {
-    "vedtakstype": "RAMMEVEDTAK",
-    "vedtakstidspunkt": "2023-10-25T10:03:29.980Z",
-    "resultat": "INNVILGET",
-    "saksbehandlerId": "1233489712",
-    "beslutterId": "beh_12039k1nmn1230194",
-    "utbetalinger": [
-    {
-        "belopPerDag": 0,
-        "fraOgMedDato": "2023-10-25",
-        "tilOgMedDato": "2023-10-25",
-        "stonadstype": "DAGPENGER_ARBEIDSSOKER_ORDINAER",
-        "ferietillegg": "ORDINAER"
-    }
-    ]
-},
-"forrigeIverksetting": {
-    "behandlingId": "3fa85f64-5717-4562-b3fc-2c963f66afa6"
-}*/
