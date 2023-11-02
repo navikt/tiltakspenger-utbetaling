@@ -2,7 +2,6 @@ package no.nav.tiltakspenger.utbetaling.routes.utbetaling
 
 import io.ktor.http.HttpStatusCode
 import io.ktor.server.application.call
-import io.ktor.server.request.receive
 import io.ktor.server.response.respond
 import io.ktor.server.routing.Route
 import io.ktor.server.routing.post
@@ -16,7 +15,7 @@ internal const val utbetalingPath = "/utbetaling"
 fun Route.utbetaling(utbetalingService: UtbetalingService) {
     post("$utbetalingPath") {
         LOG.info("Mottatt request på $utbetalingPath")
-        val utbetalingDTOUt = utbetalingsObjektMock//call.receive<UtbetalingDTOUt>()
+        val utbetalingDTOUt = utbetalingsObjektMock // call.receive<UtbetalingDTOUt>()
 
         utbetalingService.sendUtbetalingTilIverksett(utbetalingDTOUt)
 
@@ -39,11 +38,11 @@ private val utbetalingsObjektMock: UtbetalingDTOUt =
                     belopPerDag = 0,
                     fraOgMedDato = "2023-10-25",
                     tilOgMedDato = "2023-10-25",
-                    stonadstype = Stonadstype.TILTAKSPENGER
+                    stonadstype = Stonadstype.TILTAKSPENGER,
                 ),
-            )
+            ),
         ),
         forrigeIverksetting = ForrigeIverksetting(
-            behandlingId = UUID.fromString("3fa85f64-5717-4562-b3fc-2c963f66afa6")
-        )
+            behandlingId = UUID.fromString("3fa85f64-5717-4562-b3fc-2c963f66afa6"),
+        ),
     )
