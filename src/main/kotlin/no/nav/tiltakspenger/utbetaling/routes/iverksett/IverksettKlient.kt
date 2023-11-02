@@ -31,6 +31,8 @@ class IverksettKlient(
             setBody(objectMapper.writeValueAsString(utbetalingDTOUt))
             bearerAuth(token)
         }
+        log.info("status fra dp-iverkett er ${res.status}")
+
         return "IKKE NOE HER ER FERDIG ENDA"
     }
 }

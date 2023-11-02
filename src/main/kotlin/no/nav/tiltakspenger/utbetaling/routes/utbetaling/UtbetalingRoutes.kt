@@ -17,9 +17,6 @@ fun Route.utbetaling(utbetalingService: UtbetalingService) {
     post("$utbetalingPath") {
         LOG.info("Mottatt request på $utbetalingPath")
         val utbetalingDTOUt = utbetalingsObjektMock//call.receive<UtbetalingDTOUt>()
-        val id = call.parameters["id"]?.let {
-            LOG.info { "iden var ikke null! Og er $it" }
-        }
 
         utbetalingService.sendUtbetalingTilIverksett(utbetalingDTOUt)
 
