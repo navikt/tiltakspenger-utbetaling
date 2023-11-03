@@ -6,6 +6,7 @@ import io.ktor.client.request.bearerAuth
 import io.ktor.client.request.post
 import io.ktor.client.request.setBody
 import io.ktor.http.ContentType
+import io.ktor.http.contentType
 import io.ktor.server.config.ApplicationConfig
 import no.nav.tiltakspenger.utbetaling.routes.utbetaling.UtbetalingDTOUt
 import org.slf4j.LoggerFactory
@@ -22,6 +23,7 @@ class IverksettKlient(
         val token = iverksettCredentialsClient.getToken()
         val res = client.post("$iverksettEndpoint/api/iverksetting") {
             accept(ContentType.Application.Json)
+            contentType(ContentType.Application.Json)
             setBody(objectMapper.writeValueAsString(utbetalingDTOUt))
             bearerAuth(token)
         }
