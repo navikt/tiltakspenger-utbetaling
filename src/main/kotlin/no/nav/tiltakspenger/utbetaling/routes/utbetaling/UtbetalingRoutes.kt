@@ -13,7 +13,7 @@ private val LOG = KotlinLogging.logger {}
 internal const val utbetalingPath = "/utbetaling"
 
 fun Route.utbetaling(utbetalingService: UtbetalingService) {
-    post("$utbetalingPath") {
+    post(utbetalingPath) {
         LOG.info("Mottatt request på $utbetalingPath")
         val utbetalingDTOUt = utbetalingsObjektMock // call.receive<UtbetalingDTOUt>()
 

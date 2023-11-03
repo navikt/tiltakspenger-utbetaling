@@ -20,7 +20,7 @@ class IverksettKlient(
 
     override suspend fun iverksett(utbetalingDTOUt: UtbetalingDTOUt): String {
         val token = iverksettCredentialsClient.getToken()
-        val res = client.post(iverksettEndpoint) {
+        val res = client.post("$iverksettEndpoint/api/iverksetting") {
             accept(ContentType.Application.Json)
             setBody(objectMapper.writeValueAsString(utbetalingDTOUt))
             bearerAuth(token)
