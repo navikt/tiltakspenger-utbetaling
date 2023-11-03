@@ -27,6 +27,7 @@ private val utbetalingsObjektMock: UtbetalingDTOUt =
     UtbetalingDTOUt(
         sakId = UUID.fromString("3fa85f64-5717-4562-b3fc-2c963f66afa6"),
         behandlingId = "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+        saksreferanse = "",
         personIdent = "1231241344",
         vedtak = Vedtak(
             vedtakstidspunkt = "2023-10-25T10:03:29.980Z",

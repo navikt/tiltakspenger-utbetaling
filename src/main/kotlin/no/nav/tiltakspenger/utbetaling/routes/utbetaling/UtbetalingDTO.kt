@@ -5,6 +5,7 @@ import java.util.UUID
 data class UtbetalingDTOUt(
     val sakId: UUID,
     val behandlingId: String,
+    val saksreferanse: String,
     val personIdent: String,
     val vedtak: Vedtak,
     val forrigeIverksetting: ForrigeIverksetting,
