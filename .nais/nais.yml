@@ -36,6 +36,7 @@ spec:
     outbound:
       rules:
         - application: tiltakspenger-iverksett
+          namespace: teamdagpenger
       external:
   env:
     - name: TILTAKSPENGER_IVERKSETT_ENDPOINT
