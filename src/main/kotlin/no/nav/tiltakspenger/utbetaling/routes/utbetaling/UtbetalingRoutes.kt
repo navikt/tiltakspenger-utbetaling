@@ -31,7 +31,7 @@ private val utbetalingsObjektMock: UtbetalingDTOUt =
         personIdent = "1231241344",
         vedtak = Vedtak(
             vedtakstidspunkt = "2023-10-25T10:03:29.980Z",
-            resultat = Resultat.INNVILGET,
+            resultat = Resultat.INNVILGET.name,
             saksbehandlerId = "1233489712",
             beslutterId = "beh_12039k1nmn1230194",
             utbetalinger = listOf(
@@ -39,7 +39,7 @@ private val utbetalingsObjektMock: UtbetalingDTOUt =
                     belopPerDag = 0,
                     fraOgMedDato = "2023-10-25",
                     tilOgMedDato = "2023-10-25",
-                    stonadstype = Stonadstype.TILTAKSPENGER,
+                    stonadstype = Stonadstype.TILTAKSPENGER.name,
                 ),
             ),
         ),
