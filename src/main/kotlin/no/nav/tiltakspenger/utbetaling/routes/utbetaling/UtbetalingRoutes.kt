@@ -28,10 +28,10 @@ private val utbetalingsObjektMock: UtbetalingDTOUt =
         sakId = UUID.fromString("3fa85f64-5717-4562-b3fc-2c963f66afa6"),
         behandlingId = "3fa85f64-5717-4562-b3fc-2c963f66afa6",
         saksreferanse = "",
-        personIdent = "1231241344",
+        personIdent = "26878898396",
         vedtak = Vedtak(
             vedtakstidspunkt = "2023-10-25T10:03:29.980Z",
-            resultat = Resultat.INNVILGET.name,
+            resultat = Resultat.INNVILGET,
             saksbehandlerId = "1233489712",
             beslutterId = "beh_12039k1nmn1230194",
             utbetalinger = listOf(
@@ -39,7 +39,7 @@ private val utbetalingsObjektMock: UtbetalingDTOUt =
                     belopPerDag = 0,
                     fraOgMedDato = "2023-10-25",
                     tilOgMedDato = "2023-10-25",
-                    stonadstype = Stonadstype.TILTAKSPENGER.name,
+                    stonadstype = Stonadstype.TILTAKSPENGER,
                 ),
             ),
         ),

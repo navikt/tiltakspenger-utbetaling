@@ -14,7 +14,7 @@ data class UtbetalingDTOUt(
 data class Vedtak(
     val vedtaksType: String = "RAMMEVEDTAK",
     val vedtakstidspunkt: String,
-    val resultat: String,
+    val resultat: Resultat,
     val saksbehandlerId: String,
     val beslutterId: String,
     val utbetalinger: List<Utbetaling>,
@@ -36,5 +36,5 @@ data class Utbetaling(
     val belopPerDag: Int,
     val fraOgMedDato: String,
     val tilOgMedDato: String,
-    val stonadstype: String,
+    val stonadstype: Stonadstype,
 )
