@@ -12,7 +12,7 @@ data class UtbetalingDTOUt(
 )
 
 data class Vedtak(
-    val vedtaksType: String = "RAMMEVEDTAK",
+    val vedtaksType: String,
     val vedtakstidspunkt: String,
     val resultat: Resultat,
     val saksbehandlerId: String,

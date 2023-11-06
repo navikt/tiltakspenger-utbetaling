@@ -30,6 +30,7 @@ private val utbetalingsObjektMock: UtbetalingDTOUt =
         saksreferanse = "",
         personIdent = "26878898396",
         vedtak = Vedtak(
+            vedtaksType = "UTBETALINGSVEDTAK",
             vedtakstidspunkt = "2023-10-25T10:03:29.980Z",
             resultat = Resultat.INNVILGET,
             saksbehandlerId = "1233489712",
