@@ -56,7 +56,6 @@ jobs:
           BRANCH: ${{ github.ref }}
           AUTHOR: ${{ github.event.pusher.name }}
           WEBHOOK_URL: ${{ secrets.SLACK_INCOMING_WEBHOOK_URL }}
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
   deploy-dev:
     name: Deploy to NAIS dev
@@ -72,6 +71,7 @@ jobs:
           RESOURCE: .nais/nais.yml
           VAR: image=${{ env.IMAGE }},name=${{ github.event.repository.name }}
           VARS: .nais/vars/dev.yml
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
 #  deploy-prod:
 #    name: Deploy to NAIS prod
