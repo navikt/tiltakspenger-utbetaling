@@ -25,6 +25,8 @@ jobs:
       - uses: gradle/gradle-build-action@v2
         with:
           arguments: build --info installDist
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Set up Docker Buildx
         if: github.ref == 'refs/heads/main'
@@ -71,7 +73,6 @@ jobs:
           RESOURCE: .nais/nais.yml
           VAR: image=${{ env.IMAGE }},name=${{ github.event.repository.name }}
           VARS: .nais/vars/dev.yml
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
 #  deploy-prod:
 #    name: Deploy to NAIS prod
