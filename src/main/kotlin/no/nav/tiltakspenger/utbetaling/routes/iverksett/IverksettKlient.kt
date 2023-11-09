@@ -8,7 +8,7 @@ import io.ktor.client.request.setBody
 import io.ktor.http.ContentType
 import io.ktor.http.contentType
 import io.ktor.server.config.ApplicationConfig
-import no.nav.tiltakspenger.utbetaling.routes.utbetaling.UtbetalingDTOUt
+import no.nav.dagpenger.kontrakter.iverksett.IverksettDto
 import org.slf4j.LoggerFactory
 
 class IverksettKlient(
@@ -19,7 +19,7 @@ class IverksettKlient(
     private val iverksettEndpoint = config.property("endpoints.iverksett").getString()
     private val log = LoggerFactory.getLogger(this::class.java)
 
-    override suspend fun iverksett(utbetalingDTOUt: UtbetalingDTOUt): String {
+    override suspend fun iverksett(utbetalingDTOUt: IverksettDto): String {
         val token = iverksettCredentialsClient.getToken()
         val res = client.post("$iverksettEndpoint/api/iverksetting") {
             accept(ContentType.Application.Json)

@@ -4,6 +4,10 @@ val ktorVersion = "2.3.4"
 val jacksonVersion = "2.15.2"
 val kotestVersion = "5.6.2"
 val tokenSupportVersion = "3.1.5"
+val iverksettVersjon = "2.0_20231013143623_91d0394"
+
+val githubUser: String by project
+val githubPassword: String by project
 
 plugins {
     application
@@ -16,6 +20,13 @@ repositories {
     mavenCentral()
     maven("https://packages.confluent.io/maven/")
     maven("https://jitpack.io")
+    maven {
+        credentials {
+            username = githubUser
+            password = githubPassword
+        }
+        setUrl("https://maven.pkg.github.com/navikt/dp-kontrakter")
+    }
 }
 
 dependencies {
@@ -28,6 +39,8 @@ dependencies {
     implementation("org.jetbrains:annotations:24.0.1")
     // implementation("com.github.navikt:rapids-and-rivers:2022112407251669271100.df879df951cf")
     implementation("com.natpryce:konfig:1.6.10.0")
+
+    implementation("no.nav.dagpenger.kontrakter:iverksett:$iverksettVersjon")
 
     implementation("io.ktor:ktor-server-netty:$ktorVersion")
     implementation("io.ktor:ktor-serialization-jackson:$ktorVersion")

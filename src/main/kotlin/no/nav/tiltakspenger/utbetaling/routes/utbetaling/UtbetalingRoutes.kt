@@ -6,6 +6,15 @@ import io.ktor.server.response.respond
 import io.ktor.server.routing.Route
 import io.ktor.server.routing.post
 import mu.KotlinLogging
+import no.nav.dagpenger.kontrakter.felles.StønadTypeTiltakspenger
+import no.nav.dagpenger.kontrakter.iverksett.ForrigeIverksettingDto
+import no.nav.dagpenger.kontrakter.iverksett.IverksettDto
+import no.nav.dagpenger.kontrakter.iverksett.UtbetalingDto
+import no.nav.dagpenger.kontrakter.iverksett.VedtakType
+import no.nav.dagpenger.kontrakter.iverksett.VedtaksdetaljerDto
+import no.nav.dagpenger.kontrakter.iverksett.Vedtaksresultat
+import java.time.LocalDate
+import java.time.LocalDateTime
 import java.util.UUID
 
 private val LOG = KotlinLogging.logger {}
@@ -23,28 +32,28 @@ fun Route.utbetaling(utbetalingService: UtbetalingService) {
     }
 }
 
-private val utbetalingsObjektMock: UtbetalingDTOUt =
-    UtbetalingDTOUt(
+private val utbetalingsObjektMock: IverksettDto =
+    IverksettDto(
         sakId = UUID.fromString("3fa85f64-5717-4562-b3fc-2c963f66afa6"),
-        behandlingId = "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+        behandlingId = UUID.fromString("3fa85f64-5717-4562-b3fc-2c963f66afa6"),
         saksreferanse = "",
         personIdent = "26878898396",
-        vedtak = Vedtak(
-            vedtaksType = "UTBETALINGSVEDTAK",
-            vedtakstidspunkt = "2023-10-25T10:03:29.980Z",
-            resultat = Resultat.INNVILGET,
+        vedtak = VedtaksdetaljerDto(
+            vedtakstype = VedtakType.UTBETALINGSVEDTAK,
+            vedtakstidspunkt = LocalDateTime.parse("2023-10-25T10:03:29.980Z"),
+            resultat = Vedtaksresultat.INNVILGET,
             saksbehandlerId = "1233489712",
             beslutterId = "beh_12039k1nmn1230194",
             utbetalinger = listOf(
-                Utbetaling(
-                    belopPerDag = 0,
-                    fraOgMedDato = "2023-10-25",
-                    tilOgMedDato = "2023-10-25",
-                    stonadstype = Stonadstype.TILTAKSPENGER,
+                UtbetalingDto(
+                    belopPerDag = 268,
+                    fraOgMedDato = LocalDate.parse("2023-10-25"),
+                    tilOgMedDato = LocalDate.parse("2023-10-25"),
+                    stonadstype = StønadTypeTiltakspenger.TILTAKSPENGER,
                 ),
             ),
         ),
-        forrigeIverksetting = ForrigeIverksetting(
+        forrigeIverksetting = ForrigeIverksettingDto(
             behandlingId = UUID.fromString("3fa85f64-5717-4562-b3fc-2c963f66afa6"),
         ),
     )
