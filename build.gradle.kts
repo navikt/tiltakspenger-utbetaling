@@ -22,8 +22,8 @@ repositories {
     maven("https://jitpack.io")
     maven {
         credentials {
-            username = githubUser
-            password = githubPassword
+            username = System.getenv("GITHUB_ACTOR") ?: githubUser
+            password = System.getenv("GITHUB_TOKEN") ?: githubPassword
         }
         setUrl("https://maven.pkg.github.com/navikt/dp-kontrakter")
     }
