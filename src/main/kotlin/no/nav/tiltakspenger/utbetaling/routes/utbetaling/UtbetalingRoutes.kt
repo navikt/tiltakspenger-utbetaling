@@ -7,7 +7,6 @@ import io.ktor.server.routing.Route
 import io.ktor.server.routing.post
 import mu.KotlinLogging
 import no.nav.dagpenger.kontrakter.felles.StønadTypeTiltakspenger
-import no.nav.dagpenger.kontrakter.iverksett.ForrigeIverksettingDto
 import no.nav.dagpenger.kontrakter.iverksett.IverksettDto
 import no.nav.dagpenger.kontrakter.iverksett.UtbetalingDto
 import no.nav.dagpenger.kontrakter.iverksett.VedtakType
@@ -52,8 +51,5 @@ private val utbetalingsObjektMock: IverksettDto =
                     stonadstype = StønadTypeTiltakspenger.TILTAKSPENGER,
                 ),
             ),
-        ),
-        forrigeIverksetting = ForrigeIverksettingDto(
-            behandlingId = UUID.fromString("3fa85f64-5717-4562-b3fc-2c963f66afa6"),
         ),
     )
