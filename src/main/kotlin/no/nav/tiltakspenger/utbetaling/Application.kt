@@ -12,6 +12,9 @@ import mu.KotlinLogging
 import no.nav.tiltakspenger.utbetaling.routes.healthRoutes
 import no.nav.tiltakspenger.utbetaling.routes.utbetaling.UtbetalingServiceImpl
 import no.nav.tiltakspenger.utbetaling.routes.utbetaling.utbetaling
+import io.ktor.server.plugins.statuspages.StatusPages
+import no.nav.tiltakspenger.utbetaling.exception.ExceptionHandler
+
 
 fun main(args: Array<String>) {
     System.setProperty("logback.configurationFile", "egenLogback.xml")
@@ -36,6 +39,15 @@ fun Application.module() {
         utbetaling(utbetalingService)
     }
 }
+
+fun Application.configureExceptions() {
+        install(StatusPages) {
+                exception<Throwable> { call, cause ->
+                        ExceptionHandler.handle(call, cause)
+                    }
+            }
+    }
+
 
 fun Application.jacksonSerialization() {
     install(ContentNegotiation) {
