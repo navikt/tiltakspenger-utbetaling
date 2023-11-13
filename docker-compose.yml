@@ -1,0 +1,10 @@
+version: '3.8'
+services:
+  authserver:
+    image: ghcr.io/navikt/mock-oauth2-server:0.5.5
+    environment:
+      TZ: Europe/Oslo
+      SERVER_PORT: 6969
+      JSON_CONFIG: "{\"interactiveLogin\":true,\"tokenCallbacks\":[{\"issuerId\":\"azure\",\"tokenExpiry\":3600,\"requestMappings\":[{\"requestParam\":\"grant_type\",\"claims\":{\"aud\":[\"tiltakspenger-vedtak\"],\"NAVident\":\"Z123456\",\"preferred_username\":\"test.testesen@nav.no\",\"name\":\"Test Testesen\",\"groups\":[\"1b3a2c4d-d620-4fcf-a29b-a6cdadf29680\"]}}]}]}"
+    ports:
+      - 6969:6969

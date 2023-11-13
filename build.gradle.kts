@@ -3,6 +3,11 @@ val mockkVersion = "1.13.7"
 val ktorVersion = "2.3.4"
 val jacksonVersion = "2.15.2"
 val kotestVersion = "5.7.2"
+val tokenSupportVersion = "3.1.5"
+val iverksettVersjon = "2.0_20231013143623_91d0394"
+
+val githubUser: String by project
+val githubPassword: String by project
 
 plugins {
     application
@@ -15,6 +20,13 @@ repositories {
     mavenCentral()
     maven("https://packages.confluent.io/maven/")
     maven("https://jitpack.io")
+    maven {
+        credentials {
+            username = System.getenv("GITHUB_ACTOR") ?: githubUser
+            password = System.getenv("GITHUB_TOKEN") ?: githubPassword
+        }
+        setUrl("https://maven.pkg.github.com/navikt/dp-kontrakter")
+    }
 }
 
 dependencies {
@@ -28,6 +40,8 @@ dependencies {
     // implementation("com.github.navikt:rapids-and-rivers:2022112407251669271100.df879df951cf")
     implementation("com.natpryce:konfig:1.6.10.0")
 
+    implementation("no.nav.dagpenger.kontrakter:iverksett:$iverksettVersjon")
+
     implementation("io.ktor:ktor-server-netty:$ktorVersion")
     implementation("io.ktor:ktor-serialization-jackson:$ktorVersion")
     implementation("io.ktor:ktor-server-content-negotiation:$ktorVersion")
@@ -35,6 +49,10 @@ dependencies {
     implementation("io.ktor:ktor-server-call-logging:$ktorVersion")
     implementation("io.ktor:ktor-server-forwarded-header:$ktorVersion")
     implementation("io.ktor:ktor-server-status-pages:$ktorVersion")
+
+    // TokenX
+    implementation("no.nav.security:token-validation-ktor-v2:$tokenSupportVersion")
+    implementation("no.nav.security:token-client-core:$tokenSupportVersion")
 
     implementation("io.ktor:ktor-client-core:$ktorVersion")
     implementation("io.ktor:ktor-client-cio:$ktorVersion")

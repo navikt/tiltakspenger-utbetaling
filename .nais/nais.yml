@@ -1,19 +1,21 @@
 apiVersion: nais.io/v1alpha1
 kind: Application
 metadata:
-  name: {{ name }}
+  name: tiltakspenger-utbetaling
   namespace: tpts
   labels:
     team: tpts
 spec:
   image: {{ image }}
   port: 8080
-# Hvis det trengs en ingress så må den lages så den er ulik for dev og prod
-#  ingresses:
-#    - https://{{ name }}.intern.dev.nav.no
   azure:
     application:
       enabled: true
+  replicas:
+    min: 1
+    max: 1
+  ingresses:
+    - {{ ingress.url }}
   liveness:
     path: /isalive
   readiness:
@@ -21,10 +23,23 @@ spec:
   prometheus:
     enabled: true
     path: /metrics
-  replicas:
-    min: 1
-    max: 1
   kafka:
     pool: {{ kafka.pool }}
   secureLogs:
     enabled: true
+  accessPolicy:
+    inbound:
+      rules:
+        - application: tiltakspenger-vedtak
+          namespace: tpts
+          cluster: {{ cluster }}
+    outbound:
+      rules:
+        - application: tiltakspenger-iverksett
+          namespace: teamdagpenger
+      external:
+  env:
+    - name: TILTAKSPENGER_IVERKSETT_ENDPOINT
+      value: {{ endpoints.iverksett }}
+    - name: IVERKSETT_SCOPE
+      value: {{ scope.iverksett }}
