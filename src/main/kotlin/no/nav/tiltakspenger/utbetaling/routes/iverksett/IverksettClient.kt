@@ -16,7 +16,7 @@ import no.nav.tiltakspenger.utbetaling.exception.egendefinerteFeil.TilgangExcept
 import no.nav.tiltakspenger.utbetaling.exception.egendefinerteFeil.UkjentFeilException
 import org.slf4j.LoggerFactory
 
-class IverksettKlient(
+class IverksettClient(
     private val config: ApplicationConfig,
     private val client: HttpClient = httpClientWithRetry(timeout = 30L),
     private val iverksettCredentialsClient: IverksettCredentialsClient = IverksettCredentialsClient(config),
