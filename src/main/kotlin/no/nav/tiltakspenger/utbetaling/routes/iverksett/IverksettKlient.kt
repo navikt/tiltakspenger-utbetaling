@@ -29,7 +29,6 @@ class IverksettKlient(
                 setBody(objectMapper.writeValueAsString(iverksettDto))
                 bearerAuth(token)
             }
-            log.info("status fra dp-iverkett er ${res.status}")
 
             when (res.status) {
                 HttpStatusCode.Accepted -> {
