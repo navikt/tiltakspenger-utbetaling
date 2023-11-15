@@ -7,8 +7,10 @@ import io.ktor.serialization.jackson.jackson
 import io.ktor.server.application.Application
 import io.ktor.server.application.install
 import io.ktor.server.plugins.contentnegotiation.ContentNegotiation
+import io.ktor.server.plugins.statuspages.StatusPages
 import io.ktor.server.routing.routing
 import mu.KotlinLogging
+import no.nav.tiltakspenger.utbetaling.exception.ExceptionHandler
 import no.nav.tiltakspenger.utbetaling.routes.healthRoutes
 import no.nav.tiltakspenger.utbetaling.routes.utbetaling.UtbetalingServiceImpl
 import no.nav.tiltakspenger.utbetaling.routes.utbetaling.utbetaling
@@ -34,6 +36,14 @@ fun Application.module() {
     routing {
         healthRoutes()
         utbetaling(utbetalingService)
+    }
+}
+
+fun Application.configureExceptions() {
+    install(StatusPages) {
+        exception<Throwable> { call, cause ->
+            ExceptionHandler.handle(call, cause)
+        }
     }
 }
 

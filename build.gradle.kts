@@ -2,7 +2,7 @@ val javaVersion = JavaVersion.VERSION_21
 val mockkVersion = "1.13.8"
 val ktorVersion = "2.3.4"
 val jacksonVersion = "2.15.2"
-val kotestVersion = "5.6.2"
+val kotestVersion = "5.7.2"
 val tokenSupportVersion = "3.1.5"
 val iverksettVersjon = "2.0_20231013143623_91d0394"
 
