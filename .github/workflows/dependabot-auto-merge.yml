@@ -23,6 +23,8 @@ jobs:
       - uses: gradle/gradle-build-action@v2
         with:
           arguments: build --info
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Notify Slack in case of build failure
         if: failure()
