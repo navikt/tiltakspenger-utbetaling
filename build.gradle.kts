@@ -4,7 +4,7 @@ val ktorVersion = "2.3.7"
 val jacksonVersion = "2.16.0"
 val kotestVersion = "5.8.0"
 val tokenSupportVersion = "3.2.0"
-val iverksettVersjon = "2.0_20231124154225_d640fba"
+val iverksettVersjon = "2.0_20231212155248_db8495c"
 
 val githubUser: String by project
 val githubPassword: String by project
