@@ -3,7 +3,7 @@ val mockkVersion = "1.13.8"
 val ktorVersion = "2.3.7"
 val jacksonVersion = "2.16.1"
 val kotestVersion = "5.8.0"
-val tokenSupportVersion = "3.2.0"
+val tokenSupportVersion = "4.0.3"
 val iverksettVersjon = "2.0_20231222084529_f0d8240"
 
 val githubUser: String by project
