@@ -22,4 +22,13 @@ fun Route.utbetaling(utbetalingService: UtbetalingService) {
 
         call.respond(status = HttpStatusCode.OK, response)
     }
+
+    post("$utbetalingPath/mottaMeldekort") {
+        LOG.info("Mottatt meldekort")
+        val utbetalingReqDTO = call.receive<UtbetalingReqDTO>()
+
+        LOG.info { "Vi mottok meldekort til utbetaling : $utbetalingReqDTO" }
+
+        call.respond(status = HttpStatusCode.OK, "{}")
+    }
 }
