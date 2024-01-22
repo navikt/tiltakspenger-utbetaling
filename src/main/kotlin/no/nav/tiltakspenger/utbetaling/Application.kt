@@ -16,7 +16,7 @@ import no.nav.tiltakspenger.utbetaling.routes.utbetaling.UtbetalingServiceImpl
 import no.nav.tiltakspenger.utbetaling.routes.utbetaling.utbetaling
 
 fun main(args: Array<String>) {
-    System.setProperty("logback.configurationFile", "egenLogback.xml")
+    System.setProperty("logback.configurationFile", Configuration.logbackConfigurationFile())
 
     val log = KotlinLogging.logger {}
     val securelog = KotlinLogging.logger("tjenestekall")

@@ -1,10 +1,11 @@
-val javaVersion = JavaVersion.VERSION_21
-val mockkVersion = "1.13.8"
-val ktorVersion = "2.3.7"
-val jacksonVersion = "2.16.1"
-val kotestVersion = "5.8.0"
-val tokenSupportVersion = "3.2.0"
+val javaVersjon = JavaVersion.VERSION_21
+val mockkVersjon = "1.13.8"
+val ktorVersjon = "2.3.7"
+val jacksonVersjon = "2.16.1"
+val kotestVersjon = "5.8.0"
+val tokenSupportVersjon = "3.2.0"
 val iverksettVersjon = "2.0_20231222084529_f0d8240"
+val flywayVersjon = "10.6.0"
 
 val githubUser: String by project
 val githubPassword: String by project
@@ -37,40 +38,47 @@ dependencies {
 
     implementation("no.nav.dagpenger.kontrakter:iverksett:$iverksettVersjon")
 
-    implementation("io.ktor:ktor-server-netty:$ktorVersion")
-    implementation("io.ktor:ktor-serialization-jackson:$ktorVersion")
-    implementation("io.ktor:ktor-server-content-negotiation:$ktorVersion")
-    implementation("io.ktor:ktor-server-call-id:$ktorVersion")
-    implementation("io.ktor:ktor-server-call-logging:$ktorVersion")
-    implementation("io.ktor:ktor-server-forwarded-header:$ktorVersion")
-    implementation("io.ktor:ktor-server-status-pages:$ktorVersion")
+    implementation("io.ktor:ktor-server-netty:$ktorVersjon")
+    implementation("io.ktor:ktor-serialization-jackson:$ktorVersjon")
+    implementation("io.ktor:ktor-server-content-negotiation:$ktorVersjon")
+    implementation("io.ktor:ktor-server-call-id:$ktorVersjon")
+    implementation("io.ktor:ktor-server-call-logging:$ktorVersjon")
+    implementation("io.ktor:ktor-server-forwarded-header:$ktorVersjon")
+    implementation("io.ktor:ktor-server-status-pages:$ktorVersjon")
 
     // TokenX
-    implementation("no.nav.security:token-validation-ktor-v2:$tokenSupportVersion")
-    implementation("no.nav.security:token-client-core:$tokenSupportVersion")
+    implementation("no.nav.security:token-validation-ktor-v2:$tokenSupportVersjon")
+    implementation("no.nav.security:token-client-core:$tokenSupportVersjon")
 
-    implementation("io.ktor:ktor-client-core:$ktorVersion")
-    implementation("io.ktor:ktor-client-cio:$ktorVersion")
-    implementation("io.ktor:ktor-client-content-negotiation:$ktorVersion")
-    implementation("io.ktor:ktor-client-logging:$ktorVersion")
-    implementation("io.ktor:ktor-http:$ktorVersion")
-    implementation("io.ktor:ktor-serialization:$ktorVersion")
-    implementation("io.ktor:ktor-serialization-jackson:$ktorVersion")
-    implementation("io.ktor:ktor-utils:$ktorVersion")
+    implementation("io.ktor:ktor-client-core:$ktorVersjon")
+    implementation("io.ktor:ktor-client-cio:$ktorVersjon")
+    implementation("io.ktor:ktor-client-content-negotiation:$ktorVersjon")
+    implementation("io.ktor:ktor-client-logging:$ktorVersjon")
+    implementation("io.ktor:ktor-http:$ktorVersjon")
+    implementation("io.ktor:ktor-serialization:$ktorVersjon")
+    implementation("io.ktor:ktor-serialization-jackson:$ktorVersjon")
+    implementation("io.ktor:ktor-utils:$ktorVersjon")
 
-    implementation("com.fasterxml.jackson.core:jackson-databind:$jacksonVersion")
-    implementation("com.fasterxml.jackson.core:jackson-annotations:$jacksonVersion")
-    implementation("com.fasterxml.jackson.datatype:jackson-datatype-jsr310:$jacksonVersion")
+    implementation("com.fasterxml.jackson.core:jackson-databind:$jacksonVersjon")
+    implementation("com.fasterxml.jackson.core:jackson-annotations:$jacksonVersjon")
+    implementation("com.fasterxml.jackson.datatype:jackson-datatype-jsr310:$jacksonVersjon")
+
+    // DB
+    implementation("org.flywaydb:flyway-core:$flywayVersjon")
+    implementation("org.flywaydb:flyway-database-postgresql:$flywayVersjon")
+    implementation("com.zaxxer:HikariCP:5.1.0")
+    implementation("org.postgresql:postgresql:42.7.1")
+    implementation("com.github.seratch:kotliquery:1.9.0")
 
     testImplementation(platform("org.junit:junit-bom:5.10.1"))
     testImplementation("org.junit.jupiter:junit-jupiter")
-    testImplementation("io.mockk:mockk:$mockkVersion")
-    testImplementation("io.ktor:ktor-client-mock-jvm:$ktorVersion")
-    testImplementation("io.mockk:mockk-dsl-jvm:$mockkVersion")
+    testImplementation("io.mockk:mockk:$mockkVersjon")
+    testImplementation("io.ktor:ktor-client-mock-jvm:$ktorVersjon")
+    testImplementation("io.mockk:mockk-dsl-jvm:$mockkVersjon")
     testImplementation("org.skyscreamer:jsonassert:1.5.1")
-    testImplementation("io.kotest:kotest-assertions-core:$kotestVersion")
-    testImplementation("io.kotest:kotest-assertions-json:$kotestVersion")
-    testImplementation("io.kotest:kotest-extensions:$kotestVersion")
+    testImplementation("io.kotest:kotest-assertions-core:$kotestVersjon")
+    testImplementation("io.kotest:kotest-assertions-json:$kotestVersjon")
+    testImplementation("io.kotest:kotest-extensions:$kotestVersjon")
 }
 
 configurations.all {
@@ -83,8 +91,8 @@ application {
 }
 
 java {
-    sourceCompatibility = javaVersion
-    targetCompatibility = javaVersion
+    sourceCompatibility = javaVersjon
+    targetCompatibility = javaVersjon
 }
 
 spotless {
@@ -95,10 +103,10 @@ spotless {
 
 tasks {
     compileKotlin {
-        kotlinOptions.jvmTarget = javaVersion.toString()
+        kotlinOptions.jvmTarget = javaVersjon.toString()
     }
     compileTestKotlin {
-        kotlinOptions.jvmTarget = javaVersion.toString()
+        kotlinOptions.jvmTarget = javaVersjon.toString()
         kotlinOptions.freeCompilerArgs += "-opt-in=kotlin.RequiresOptIn"
     }
     test {
