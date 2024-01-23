@@ -74,6 +74,12 @@ object Configuration {
         ),
     )
 
+    private val composeProperties = ConfigurationMap(
+        mapOf(
+            "logback.configurationFile" to "logback.local.xml",
+        ),
+    )
+
     private fun config() = when (System.getenv("NAIS_CLUSTER_NAME") ?: System.getProperty("NAIS_CLUSTER_NAME")) {
         "dev-gcp" ->
             ConfigurationProperties.systemProperties() overriding EnvironmentVariables overriding devProperties overriding defaultProperties
@@ -82,7 +88,7 @@ object Configuration {
             ConfigurationProperties.systemProperties() overriding EnvironmentVariables overriding prodProperties overriding defaultProperties
 
         "compose" ->
-            ConfigurationProperties.systemProperties() overriding EnvironmentVariables overriding defaultProperties
+            ConfigurationProperties.systemProperties() overriding EnvironmentVariables overriding composeProperties overriding defaultProperties
 
         else -> {
             ConfigurationProperties.systemProperties() overriding EnvironmentVariables overriding localProperties overriding defaultProperties
