@@ -14,11 +14,11 @@ import io.ktor.server.routing.routing
 import mu.KotlinLogging
 import no.nav.tiltakspenger.utbetaling.Configuration.httpPort
 import no.nav.tiltakspenger.utbetaling.auth.AzureTokenProvider
+import no.nav.tiltakspenger.utbetaling.client.iverksett.IverksettKlient
 import no.nav.tiltakspenger.utbetaling.exception.ExceptionHandler
 import no.nav.tiltakspenger.utbetaling.routes.healthRoutes
-import no.nav.tiltakspenger.utbetaling.client.iverksett.IverksettKlient
-import no.nav.tiltakspenger.utbetaling.service.UtbetalingServiceImpl
 import no.nav.tiltakspenger.utbetaling.routes.utbetaling.utbetaling
+import no.nav.tiltakspenger.utbetaling.service.UtbetalingServiceImpl
 
 fun main() {
     System.setProperty("logback.configurationFile", Configuration.logbackConfigurationFile())
