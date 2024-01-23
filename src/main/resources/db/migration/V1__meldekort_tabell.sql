@@ -19,34 +19,34 @@ $$;
 
 create table rammevedtak
 (
-    id                  varchar primary key,
-    sakId               varchar not null,
-    behandlingId        varchar not null,
-    personIdent         varchar not null,
-    resultat            varchar not null,
-    vedtakstidspunkt    timestamp not null,
-    saksbehandler       varchar not null,
-    beslutter           varchar not null
+    id                   varchar primary key,
+    sakId                varchar not null,
+    behandlingId         varchar not null,
+    personIdent          varchar not null,
+    iverksettingResultat varchar not null,
+    vedtakstidspunkt     timestamp not null,
+    saksbehandler        varchar not null,
+    beslutter            varchar not null
 );
 
 create table utbetalingsvedtak
 (
-    id                  varchar primary key,
-    rammevedtakId       varchar not null references rammevedtak(id),
-    behandlingId        varchar not null,
-    meldekortId         varchar not null,
-    resultat            varchar not null,
-    vedtakstidspunkt    timestamp not null,
-    saksbehandler       varchar not null,
-    beslutter           varchar not null
+    id                   varchar primary key,
+    rammevedtakId        varchar not null references rammevedtak(id),
+    behandlingId         varchar not null,
+    meldekortId          varchar not null,
+    resultat             varchar not null,
+    vedtakstidspunkt     timestamp not null,
+    saksbehandler        varchar not null,
+    beslutter            varchar not null
 );
 
 create table utbetalingslinje
 (
-    id                  varchar primary key,
-    utbetalingsvedtak   varchar not null references utbetalingsvedtak(id),
-    beløp               numeric not null,
-    fom                 date not null,
-    tom                 date not null,
-    stønaddstype        varchar not null
+    id                   varchar primary key,
+    utbetalingsvedtak    varchar not null references utbetalingsvedtak(id),
+    beløp                numeric not null,
+    fom                  date not null,
+    tom                  date not null,
+    stønaddstype         varchar not null
 );

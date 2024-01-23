@@ -4,19 +4,30 @@ import kotliquery.Row
 import kotliquery.queryOf
 import kotliquery.sessionOf
 import no.nav.tiltakspenger.utbetaling.db.DataSource
+import no.nav.tiltakspenger.utbetaling.domene.BehandlingId
+import no.nav.tiltakspenger.utbetaling.domene.IverksettingResultat
+import no.nav.tiltakspenger.utbetaling.domene.Rammevedtak
+import no.nav.tiltakspenger.utbetaling.domene.RammevedtakId
+import no.nav.tiltakspenger.utbetaling.domene.SakId
 import org.intellij.lang.annotations.Language
 import java.util.*
 
 class RammevedtakRepoImpl() : RammevedtakRepo {
-    override fun lagre() {
+    override fun lagre(rammevedtak: Rammevedtak) {
         sessionOf(DataSource.hikariDataSource).use {
-            val id = UUID.randomUUID()
             it.transaction {
                 it.run(
                     queryOf(
                         sqlLagre,
                         mapOf(
-                            "id" to id,
+                            "id" to rammevedtak.id.toString(),
+                            "sakId" to rammevedtak.sakId.id.toString(),
+                            "behandlingId" to rammevedtak.behandlingId.toString(),
+                            "personIdent" to rammevedtak.personIdent,
+                            "iverksettingResultat" to rammevedtak.iverksettingResultat.name,
+                            "vedtakstidspunkt" to rammevedtak.vedtakstidspunkt,
+                            "saksbehandler" to rammevedtak.saksbehandler,
+                            "beslutter" to rammevedtak.beslutter,
                         ),
                     ).asUpdate,
                 )
@@ -24,7 +35,7 @@ class RammevedtakRepoImpl() : RammevedtakRepo {
         }
     }
 
-    override fun hent(id: UUID) {
+    override fun hent(id: RammevedtakId): Rammevedtak? {
         return sessionOf(DataSource.hikariDataSource).use {
             it.transaction { txSession ->
                 txSession.run(
@@ -34,22 +45,46 @@ class RammevedtakRepoImpl() : RammevedtakRepo {
                             "id" to id.toString(),
                         ),
                     ).map { row ->
-                        row.toVedtak()
+                        row.toRammevedtak()
                     }.asSingle,
                 )
             }
         }
     }
 
-    private fun Row.toVedtak() {
+    private fun Row.toRammevedtak(): Rammevedtak {
+        return Rammevedtak(
+            id = RammevedtakId(id = UUID.fromString(string("id"))),
+            sakId = SakId(id = UUID.fromString(string("sakId"))),
+            behandlingId = BehandlingId(id = UUID.fromString(string("behandlingId"))),
+            personIdent = string("personIdent"),
+            iverksettingResultat = IverksettingResultat.valueOf(string("iverksettingResultat")),
+            vedtakstidspunkt = localDateTime("vedtakstidspunkt"),
+            saksbehandler = string("saksbehandler"),
+            beslutter = string("beslutter"),
+        )
     }
 
     @Language("PostgreSQL")
     private val sqlLagre = """
         insert into rammevedtak (
-            id
+            id,              
+            sakId,           
+            behandlingId,    
+            personIdent,     
+            iverksettingResultat,        
+            vedtakstidspunkt,
+            saksbehandler,   
+            beslutter       
         ) values (
-            :id
+            :id,              
+            :sakId,           
+            :behandlingId,    
+            :personIdent,     
+            :iverksettingResultat,        
+            :vedtakstidspunkt,
+            :saksbehandler,   
+            :beslutter
         )
     """.trimIndent()
 
