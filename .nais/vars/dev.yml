@@ -2,7 +2,3 @@ kafka:
   pool: nav-dev
 ingress:
   url: https://tiltakspenger-utbetaling.intern.dev.nav.no
-endpoints:
-  iverksett: http://tiltakspenger-iverksett.teamdagpenger
-scope:
-  iverksett: api://dev-gcp.teamdagpenger.tiltakspenger-iverksett/.default

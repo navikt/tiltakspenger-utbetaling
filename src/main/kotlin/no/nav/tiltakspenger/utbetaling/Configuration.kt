@@ -7,6 +7,7 @@ import com.natpryce.konfig.Key
 import com.natpryce.konfig.intType
 import com.natpryce.konfig.overriding
 import com.natpryce.konfig.stringType
+import no.nav.tiltakspenger.utbetaling.auth.AzureTokenProvider
 
 enum class Profile {
     LOCAL, DEV, PROD
@@ -39,7 +40,7 @@ object Configuration {
 
     private val localProperties = ConfigurationMap(
         mapOf(
-            "application.httpPort" to 8085.toString(),
+            "application.httpPort" to 8083.toString(),
             "application.profile" to Profile.LOCAL.toString(),
             "DB_DATABASE" to "utbetaling",
             "DB_HOST" to "localhost",
@@ -52,18 +53,24 @@ object Configuration {
             "AZURE_APP_WELL_KNOWN_URL" to "http://host.docker.internal:6969/azure/.well-known/openid-configuration",
             "AZURE_OPENID_CONFIG_ISSUER" to "http://host.docker.internal:6969/azure",
             "AZURE_OPENID_CONFIG_JWKS_URI" to "http://host.docker.internal:6969/azure/jwks",
+            "IVERKSETT_SCOPE" to "localhost",
+            "IVERKSETT_URL" to "http://localhost:8089",
         ),
     )
 
     private val devProperties = ConfigurationMap(
         mapOf(
             "application.profile" to Profile.DEV.toString(),
+            "IVERKSETT_SCOPE" to "api://dev-gcp.teamdagpenger.tiltakspenger-iverksett/.default",
+            "IVERKSETT_URL" to "http://tiltakspenger-iverksett.teamdagpenger",
         ),
     )
 
     private val prodProperties = ConfigurationMap(
         mapOf(
             "application.profile" to Profile.PROD.toString(),
+            "IVERKSETT_SCOPE" to "api://prod-gcp.teamdagpenger.tiltakspenger-iverksett/.default",
+            "IVERKSETT_URL" to "https://tiltakspenger-iverksett.teamdagpenger",
         ),
     )
 
@@ -81,6 +88,25 @@ object Configuration {
             ConfigurationProperties.systemProperties() overriding EnvironmentVariables overriding localProperties overriding defaultProperties
         }
     }
+
+    data class ClientConfig(
+        val baseUrl: String,
+    )
+
+    fun iverksettClientConfig(baseUrl: String = config()[Key("IVERKSETT_URL", stringType)]) =
+        ClientConfig(baseUrl = baseUrl)
+
+    fun oauthConfigIverksett(
+        scope: String = config()[Key("IVERKSETT_SCOPE", stringType)],
+        clientId: String = config()[Key("AZURE_APP_CLIENT_ID", stringType)],
+        clientSecret: String = config()[Key("AZURE_APP_CLIENT_SECRET", stringType)],
+        wellknownUrl: String = config()[Key("AZURE_APP_WELL_KNOWN_URL", stringType)],
+    ) = AzureTokenProvider.OauthConfig(
+        scope = scope,
+        clientId = clientId,
+        clientSecret = clientSecret,
+        wellknownUrl = wellknownUrl,
+    )
 
     fun logbackConfigurationFile() = config()[Key("logback.configurationFile", stringType)]
 

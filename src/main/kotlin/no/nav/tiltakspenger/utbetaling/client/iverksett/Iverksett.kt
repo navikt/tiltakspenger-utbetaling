@@ -1,4 +1,4 @@
-package no.nav.tiltakspenger.utbetaling.routes.iverksett
+package no.nav.tiltakspenger.utbetaling.client.iverksett
 
 import no.nav.dagpenger.kontrakter.iverksett.IverksettDto
 
