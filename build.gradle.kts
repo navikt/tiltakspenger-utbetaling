@@ -3,7 +3,7 @@ val mockkVersjon = "1.13.8"
 val ktorVersjon = "2.3.7"
 val jacksonVersjon = "2.16.1"
 val kotestVersjon = "5.8.0"
-val tokenSupportVersjon = "3.2.0"
+val tokenSupportVersjon = "4.1.0"
 val iverksettVersjon = "2.0_20231222084529_f0d8240"
 val flywayVersjon = "10.6.0"
 
