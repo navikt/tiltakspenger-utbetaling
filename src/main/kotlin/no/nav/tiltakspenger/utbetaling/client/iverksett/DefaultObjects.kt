@@ -1,4 +1,4 @@
-package no.nav.tiltakspenger.utbetaling.routes.iverksett
+package no.nav.tiltakspenger.utbetaling.client.iverksett
 
 import com.fasterxml.jackson.core.util.DefaultIndenter
 import com.fasterxml.jackson.core.util.DefaultPrettyPrinter

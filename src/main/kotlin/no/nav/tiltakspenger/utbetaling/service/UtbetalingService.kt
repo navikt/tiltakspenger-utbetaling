@@ -1,4 +1,4 @@
-package no.nav.tiltakspenger.utbetaling.routes.utbetaling
+package no.nav.tiltakspenger.utbetaling.service
 
 import no.nav.dagpenger.kontrakter.iverksett.IverksettDto
 

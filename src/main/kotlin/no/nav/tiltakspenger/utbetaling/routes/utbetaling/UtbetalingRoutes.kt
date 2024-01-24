@@ -8,6 +8,7 @@ import io.ktor.server.routing.Route
 import io.ktor.server.routing.post
 import mu.KotlinLogging
 import no.nav.dagpenger.kontrakter.iverksett.IverksettDto
+import no.nav.tiltakspenger.utbetaling.service.UtbetalingService
 
 private val LOG = KotlinLogging.logger {}
 

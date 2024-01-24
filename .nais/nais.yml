@@ -38,8 +38,3 @@ spec:
         - application: tiltakspenger-iverksett
           namespace: teamdagpenger
       external:
-  env:
-    - name: TILTAKSPENGER_IVERKSETT_ENDPOINT
-      value: {{ endpoints.iverksett }}
-    - name: TILTAKSPENGER_IVERKSETT_SCOPE
-      value: {{ scope.iverksett }}

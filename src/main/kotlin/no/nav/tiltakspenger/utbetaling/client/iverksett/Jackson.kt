@@ -1,4 +1,4 @@
-package no.nav.tiltakspenger.utbetaling.routes.iverksett
+package no.nav.tiltakspenger.utbetaling.client.iverksett
 
 import com.fasterxml.jackson.databind.DeserializationFeature
 import com.fasterxml.jackson.databind.JsonNode
