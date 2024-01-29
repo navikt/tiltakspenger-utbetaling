@@ -26,9 +26,9 @@ class UtbetalingServiceImpl(
 
 private fun mapIverksettDTO(rammevedtak: Rammevedtak) =
     IverksettDto(
-        sakId = UUID.randomUUID(),    //rammevedtak.sakId.toString(),
+        sakId = UUID.randomUUID(), // rammevedtak.sakId.toString(),
         saksreferanse = rammevedtak.saksnummer,
-        behandlingId = UUID.randomUUID(),   //rammevedtak.behandlingId.toString(),
+        behandlingId = UUID.randomUUID(), // rammevedtak.behandlingId.toString(),
         personident = Personident(
             verdi = rammevedtak.personIdent,
         ),
@@ -49,9 +49,9 @@ private fun mapIverksettDTO(rammevedtak: Rammevedtak) =
                     fraOgMedDato = rammevedtak.fom,
                     tilOgMedDato = rammevedtak.tom,
                     periodeType = VedtaksperiodeType.HOVEDPERIODE,
-                )
+                ),
             ),
 
         ),
-        forrigeIverksetting = null
+        forrigeIverksetting = null,
     )

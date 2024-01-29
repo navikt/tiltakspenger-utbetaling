@@ -2,7 +2,6 @@ package no.nav.tiltakspenger.utbetaling.domene
 
 import java.time.LocalDate
 import java.time.LocalDateTime
-import java.util.UUID
 
 data class Rammevedtak(
     val id: RammevedtakId,
