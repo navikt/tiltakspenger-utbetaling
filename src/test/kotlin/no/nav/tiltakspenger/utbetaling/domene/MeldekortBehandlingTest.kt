@@ -53,4 +53,49 @@ internal class MeldekortBehandlingTest {
             println(dag)
         }
     }
+
+    @Test
+    fun eksempel1() {
+        val meldekortBehandling = MeldekortBehandling(
+            deltakerDager = listOf(
+                DeltattDag(LocalDate.of(2024, 2, 1), DeltagerStatus.Syk),
+                DeltattDag(LocalDate.of(2024, 2, 2), DeltagerStatus.Deltatt),
+                DeltattDag(LocalDate.of(2024, 2, 3), DeltagerStatus.IkkeDeltatt),
+                DeltattDag(LocalDate.of(2024, 2, 4), DeltagerStatus.IkkeDeltatt),
+                DeltattDag(LocalDate.of(2024, 2, 5), DeltagerStatus.Deltatt),
+                DeltattDag(LocalDate.of(2024, 2, 6), DeltagerStatus.Deltatt),
+                DeltattDag(LocalDate.of(2024, 2, 7), DeltagerStatus.Deltatt),
+                DeltattDag(LocalDate.of(2024, 2, 8), DeltagerStatus.Syk),
+                DeltattDag(LocalDate.of(2024, 2, 9), DeltagerStatus.Deltatt),
+                DeltattDag(LocalDate.of(2024, 2, 10), DeltagerStatus.IkkeDeltatt),
+                DeltattDag(LocalDate.of(2024, 2, 11), DeltagerStatus.IkkeDeltatt),
+                DeltattDag(LocalDate.of(2024, 2, 12), DeltagerStatus.Deltatt),
+                DeltattDag(LocalDate.of(2024, 2, 13), DeltagerStatus.Deltatt),
+                DeltattDag(LocalDate.of(2024, 2, 14), DeltagerStatus.Syk),
+                DeltattDag(LocalDate.of(2024, 2, 15), DeltagerStatus.Syk),
+                DeltattDag(LocalDate.of(2024, 2, 16), DeltagerStatus.Deltatt),
+                DeltattDag(LocalDate.of(2024, 2, 17), DeltagerStatus.IkkeDeltatt),
+                DeltattDag(LocalDate.of(2024, 2, 18), DeltagerStatus.IkkeDeltatt),
+                DeltattDag(LocalDate.of(2024, 2, 19), DeltagerStatus.Deltatt),
+                DeltattDag(LocalDate.of(2024, 2, 20), DeltagerStatus.Deltatt),
+                DeltattDag(LocalDate.of(2024, 2, 21), DeltagerStatus.Deltatt),
+                DeltattDag(LocalDate.of(2024, 2, 22), DeltagerStatus.Deltatt),
+                DeltattDag(LocalDate.of(2024, 2, 23), DeltagerStatus.Deltatt),
+                DeltattDag(LocalDate.of(2024, 2, 24), DeltagerStatus.IkkeDeltatt),
+                DeltattDag(LocalDate.of(2024, 2, 25), DeltagerStatus.IkkeDeltatt),
+                DeltattDag(LocalDate.of(2024, 2, 26), DeltagerStatus.Deltatt),
+                DeltattDag(LocalDate.of(2024, 2, 27), DeltagerStatus.Deltatt),
+                DeltattDag(LocalDate.of(2024, 2, 28), DeltagerStatus.Deltatt),
+                DeltattDag(LocalDate.of(2024, 2, 29), DeltagerStatus.Deltatt),
+                DeltattDag(LocalDate.of(2024, 3, 1), DeltagerStatus.Deltatt),
+                DeltattDag(LocalDate.of(2024, 3, 2), DeltagerStatus.IkkeDeltatt),
+                DeltattDag(LocalDate.of(2024, 3, 3), DeltagerStatus.IkkeDeltatt),
+                DeltattDag(LocalDate.of(2024, 3, 4), DeltagerStatus.Syk),
+            ),
+        )
+        val utbet = meldekortBehandling.beregn()
+        for (dag in utbet) {
+            println(dag)
+        }
+    }
 }

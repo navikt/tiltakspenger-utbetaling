@@ -6,12 +6,13 @@ data class UtbetalingDag(
     val deltagerStatus: DeltagerStatus,
     val dag: LocalDate,
     val status: UtbetalingStatus,
-    val kvote: Int,
+    val kvote100: Int,
+    val kvote75: Int,
     val karantene: Int,
-    val antDagerSyk: Int,
+    val iKarantene: Boolean,
 ) {
     override fun toString(): String {
-        return "${deltagerStatus.toString().padEnd(15)} $dag  \t $status \t kvote=$kvote \t karantene=$karantene \t antDagerSyk=$antDagerSyk"
+        return "${deltagerStatus.toString().padEnd(15)} $dag  ${dag.dayOfWeek.toString().padEnd(12)} \t $status \t kvote100=$kvote100 \t kvote75=${kvote75.toString().padEnd(12)} \t karantene=$karantene \t iKarantene=$iKarantene"
     }
 }
 
@@ -44,11 +45,13 @@ enum class Tilstand {
 data class MeldekortBehandling(
     val deltakerDager: List<DeltattDag>,
 ) {
-    var kvote = 16
-    var karantene = 0
-    var antDagerSyk = 0
-    var forrigeTilstand = Tilstand.Ukjent
-    val utbetalingDager: List<UtbetalingDag> = mutableListOf()
+    private var iKarantene = false
+    private var kvote100 = 3
+    private var kvote75 = 13
+    private var karantene = 0
+//    private var antDagerSidenSisteSykedagMedUtbetaling = 0
+    private var forrigeTilstand = Tilstand.Ukjent
+    private val utbetalingDager: List<UtbetalingDag> = mutableListOf()
     fun beregn(): List<UtbetalingDag> {
         for (dag in deltakerDager) {
             when (dag.status) {
@@ -62,40 +65,70 @@ data class MeldekortBehandling(
         return utbetalingDager
     }
 
-    fun deltatt(d: LocalDate) {
-        if (kvote == 0) karantene++
+    private fun deltatt(d: LocalDate) {
+        if (iKarantene) karantene++
         if (karantene > 15) {
-            kvote = 16
-            karantene = 0
-            antDagerSyk = 0
+            resetKvote()
         }
-        utbetalingDager.addLast(UtbetalingDag(DeltagerStatus.Deltatt, d, UtbetalingStatus.FullUtbetaling, kvote, karantene, antDagerSyk))
+        utbetalingDager.addLast(UtbetalingDag(DeltagerStatus.Deltatt, d, UtbetalingStatus.FullUtbetaling, kvote100, kvote75, karantene, iKarantene))
         forrigeTilstand = Tilstand.Deltatt
     }
 
-    fun ikkeDeltatt(d: LocalDate) {
-        utbetalingDager.addLast(UtbetalingDag(DeltagerStatus.IkkeDeltatt, d, UtbetalingStatus.IngenUtbetaling, kvote, karantene, antDagerSyk))
+    private fun ikkeDeltatt(d: LocalDate) {
+//        if (kvote == 0) karantene++
+        if (iKarantene) karantene++
+        if (karantene > 15) {
+//            kvote = 16
+            if (iKarantene) karantene++
+            karantene = 0
+        }
+        utbetalingDager.addLast(UtbetalingDag(DeltagerStatus.IkkeDeltatt, d, UtbetalingStatus.IngenUtbetaling, kvote100, kvote75, karantene, iKarantene))
         forrigeTilstand = Tilstand.IkkeDeltatt
     }
 
-    fun syk(d: LocalDate) {
-        antDagerSyk++
-        if (kvote > 0) {
-            kvote--
-            if (antDagerSyk > 3) {
-                utbetalingDager.addLast(UtbetalingDag(DeltagerStatus.Syk, d, UtbetalingStatus.DelvisUtbetaling, kvote, karantene, antDagerSyk))
-            } else {
-                utbetalingDager.addLast(UtbetalingDag(DeltagerStatus.Syk, d, UtbetalingStatus.FullUtbetaling, kvote, karantene, antDagerSyk))
-            }
+    private fun syk(d: LocalDate) {
+        if (iKarantene) {
+            utbetalingDager.addLast(UtbetalingDag(DeltagerStatus.Syk, d, UtbetalingStatus.IngenUtbetaling, kvote100, kvote75, karantene, iKarantene))
         } else {
-            utbetalingDager.addLast(UtbetalingDag(DeltagerStatus.Syk, d, UtbetalingStatus.IngenUtbetaling, kvote, karantene, antDagerSyk))
+            if (kvote75 == 13) {
+                if (kvote100 > 0) kvote100-- else kvote75--
+                if (kvote75 == 0) iKarantene = true
+                utbetalingDager.addLast(UtbetalingDag(DeltagerStatus.Syk, d, UtbetalingStatus.FullUtbetaling, kvote100, kvote75, karantene, iKarantene))
+            } else {
+                if (kvote100 > 0) kvote100-- else kvote75--
+                if (kvote75 == 0) iKarantene = true
+                utbetalingDager.addLast(UtbetalingDag(DeltagerStatus.Syk, d, UtbetalingStatus.DelvisUtbetaling, kvote100, kvote75, karantene, iKarantene))
+            }
         }
+
+
+
+//        antDagerSyk++
+//        if (kvote > 0) {
+//            kvote--
+//            antDagerSidenSisteSykedagMedUtbetaling = 0
+//            if (antDagerSyk > 3) {
+//                utbetalingDager.addLast(UtbetalingDag(DeltagerStatus.Syk, d, UtbetalingStatus.DelvisUtbetaling, kvote100, kvote75, karantene, iKarantene))
+//            } else {
+//                utbetalingDager.addLast(UtbetalingDag(DeltagerStatus.Syk, d, UtbetalingStatus.FullUtbetaling, kvote100, kvote75, karantene, iKarantene))
+//            }
+//        } else {
+//            antDagerSidenSisteSykedagMedUtbetaling++
+//            utbetalingDager.addLast(UtbetalingDag(DeltagerStatus.Syk, d, UtbetalingStatus.IngenUtbetaling, kvote100, kvote75, karantene, iKarantene))
+//        }
         forrigeTilstand = Tilstand.Syk
     }
 
-    fun syktBarn(d: LocalDate) {
+    private fun syktBarn(d: LocalDate) {
         // tilsvarende som syk ??
-        utbetalingDager.addLast(UtbetalingDag(DeltagerStatus.SyktBarn, d, UtbetalingStatus.FullUtbetaling, kvote, karantene, antDagerSyk))
+        utbetalingDager.addLast(UtbetalingDag(DeltagerStatus.SyktBarn, d, UtbetalingStatus.FullUtbetaling, kvote100, kvote75, karantene, iKarantene))
         forrigeTilstand = Tilstand.SyktBarn
     }
-}
+
+    private fun resetKvote() {
+        kvote75 = 3
+        kvote100 = 16
+        iKarantene = false
+        karantene = 0
+    }
+ }
