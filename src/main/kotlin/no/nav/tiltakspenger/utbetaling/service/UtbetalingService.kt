@@ -1,7 +1,7 @@
 package no.nav.tiltakspenger.utbetaling.service
 
-import no.nav.dagpenger.kontrakter.iverksett.IverksettDto
+import no.nav.tiltakspenger.utbetaling.domene.Rammevedtak
 
 interface UtbetalingService {
-    suspend fun sendUtbetalingTilIverksett(utbetalingDTOUt: IverksettDto)
+    suspend fun mottaRammevedtakOgSendTilIverksett(rammevedtak: Rammevedtak)
 }

@@ -23,6 +23,8 @@ repositories {
     maven {
         url = uri("https://github-package-registry-mirror.gc.nav.no/cached/maven-release")
     }
+    // Trengs for kulid:
+    maven { url = uri("https://jitpack.io") }
 }
 
 dependencies {
@@ -35,6 +37,7 @@ dependencies {
     implementation("org.jetbrains:annotations:24.1.0")
     // implementation("com.github.navikt:rapids-and-rivers:2022112407251669271100.df879df951cf")
     implementation("com.natpryce:konfig:1.6.10.0")
+    implementation("com.github.guepardoapps:kulid:2.0.0.0")
 
     implementation("no.nav.dagpenger.kontrakter:iverksett:$iverksettVersjon")
 

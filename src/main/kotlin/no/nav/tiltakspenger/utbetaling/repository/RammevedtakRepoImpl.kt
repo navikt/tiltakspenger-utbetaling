@@ -21,7 +21,7 @@ class RammevedtakRepoImpl() : RammevedtakRepo {
                         sqlLagre,
                         mapOf(
                             "id" to rammevedtak.id.toString(),
-                            "sakId" to rammevedtak.sakId.id.toString(),
+                            "sakId" to rammevedtak.sakId.toString(),
                             "behandlingId" to rammevedtak.behandlingId.toString(),
                             "personIdent" to rammevedtak.personIdent,
                             "iverksettingResultat" to rammevedtak.iverksettingResultat.name,
@@ -54,10 +54,13 @@ class RammevedtakRepoImpl() : RammevedtakRepo {
 
     private fun Row.toRammevedtak(): Rammevedtak {
         return Rammevedtak(
-            id = RammevedtakId(id = UUID.fromString(string("id"))),
-            sakId = SakId(id = UUID.fromString(string("sakId"))),
-            behandlingId = BehandlingId(id = UUID.fromString(string("behandlingId"))),
+            id = RammevedtakId.fromDb(string("id")),
+            sakId = SakId.fromDb(string("sakId")),
+            behandlingId = BehandlingId.fromDb((string("behandlingId"))),
             personIdent = string("personIdent"),
+            fom = localDate("fom"),
+            tom = localDate("tom"),
+            saksnummer = string("saksnummer"),
             iverksettingResultat = IverksettingResultat.valueOf(string("iverksettingResultat")),
             vedtakstidspunkt = localDateTime("vedtakstidspunkt"),
             saksbehandler = string("saksbehandler"),

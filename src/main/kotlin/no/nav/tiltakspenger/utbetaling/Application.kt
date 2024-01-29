@@ -41,7 +41,7 @@ fun Application.module() {
     val tokenProvider = AzureTokenProvider(config = Configuration.oauthConfigIverksett())
     val iverksettKlient = IverksettKlient(getToken = tokenProvider::getToken)
     val vedtakRepo = RammevedtakRepoImpl()
-    val utbetalingService = UtbetalingServiceImpl(iverksettKlient)
+    val utbetalingService = UtbetalingServiceImpl(vedtakRepo, iverksettKlient)
 
     jacksonSerialization()
     routing {
