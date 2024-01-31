@@ -54,7 +54,7 @@ object Configuration {
             "AZURE_OPENID_CONFIG_ISSUER" to "http://host.docker.internal:6969/azure",
             "AZURE_OPENID_CONFIG_JWKS_URI" to "http://host.docker.internal:6969/azure/jwks",
             "IVERKSETT_SCOPE" to "localhost",
-            "IVERKSETT_URL" to "http://localhost:8089",
+            "IVERKSETT_URL" to "http://localhost:8091",
         ),
     )
 
@@ -77,6 +77,8 @@ object Configuration {
     private val composeProperties = ConfigurationMap(
         mapOf(
             "logback.configurationFile" to "logback.local.xml",
+            "IVERKSETT_SCOPE" to System.getenv("IVERKSETT_SCOPE"),
+            "IVERKSETT_URL" to System.getenv("IVERKSETT_URL"),
         ),
     )
 

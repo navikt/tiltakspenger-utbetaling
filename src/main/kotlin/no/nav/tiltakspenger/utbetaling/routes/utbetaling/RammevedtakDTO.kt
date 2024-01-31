@@ -10,13 +10,14 @@ data class RammevedtakDTO(
     val personIdent: String,
     val fom: LocalDate,
     val tom: LocalDate,
-    val iverksettingResultat: IverksettingResultat,
+    val vedtakUtfall: VedtakUtfall,
     val vedtaktidspunkt: LocalDateTime,
     val saksbehandler: String,
     val beslutter: String,
 )
 
-enum class IverksettingResultat {
+enum class VedtakUtfall {
     INNVILGET,
     AVSLÅTT,
+    OPPHØRT,
 }

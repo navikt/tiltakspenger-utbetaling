@@ -1,6 +1,5 @@
 package no.nav.tiltakspenger.utbetaling.routes.utbetaling
 
-import io.ktor.http.HttpStatusCode
 import io.ktor.server.application.call
 import io.ktor.server.request.receive
 import io.ktor.server.response.respond
@@ -25,7 +24,7 @@ fun Route.utbetaling(utbetalingService: UtbetalingService) {
         val rammevedtak = mapRammevedtak(rammevedtakDTO)
         val response = utbetalingService.mottaRammevedtakOgSendTilIverksett(rammevedtak)
 
-        call.respond(status = HttpStatusCode.OK, response)
+        call.respond(status = response.statusCode, response.melding)
     }
 }
 
@@ -37,9 +36,10 @@ private fun mapRammevedtak(dto: RammevedtakDTO) = Rammevedtak(
     personIdent = dto.personIdent,
     fom = dto.fom,
     tom = dto.tom,
-    iverksettingResultat = when (dto.iverksettingResultat) {
-        IverksettingResultat.INNVILGET -> no.nav.tiltakspenger.utbetaling.domene.IverksettingResultat.INNVILGET
-        IverksettingResultat.AVSLÅTT -> no.nav.tiltakspenger.utbetaling.domene.IverksettingResultat.AVSLÅTT
+    vedtakUtfall = when (dto.vedtakUtfall) {
+        VedtakUtfall.INNVILGET -> no.nav.tiltakspenger.utbetaling.domene.VedtakUtfall.INNVILGET
+        VedtakUtfall.AVSLÅTT -> no.nav.tiltakspenger.utbetaling.domene.VedtakUtfall.AVSLÅTT
+        VedtakUtfall.OPPHØRT -> no.nav.tiltakspenger.utbetaling.domene.VedtakUtfall.OPPHØRT
     },
     vedtakstidspunkt = dto.vedtaktidspunkt,
     saksbehandler = dto.saksbehandler,

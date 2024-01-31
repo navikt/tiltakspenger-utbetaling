@@ -8,7 +8,6 @@ import io.ktor.client.request.bearerAuth
 import io.ktor.client.request.header
 import io.ktor.client.request.post
 import io.ktor.client.request.setBody
-import io.ktor.client.utils.EmptyContent.contentType
 import io.ktor.http.ContentType
 import io.ktor.http.HttpStatusCode
 import io.ktor.http.contentType
@@ -34,7 +33,11 @@ class IverksettKlient(
         const val navCallIdHeader = "tiltakspenger-utbetaling"
     }
 
-    override suspend fun iverksett(iverksettDto: IverksettDto): String {
+    data class Response(
+        val statusCode: HttpStatusCode,
+        val melding: String,
+    )
+    override suspend fun iverksett(iverksettDto: IverksettDto): Response {
         try {
             val httpResponse =
                 httpClient.post("${config.baseUrl}/api/iverksetting") {
@@ -48,32 +51,50 @@ class IverksettKlient(
             when (httpResponse.status) {
                 HttpStatusCode.Accepted -> {
                     log.info("Iverksetting er mottat for behandlingId ${iverksettDto.behandlingId}")
-                    return "Iverksetting er mottat for behandlingId ${iverksettDto.behandlingId} ${httpResponse.status}"
+                    return Response(
+                        statusCode = httpResponse.status,
+                        melding = "Iverksetting er mottat for behandlingId ${iverksettDto.behandlingId} ${httpResponse.status}",
+                    )
                 }
 
                 HttpStatusCode.BadRequest -> {
                     log.info("Ugyldig format på iverksetting for behandlingId ${iverksettDto.behandlingId}")
-                    return "Ugyldig format på iverksetting for behandlingId ${iverksettDto.behandlingId} ${httpResponse.status}"
+                    return Response(
+                        statusCode = httpResponse.status,
+                        melding = "Ugyldig format på iverksetting for behandlingId ${iverksettDto.behandlingId} ${httpResponse.status}",
+                    )
                 }
 
                 HttpStatusCode.Forbidden -> {
                     log.info("Ikke autorisert til å starte iverksetting for behandlingId ${iverksettDto.behandlingId}")
-                    return "Ikke autorisert til å starte iverksetting for behandlingId ${iverksettDto.behandlingId} ${httpResponse.status}"
+                    return Response(
+                        statusCode = httpResponse.status,
+                        melding = "Ikke autorisert til å starte iverksetting for behandlingId ${iverksettDto.behandlingId} ${httpResponse.status}",
+                    )
                 }
 
                 HttpStatusCode.Conflict -> {
                     log.info("Iverksetting er i konflikt med tidligere iverksetting for behandlingId ${iverksettDto.behandlingId}")
-                    return "Iverksetting er i konflikt med tidligere iverksetting for behandlingId ${iverksettDto.behandlingId} ${httpResponse.status}"
+                    return Response(
+                        statusCode = httpResponse.status,
+                        melding = "Iverksetting er i konflikt med tidligere iverksetting for behandlingId ${iverksettDto.behandlingId} ${httpResponse.status}",
+                    )
                 }
 
                 else -> {
                     log.error("Kallet til tiltakspenger-iverksett feilet ${httpResponse.status} ${httpResponse.status.description}")
-                    throw RuntimeException("Feil i kallet til iverksett")
+                    return Response(
+                        statusCode = HttpStatusCode.BadRequest,
+                        melding = "Kallet til tiltakspenger-iverksett feilet ${httpResponse.status} ${httpResponse.status.description}",
+                    )
                 }
             }
         } catch (throwable: Throwable) {
             log.warn("Uhåndtert feil mot tiltakspenger-iverksett. Mottat feilmelding ${throwable.message}")
-            return "Uhåndtert feil mot tiltakspenger-iverksett. Mottat feilmelding ${throwable.message}"
+            return Response(
+                statusCode = HttpStatusCode.BadRequest,
+                melding = "Uhåndtert feil mot tiltakspenger-iverksett. Mottat feilmelding ${throwable.message}",
+            )
         }
     }
 }

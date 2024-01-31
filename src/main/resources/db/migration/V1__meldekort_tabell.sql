@@ -21,9 +21,12 @@ create table rammevedtak
 (
     id                   varchar primary key,
     sakId                varchar not null,
+    saksnummer           varchar not null,
     behandlingId         varchar not null,
     personIdent          varchar not null,
-    iverksettingResultat varchar not null,
+    fom                  date not null,
+    tom                  date not null,
+    vedtakUtfall         varchar not null,
     vedtakstidspunkt     timestamp not null,
     saksbehandler        varchar not null,
     beslutter            varchar not null

@@ -5,12 +5,11 @@ import kotliquery.queryOf
 import kotliquery.sessionOf
 import no.nav.tiltakspenger.utbetaling.db.DataSource
 import no.nav.tiltakspenger.utbetaling.domene.BehandlingId
-import no.nav.tiltakspenger.utbetaling.domene.IverksettingResultat
 import no.nav.tiltakspenger.utbetaling.domene.Rammevedtak
 import no.nav.tiltakspenger.utbetaling.domene.RammevedtakId
 import no.nav.tiltakspenger.utbetaling.domene.SakId
+import no.nav.tiltakspenger.utbetaling.domene.VedtakUtfall
 import org.intellij.lang.annotations.Language
-import java.util.*
 
 class RammevedtakRepoImpl() : RammevedtakRepo {
     override fun lagre(rammevedtak: Rammevedtak) {
@@ -22,9 +21,12 @@ class RammevedtakRepoImpl() : RammevedtakRepo {
                         mapOf(
                             "id" to rammevedtak.id.toString(),
                             "sakId" to rammevedtak.sakId.toString(),
+                            "saksnummer" to rammevedtak.saksnummer,
                             "behandlingId" to rammevedtak.behandlingId.toString(),
                             "personIdent" to rammevedtak.personIdent,
-                            "iverksettingResultat" to rammevedtak.iverksettingResultat.name,
+                            "fom" to rammevedtak.fom,
+                            "tom" to rammevedtak.tom,
+                            "vedtakUtfall" to rammevedtak.vedtakUtfall.name,
                             "vedtakstidspunkt" to rammevedtak.vedtakstidspunkt,
                             "saksbehandler" to rammevedtak.saksbehandler,
                             "beslutter" to rammevedtak.beslutter,
@@ -61,7 +63,7 @@ class RammevedtakRepoImpl() : RammevedtakRepo {
             fom = localDate("fom"),
             tom = localDate("tom"),
             saksnummer = string("saksnummer"),
-            iverksettingResultat = IverksettingResultat.valueOf(string("iverksettingResultat")),
+            vedtakUtfall = VedtakUtfall.valueOf(string("vedtakUtfall")),
             vedtakstidspunkt = localDateTime("vedtakstidspunkt"),
             saksbehandler = string("saksbehandler"),
             beslutter = string("beslutter"),
@@ -73,18 +75,24 @@ class RammevedtakRepoImpl() : RammevedtakRepo {
         insert into rammevedtak (
             id,              
             sakId,           
+            saksnummer,           
             behandlingId,    
-            personIdent,     
-            iverksettingResultat,        
+            personIdent, 
+            fom,
+            tom,
+            vedtakUtfall,        
             vedtakstidspunkt,
             saksbehandler,   
             beslutter       
         ) values (
             :id,              
             :sakId,           
+            :saksnummer,           
             :behandlingId,    
-            :personIdent,     
-            :iverksettingResultat,        
+            :personIdent,   
+            :fom,
+            :tom,
+            :vedtakUtfall,        
             :vedtakstidspunkt,
             :saksbehandler,   
             :beslutter
