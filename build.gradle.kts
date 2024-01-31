@@ -13,7 +13,6 @@ val githubPassword: String by project
 plugins {
     application
     kotlin("jvm") version "1.9.22"
-    // id("ca.cutterslade.analyze") version "1.9.1"
     id("com.diffplug.spotless") version "6.23.3"
 }
 
@@ -23,8 +22,6 @@ repositories {
     maven {
         url = uri("https://github-package-registry-mirror.gc.nav.no/cached/maven-release")
     }
-    // Trengs for kulid:
-    maven { url = uri("https://jitpack.io") }
 }
 
 dependencies {
@@ -35,9 +32,8 @@ dependencies {
     implementation("net.logstash.logback:logstash-logback-encoder:7.4")
     implementation("io.github.microutils:kotlin-logging-jvm:3.0.5")
     implementation("org.jetbrains:annotations:24.1.0")
-    // implementation("com.github.navikt:rapids-and-rivers:2022112407251669271100.df879df951cf")
     implementation("com.natpryce:konfig:1.6.10.0")
-    implementation("com.github.guepardoapps:kulid:2.0.0.0")
+    implementation("com.aallam.ulid:ulid-kotlin:1.3.0")
 
     implementation("no.nav.dagpenger.kontrakter:iverksett:$iverksettVersjon")
 

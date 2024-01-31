@@ -11,7 +11,6 @@ import no.nav.tiltakspenger.utbetaling.client.iverksett.IverksettKlient
 import no.nav.tiltakspenger.utbetaling.domene.IverksettingResultat
 import no.nav.tiltakspenger.utbetaling.domene.Rammevedtak
 import no.nav.tiltakspenger.utbetaling.repository.RammevedtakRepo
-import java.util.*
 
 class UtbetalingServiceImpl(
     private val rammevedtakRepo: RammevedtakRepo,
@@ -26,9 +25,9 @@ class UtbetalingServiceImpl(
 
 private fun mapIverksettDTO(rammevedtak: Rammevedtak) =
     IverksettDto(
-        sakId = UUID.randomUUID(), // rammevedtak.sakId.toString(),
+        sakId = rammevedtak.sakId.uuid(),
         saksreferanse = rammevedtak.saksnummer,
-        behandlingId = UUID.randomUUID(), // rammevedtak.behandlingId.toString(),
+        behandlingId = rammevedtak.behandlingId.uuid(),
         personident = Personident(
             verdi = rammevedtak.personIdent,
         ),
