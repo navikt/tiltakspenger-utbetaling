@@ -18,10 +18,10 @@ class UtbetalingServiceImpl(
     private val iverksettKlient: IverksettKlient,
 ) : UtbetalingService {
 
-    override suspend fun mottaRammevedtakOgSendTilIverksett(rammevedtak: Rammevedtak): Response {
-        rammevedtakRepo.lagre(rammevedtak)
-        return iverksettKlient.iverksett(mapIverksettDTO(rammevedtak))
-    }
+    override suspend fun mottaRammevedtakOgSendTilIverksett(rammevedtak: Rammevedtak): Response =
+        iverksettKlient.iverksett(mapIverksettDTO(rammevedtak)).also {
+            if (it.statusCode.value == 202) rammevedtakRepo.lagre(rammevedtak)
+        }
 }
 
 private fun mapIverksettDTO(rammevedtak: Rammevedtak) =
