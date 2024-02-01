@@ -6,6 +6,8 @@ val kotestVersjon = "5.8.0"
 val tokenSupportVersjon = "3.2.0"
 val iverksettVersjon = "2.0_20231222084529_f0d8240"
 val flywayVersjon = "10.6.0"
+val testContainersVersion = "1.19.4"
+val kotlinxCoroutinesVersion = "1.7.3"
 
 val githubUser: String by project
 val githubPassword: String by project
@@ -75,9 +77,16 @@ dependencies {
     testImplementation("io.ktor:ktor-client-mock-jvm:$ktorVersjon")
     testImplementation("io.mockk:mockk-dsl-jvm:$mockkVersjon")
     testImplementation("org.skyscreamer:jsonassert:1.5.1")
+    testImplementation("io.ktor:ktor-server-test-host:$ktorVersjon")
     testImplementation("io.kotest:kotest-assertions-core:$kotestVersjon")
     testImplementation("io.kotest:kotest-assertions-json:$kotestVersjon")
     testImplementation("io.kotest:kotest-extensions:$kotestVersjon")
+    testImplementation("org.testcontainers:testcontainers:$testContainersVersion")
+    testImplementation("org.testcontainers:junit-jupiter:$testContainersVersion")
+    testImplementation("org.testcontainers:postgresql:$testContainersVersion")
+    testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:$kotlinxCoroutinesVersion")
+    // need quarkus-junit-4-mock because of https://github.com/testcontainers/testcontainers-java/issues/970
+    testImplementation("io.quarkus:quarkus-junit4-mock:3.7.0")
 }
 
 configurations.all {
