@@ -61,7 +61,6 @@ internal class UtbetalingRoutesTest {
             val expectedRammevedtak = Rammevedtak(
                 id = capturedRammevedtak.captured.id,
                 sakId = SakId.fromDb("sak_01HGD8E4RY7KSZ1YVVB1NK1XGH"),
-                saksnummer = "saksnummer",
                 behandlingId = BehandlingId.fromDb("beh_01HGD8E4RYT11M0P0AX99F05X8"),
                 personIdent = "12345678901",
                 fom = LocalDate.of(2024, 1, 1),

@@ -21,7 +21,6 @@ class RammevedtakRepoImpl() : RammevedtakRepo {
                         mapOf(
                             "id" to rammevedtak.id.toString(),
                             "sakId" to rammevedtak.sakId.toString(),
-                            "saksnummer" to rammevedtak.saksnummer,
                             "behandlingId" to rammevedtak.behandlingId.toString(),
                             "personIdent" to rammevedtak.personIdent,
                             "fom" to rammevedtak.fom,
@@ -62,7 +61,6 @@ class RammevedtakRepoImpl() : RammevedtakRepo {
             personIdent = string("personIdent"),
             fom = localDate("fom"),
             tom = localDate("tom"),
-            saksnummer = string("saksnummer"),
             vedtakUtfall = VedtakUtfall.valueOf(string("vedtakUtfall")),
             vedtakstidspunkt = localDateTime("vedtakstidspunkt"),
             saksbehandler = string("saksbehandler"),
@@ -75,7 +73,6 @@ class RammevedtakRepoImpl() : RammevedtakRepo {
         insert into rammevedtak (
             id,              
             sakId,           
-            saksnummer,           
             behandlingId,    
             personIdent, 
             fom,
@@ -86,8 +83,7 @@ class RammevedtakRepoImpl() : RammevedtakRepo {
             beslutter       
         ) values (
             :id,              
-            :sakId,           
-            :saksnummer,           
+            :sakId,                   
             :behandlingId,    
             :personIdent,   
             :fom,

@@ -1,16 +1,12 @@
 package no.nav.tiltakspenger.utbetaling.service
 
+import no.nav.dagpenger.kontrakter.felles.GeneriskIdSomUUID
 import no.nav.dagpenger.kontrakter.felles.Personident
 import no.nav.dagpenger.kontrakter.iverksett.IverksettDto
-import no.nav.dagpenger.kontrakter.iverksett.VedtakType
 import no.nav.dagpenger.kontrakter.iverksett.VedtaksdetaljerDto
-import no.nav.dagpenger.kontrakter.iverksett.VedtaksperiodeDto
-import no.nav.dagpenger.kontrakter.iverksett.VedtaksperiodeType
-import no.nav.dagpenger.kontrakter.iverksett.Vedtaksresultat
 import no.nav.tiltakspenger.utbetaling.client.iverksett.IverksettKlient
 import no.nav.tiltakspenger.utbetaling.client.iverksett.IverksettKlient.Response
 import no.nav.tiltakspenger.utbetaling.domene.Rammevedtak
-import no.nav.tiltakspenger.utbetaling.domene.VedtakUtfall
 import no.nav.tiltakspenger.utbetaling.repository.RammevedtakRepo
 
 class UtbetalingServiceImpl(
@@ -26,31 +22,17 @@ class UtbetalingServiceImpl(
 
 private fun mapIverksettDTO(rammevedtak: Rammevedtak) =
     IverksettDto(
-        sakId = rammevedtak.sakId.uuid(),
-        saksreferanse = rammevedtak.saksnummer,
-        behandlingId = rammevedtak.behandlingId.uuid(),
+        sakId = GeneriskIdSomUUID(rammevedtak.sakId.uuid()),
+        behandlingId = GeneriskIdSomUUID(rammevedtak.behandlingId.uuid()),
         personident = Personident(
             verdi = rammevedtak.personIdent,
         ),
         vedtak = VedtaksdetaljerDto(
-            vedtakstype = VedtakType.RAMMEVEDTAK,
             vedtakstidspunkt = rammevedtak.vedtakstidspunkt,
-            resultat = when (rammevedtak.vedtakUtfall) {
-                VedtakUtfall.INNVILGET -> Vedtaksresultat.INNVILGET
-                VedtakUtfall.AVSLÅTT -> Vedtaksresultat.AVSLÅTT
-                VedtakUtfall.OPPHØRT -> Vedtaksresultat.OPPHØRT
-            },
             saksbehandlerId = rammevedtak.saksbehandler,
             beslutterId = rammevedtak.beslutter,
             brukersNavKontor = null,
             utbetalinger = emptyList(),
-            vedtaksperioder = listOf(
-                VedtaksperiodeDto(
-                    fraOgMedDato = rammevedtak.fom,
-                    tilOgMedDato = rammevedtak.tom,
-                    periodeType = VedtaksperiodeType.HOVEDPERIODE,
-                ),
-            ),
         ),
         forrigeIverksetting = null,
     )

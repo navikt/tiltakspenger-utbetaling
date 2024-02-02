@@ -31,7 +31,6 @@ fun Route.utbetaling(utbetalingService: UtbetalingService) {
 private fun mapRammevedtak(dto: RammevedtakDTO) = Rammevedtak(
     id = RammevedtakId.random(),
     sakId = SakId.fromDb(dto.sakId),
-    saksnummer = dto.saksnummer,
     behandlingId = BehandlingId.fromDb(dto.behandlingId),
     personIdent = dto.personIdent,
     fom = dto.fom,

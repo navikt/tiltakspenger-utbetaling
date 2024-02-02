@@ -21,7 +21,6 @@ create table rammevedtak
 (
     id                   varchar primary key,
     sakId                varchar not null,
-    saksnummer           varchar not null,
     behandlingId         varchar not null,
     personIdent          varchar not null,
     fom                  date not null,

@@ -34,7 +34,6 @@ internal class RammevedtakTest {
         val rammevedtak = Rammevedtak(
             id = rammevedtakId,
             sakId = SakId.random(),
-            saksnummer = "saksnummer",
             behandlingId = BehandlingId.random(),
             personIdent = "12345678901",
             fom = LocalDate.of(2024, 1, 1),
