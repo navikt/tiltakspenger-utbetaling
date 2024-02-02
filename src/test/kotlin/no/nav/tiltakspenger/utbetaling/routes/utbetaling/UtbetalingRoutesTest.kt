@@ -78,7 +78,6 @@ internal class UtbetalingRoutesTest {
     private val rammevedtakJson = """
         {
             "sakId": "sak_01HGD8E4RY7KSZ1YVVB1NK1XGH",
-            "saksnummer": "saksnummer",
             "behandlingId": "beh_01HGD8E4RYT11M0P0AX99F05X8",
             "personIdent": "12345678901",
             "fom": "2024-01-01",

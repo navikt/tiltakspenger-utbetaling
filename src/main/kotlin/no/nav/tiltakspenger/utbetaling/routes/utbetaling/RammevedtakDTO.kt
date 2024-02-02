@@ -5,7 +5,6 @@ import java.time.LocalDateTime
 
 data class RammevedtakDTO(
     val sakId: String,
-    val saksnummer: String,
     val behandlingId: String,
     val personIdent: String,
     val fom: LocalDate,
