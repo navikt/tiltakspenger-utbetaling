@@ -27,6 +27,15 @@ spec:
     pool: {{ kafka.pool }}
   secureLogs:
     enabled: true
+  gcp:
+    sqlInstances:
+      - name: tiltakspenger-utbetaling
+        type: POSTGRES_15
+        diskAutoresize: {{ sqlInstances.diskAutoresize }}
+        pointInTimeRecovery: {{ sqlInstances.pointInTimeRecovery }}
+        databases:
+          - name: utbetaling
+            envVarPrefix: DB
   accessPolicy:
     inbound:
       rules:

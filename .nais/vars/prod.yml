@@ -1,2 +1,5 @@
 kafka:
   pool: nav-prod
+sqlInstances:
+  diskAutoresize: true
+  pointInTimeRecovery: true

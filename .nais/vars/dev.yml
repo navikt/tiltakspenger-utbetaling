@@ -1,4 +1,7 @@
 kafka:
   pool: nav-dev
+sqlInstances:
+  diskAutoresize: false
+  pointInTimeRecovery: false
 ingress:
   url: https://tiltakspenger-utbetaling.intern.dev.nav.no
