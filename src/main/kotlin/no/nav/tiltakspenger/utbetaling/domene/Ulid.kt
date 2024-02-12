@@ -40,14 +40,14 @@ data class UlidBase(private val stringValue: String) : Ulid {
     override fun compareTo(other: Ulid) = this.toString().compareTo(other.toString())
 }
 
-data class RammevedtakId private constructor(private val ulid: UlidBase) : Ulid by ulid {
+data class VedtakId private constructor(private val ulid: UlidBase) : Ulid by ulid {
     companion object {
-        private const val PREFIX = "ram"
-        fun random() = RammevedtakId(ulid = UlidBase("${PREFIX}_${ULID.randomULID()}"))
+        private const val PREFIX = "ved"
+        fun random() = VedtakId(ulid = UlidBase("${PREFIX}_${ULID.randomULID()}"))
 
-        fun fromDb(stringValue: String) = RammevedtakId(ulid = UlidBase(stringValue))
+        fun fromDb(stringValue: String) = VedtakId(ulid = UlidBase(stringValue))
 
-        fun fromUUID(uuid: UUID) = RammevedtakId(ulid = UlidBase("${PREFIX}_${uuidToUlid(uuid)}"))
+        fun fromUUID(uuid: UUID) = VedtakId(ulid = UlidBase("${PREFIX}_${uuidToUlid(uuid)}"))
     }
 }
 

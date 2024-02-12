@@ -65,9 +65,9 @@ internal class UlidTest {
     @Test
     fun `test compareTo av ULID`() {
         repeat(100) {
-            val førsteId = RammevedtakId.random()
+            val førsteId = VedtakId.random()
             sleep(1)
-            val andreId = RammevedtakId.random()
+            val andreId = VedtakId.random()
 
             andreId shouldBeGreaterThan førsteId
         }

@@ -17,38 +17,30 @@ $$
     END
 $$;
 
-create table rammevedtak
+create table vedtak
 (
     id                   varchar primary key,
     sakId                varchar not null,
-    behandlingId         varchar not null,
-    personIdent          varchar not null,
+    gjeldendeVedtakId    varchar not null,
+    ident                varchar not null,
     fom                  date not null,
     tom                  date not null,
-    vedtakUtfall         varchar not null,
+    antallBarn           int not null,
+    brukerNavkontor      varchar not null,
     vedtakstidspunkt     timestamp not null,
     saksbehandler        varchar not null,
-    beslutter            varchar not null
+    beslutter            varchar not null,
+    forrigeVedtakId      varchar null references vedtak(id)
 );
 
-create table utbetalingsvedtak
+create table utbetalingsperioder
 (
     id                   varchar primary key,
-    rammevedtakId        varchar not null references rammevedtak(id),
-    behandlingId         varchar not null,
+    vedtakId             varchar not null references vedtak(id),
     meldekortId          varchar not null,
-    resultat             varchar not null,
-    vedtakstidspunkt     timestamp not null,
-    saksbehandler        varchar not null,
-    beslutter            varchar not null
-);
-
-create table utbetalingslinje
-(
-    id                   varchar primary key,
-    utbetalingsvedtak    varchar not null references utbetalingsvedtak(id),
     beløp                numeric not null,
+    utfall               varchar not null,
     fom                  date not null,
     tom                  date not null,
-    stønaddstype         varchar not null
+    tiltakskode          varchar not null
 );

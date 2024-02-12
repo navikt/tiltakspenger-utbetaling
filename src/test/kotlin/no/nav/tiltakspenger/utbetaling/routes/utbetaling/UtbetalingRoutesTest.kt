@@ -14,10 +14,8 @@ import io.mockk.coEvery
 import io.mockk.mockk
 import io.mockk.slot
 import no.nav.tiltakspenger.utbetaling.client.iverksett.IverksettKlient
-import no.nav.tiltakspenger.utbetaling.domene.BehandlingId
-import no.nav.tiltakspenger.utbetaling.domene.Rammevedtak
 import no.nav.tiltakspenger.utbetaling.domene.SakId
-import no.nav.tiltakspenger.utbetaling.domene.VedtakUtfall
+import no.nav.tiltakspenger.utbetaling.domene.Vedtak
 import no.nav.tiltakspenger.utbetaling.jacksonSerialization
 import no.nav.tiltakspenger.utbetaling.routes.defaultRequest
 import no.nav.tiltakspenger.utbetaling.service.UtbetalingServiceImpl
@@ -34,8 +32,8 @@ internal class UtbetalingRoutesTest {
             statusCode = HttpStatusCode.OK,
             melding = "ok",
         )
-        val capturedRammevedtak = slot<Rammevedtak>()
-        coEvery { utbetalingServiceMock.mottaRammevedtakOgSendTilIverksett(capture(capturedRammevedtak)) } returns okResponse
+        val capturedVedtak = slot<Vedtak>()
+        coEvery { utbetalingServiceMock.mottaRammevedtakOgSendTilIverksett(capture(capturedVedtak)) } returns okResponse
         testApplication {
             application {
                 jacksonSerialization()
@@ -58,31 +56,35 @@ internal class UtbetalingRoutesTest {
             respons.status shouldBe HttpStatusCode.OK
             respons.bodyAsText() shouldBe "ok"
 
-            val expectedRammevedtak = Rammevedtak(
-                id = capturedRammevedtak.captured.id,
+            val expectedVedtak = Vedtak(
+                id = capturedVedtak.captured.id,
                 sakId = SakId.fromDb("sak_01HGD8E4RY7KSZ1YVVB1NK1XGH"),
-                behandlingId = BehandlingId.fromDb("beh_01HGD8E4RYT11M0P0AX99F05X8"),
-                personIdent = "12345678901",
+                gjeldendeVedtakId = "ved_01HGD8E4RYT11M0P0AX99F05X8",
+                ident = "12345678901",
                 fom = LocalDate.of(2024, 1, 1),
                 tom = LocalDate.of(2024, 3, 1),
-                vedtakUtfall = VedtakUtfall.INNVILGET,
+                antallBarn = 0,
+                brukerNavkontor = "0219",
                 vedtakstidspunkt = LocalDateTime.of(2024, 1, 24, 14, 35, 47),
                 saksbehandler = "saksbehandler",
                 beslutter = "beslutter",
+                utbetalinger = emptyList(),
+                forrigeVedtak = null,
             )
 
-            capturedRammevedtak.captured shouldBe expectedRammevedtak
+            capturedVedtak.captured shouldBe expectedVedtak
         }
     }
 
     private val rammevedtakJson = """
         {
             "sakId": "sak_01HGD8E4RY7KSZ1YVVB1NK1XGH",
-            "behandlingId": "beh_01HGD8E4RYT11M0P0AX99F05X8",
-            "personIdent": "12345678901",
+            "gjeldendeVedtakId": "ved_01HGD8E4RYT11M0P0AX99F05X8",
+            "ident": "12345678901",
             "fom": "2024-01-01",
             "tom": "2024-03-01",
-            "vedtakUtfall": "INNVILGET",
+            "antallBarn": 0,
+            "brukerNavkontor": "0219",
             "vedtaktidspunkt": "2024-01-24T14:35:47",
             "saksbehandler": "saksbehandler",
             "beslutter": "beslutter"
