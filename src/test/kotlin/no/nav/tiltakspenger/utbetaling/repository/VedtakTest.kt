@@ -4,13 +4,19 @@ import io.kotest.matchers.shouldBe
 import no.nav.tiltakspenger.utbetaling.db.PostgresTestcontainer
 import no.nav.tiltakspenger.utbetaling.db.flywayCleanAndMigrate
 import no.nav.tiltakspenger.utbetaling.domene.SakId
+import no.nav.tiltakspenger.utbetaling.domene.TiltakType
+import no.nav.tiltakspenger.utbetaling.domene.UtbetalingDag
+import no.nav.tiltakspenger.utbetaling.domene.UtbetalingDagStatus
 import no.nav.tiltakspenger.utbetaling.domene.Vedtak
 import no.nav.tiltakspenger.utbetaling.domene.VedtakId
+import no.nav.tiltakspenger.utbetaling.service.januar
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.testcontainers.junit.jupiter.Testcontainers
+import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.temporal.ChronoUnit
+import java.util.*
 
 @Testcontainers
 internal class VedtakTest {
@@ -27,25 +33,63 @@ internal class VedtakTest {
     }
 
     @Test
-    fun `lagre og hente et rammevedtak`() {
-        val vedtakId = VedtakId.random()
-        val vedtak = Vedtak(
-            id = vedtakId,
-            sakId = SakId.random(),
-            utløsendeId = "vedtakIdFraVedtak",
-            ident = "12345678901",
-            antallBarn = 0,
-            brukerNavkontor = "0219",
-            vedtakstidspunkt = LocalDateTime.now().truncatedTo(ChronoUnit.MILLIS),
-            saksbehandler = "saksbehandler",
-            beslutter = "beslutter",
-            utbetalinger = emptyList(),
-            forrigeVedtak = null,
+    fun `lagre og hente rammevedtak og utbetlingvedtak`() {
+        val vedtakId1 = VedtakId.random()
+        val vedtakId2 = VedtakId.random()
+        val meldekortId1 = UUID.randomUUID()
+        val meldekortId2 = UUID.randomUUID()
+
+        val utbetalinger = listOf(
+            lagUtbetalingDag(1.januar(), meldekortId1 = meldekortId1, løpenr = 1),
+            lagUtbetalingDag(2.januar(), meldekortId1 = meldekortId1, løpenr = 1),
+            lagUtbetalingDag(3.januar(), meldekortId1 = meldekortId1, løpenr = 1),
+            lagUtbetalingDag(4.januar(), meldekortId1 = meldekortId2, løpenr = 2),
+            lagUtbetalingDag(5.januar(), meldekortId1 = meldekortId2, løpenr = 2),
+            lagUtbetalingDag(6.januar(), meldekortId1 = meldekortId2, løpenr = 2),
         )
-        vedtakRepo.lagre(vedtak)
+        val vedtak1 = lagVedtak(vedtakId = vedtakId1)
+        val vedtak2 = lagVedtak(vedtakId = vedtakId2, utbetalinger = utbetalinger, forrigeVedtakId = vedtakId1)
 
-        val hentetRammevedtak = vedtakRepo.hentVedtak(vedtakId)
+        vedtakRepo.lagre(vedtak1)
+        vedtakRepo.lagre(vedtak2)
 
-        hentetRammevedtak shouldBe vedtak
+        val hentetVedtak1 = vedtakRepo.hentVedtak(vedtakId1)
+        val hentetVedtak2 = vedtakRepo.hentVedtak(vedtakId2)
+
+        hentetVedtak1 shouldBe vedtak1
+        hentetVedtak2 shouldBe vedtak2
     }
 }
+
+private fun lagUtbetalingDag(
+    dato: LocalDate,
+    tiltaktype: TiltakType = TiltakType.ENKELTAMO,
+    status: UtbetalingDagStatus = UtbetalingDagStatus.FullUtbetaling,
+    meldekortId1: UUID = UUID.randomUUID(),
+    løpenr: Int = 1,
+) =
+    UtbetalingDag(
+        dato = dato,
+        tiltaktype = tiltaktype,
+        status = status,
+        meldekortId = meldekortId1,
+        løpenr = løpenr,
+    )
+private fun lagVedtak(
+    vedtakId: VedtakId = VedtakId.random(),
+    antallBarn: Int = 0,
+    utbetalinger: List<UtbetalingDag> = emptyList(),
+    forrigeVedtakId: VedtakId? = null,
+) = Vedtak(
+    id = vedtakId,
+    sakId = SakId.random(),
+    utløsendeId = "vedtakIdFraVedtak",
+    ident = "12345678901",
+    antallBarn = antallBarn,
+    brukerNavkontor = "0219",
+    vedtakstidspunkt = LocalDateTime.now().truncatedTo(ChronoUnit.MILLIS),
+    saksbehandler = "saksbehandler",
+    beslutter = "beslutter",
+    utbetalinger = utbetalinger,
+    forrigeVedtak = forrigeVedtakId,
+)

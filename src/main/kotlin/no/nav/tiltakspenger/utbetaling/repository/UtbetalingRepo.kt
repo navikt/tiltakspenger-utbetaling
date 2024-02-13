@@ -1,8 +1,11 @@
 package no.nav.tiltakspenger.utbetaling.repository
 
+import kotliquery.Row
 import kotliquery.TransactionalSession
 import kotliquery.queryOf
+import no.nav.tiltakspenger.utbetaling.domene.TiltakType
 import no.nav.tiltakspenger.utbetaling.domene.UtbetalingDag
+import no.nav.tiltakspenger.utbetaling.domene.UtbetalingDagStatus
 import no.nav.tiltakspenger.utbetaling.domene.VedtakId
 import org.intellij.lang.annotations.Language
 import java.util.UUID
@@ -39,15 +42,43 @@ class UtbetalingRepo() {
                     "meldekortId" to utbetalingDag.meldekortId.toString(),
                     "dato" to utbetalingDag.dato,
                     "status" to utbetalingDag.status.name,
-                    "tiltakstype" to utbetalingDag.tiltaktype.name,
+                    "tiltaktype" to utbetalingDag.tiltaktype.name,
                 ),
             ).asUpdate,
         )
     }
 
-    fun hentDagerForVedtak(vedtak: VedtakId, tx: TransactionalSession): List<UtbetalingDag> {
-        return emptyList()
+    fun hentDagerForVedtak(vedtakId: VedtakId, tx: TransactionalSession): List<UtbetalingDag> {
+        return tx.run(
+            queryOf(
+                sqlHentDager,
+                mapOf(
+                    "vedtakId" to vedtakId.toString(),
+                ),
+            ).map { row ->
+                row.toDag()
+            }.asList,
+        )
     }
+
+    private fun Row.toDag() = UtbetalingDag(
+        dato = localDate("dato"),
+        tiltaktype = TiltakType.valueOf(string("tiltaktype")),
+        status = UtbetalingDagStatus.valueOf(string("status")),
+        meldekortId = UUID.fromString(string("meldekortId")),
+        løpenr = int("løpenr"),
+    )
+
+    @Language("PostgreSQL")
+    private val sqlHentDager = """
+        select u.*, p.løpenr 
+          from utbetalingdag u 
+          
+          inner join meldekortPeriode p
+            on p.meldekortId = u.meldekortId
+            
+         where p.vedtakId = :vedtakId
+    """.trimIndent()
 
     @Language("PostgreSQL")
     private val sqlLagreMeldekortPeriode = """
