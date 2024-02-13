@@ -13,6 +13,8 @@ import no.nav.tiltakspenger.utbetaling.client.iverksett.IverksettKlient
 import no.nav.tiltakspenger.utbetaling.client.iverksett.IverksettKlient.Response
 import no.nav.tiltakspenger.utbetaling.domene.TiltakType
 import no.nav.tiltakspenger.utbetaling.domene.Utbetaling
+import no.nav.tiltakspenger.utbetaling.domene.UtbetalingDag
+import no.nav.tiltakspenger.utbetaling.domene.UtbetalingDagStatus
 import no.nav.tiltakspenger.utbetaling.domene.Vedtak
 import no.nav.tiltakspenger.utbetaling.repository.VedtakRepo
 import java.time.LocalDate
@@ -42,7 +44,7 @@ class UtbetalingServiceImpl(
     }
 }
 
-private fun mapIverksettDTOmedUtbetalinger(vedtak: Vedtak, utbetaling: Utbetaling) =
+fun mapIverksettDTOmedUtbetalinger(vedtak: Vedtak, utbetaling: Utbetaling) =
     IverksettDto(
         sakId = GeneriskIdSomUUID(vedtak.sakId.uuid()),
         behandlingId = GeneriskIdSomUUID(vedtak.id.uuid()),
@@ -57,33 +59,17 @@ private fun mapIverksettDTOmedUtbetalinger(vedtak: Vedtak, utbetaling: Utbetalin
                 enhet = vedtak.brukerNavkontor,
                 gjelderFom = LocalDate.of(2024, 1, 1), // finne ut hva vi setter denne til
             ),
-            utbetalinger = utbetaling.utbetalingDager.map { dag ->
+            utbetalinger = utbetaling.utbetalingDager.sortedBy { it.dato }.map { dag ->
                 UtbetalingDto(
-                    beløpPerDag = SATS,
+                    beløpPerDag = dag.mapSats(),
                     fraOgMedDato = dag.dato,
                     tilOgMedDato = dag.dato,
                     stønadsdata = StønadsdataTiltakspengerDto(
-                        stønadstype = when (dag.tiltaktype) {
-                            TiltakType.GRUPPEAMO -> StønadTypeTiltakspenger.GRUPPE_AMO
-                            TiltakType.ENKELTAMO -> StønadTypeTiltakspenger.ENKELTPLASS_AMO
-                        },
+                        stønadstype = dag.mapStønadstype(),
                         barnetillegg = false,
                     ),
                 )
-            } + utbetaling.utbetalingDager.map { dag ->
-                UtbetalingDto(
-                    beløpPerDag = BARNETILLEGG_SATS,
-                    fraOgMedDato = dag.dato,
-                    tilOgMedDato = dag.dato,
-                    stønadsdata = StønadsdataTiltakspengerDto(
-                        stønadstype = when (dag.tiltaktype) {
-                            TiltakType.GRUPPEAMO -> StønadTypeTiltakspenger.GRUPPE_AMO
-                            TiltakType.ENKELTAMO -> StønadTypeTiltakspenger.ENKELTPLASS_AMO
-                        },
-                        barnetillegg = true,
-                    ),
-                )
-            },
+            }.lagBarnetillegg(vedtak.antallBarn).fold(emptyList()) { acc, utbetalingDto -> acc.slåSammen(utbetalingDto) },
         ),
         forrigeIverksetting = ForrigeIverksettingDto(
             behandlingId = GeneriskIdSomUUID(vedtak.id.uuid()),
@@ -111,3 +97,33 @@ private fun mapIverksettDTO(vedtak: Vedtak) =
             behandlingId = GeneriskIdSomUUID(vedtak.id.uuid()),
         ),
     )
+
+private fun List<UtbetalingDto>.lagBarnetillegg(antallBarn: Int): List<UtbetalingDto> =
+    if (antallBarn == 0) {
+        this
+    } else {
+        this + this.map { it.copy(beløpPerDag = BARNETILLEGG_SATS * antallBarn) }
+    }
+
+private fun List<UtbetalingDto>.slåSammen(neste: UtbetalingDto): List<UtbetalingDto> {
+    if (this.isEmpty()) return listOf(neste)
+    val forrige = this.last()
+    if (forrige.beløpPerDag == neste.beløpPerDag && forrige.stønadsdata.stønadstype == neste.stønadsdata.stønadstype) {
+        return this.dropLast(1) + forrige.copy(
+            tilOgMedDato = neste.tilOgMedDato,
+        )
+    } else {
+        return this + neste
+    }
+}
+
+private fun UtbetalingDag.mapSats(): Int = when (this.status) {
+    UtbetalingDagStatus.FullUtbetaling -> SATS
+    UtbetalingDagStatus.DelvisUtbetaling -> REDUSERT_SATS
+    UtbetalingDagStatus.IngenUtbetaling -> 0
+}
+
+private fun UtbetalingDag.mapStønadstype(): StønadTypeTiltakspenger = when (this.tiltaktype) {
+    TiltakType.GRUPPEAMO -> StønadTypeTiltakspenger.GRUPPE_AMO
+    TiltakType.ENKELTAMO -> StønadTypeTiltakspenger.ENKELTPLASS_AMO
+}

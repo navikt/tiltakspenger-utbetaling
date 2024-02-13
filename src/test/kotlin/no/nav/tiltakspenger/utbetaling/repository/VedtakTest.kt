@@ -10,6 +10,7 @@ import no.nav.tiltakspenger.utbetaling.db.flywayCleanAndMigrate
 import no.nav.tiltakspenger.utbetaling.domene.SakId
 import no.nav.tiltakspenger.utbetaling.domene.TiltakType.ENKELTAMO
 import no.nav.tiltakspenger.utbetaling.domene.TiltakType.GRUPPEAMO
+import no.nav.tiltakspenger.utbetaling.domene.Utbetaling
 import no.nav.tiltakspenger.utbetaling.domene.UtbetalingDag
 import no.nav.tiltakspenger.utbetaling.domene.UtbetalingDagStatus.DelvisUtbetaling
 import no.nav.tiltakspenger.utbetaling.domene.UtbetalingDagStatus.FullUtbetaling
@@ -20,12 +21,14 @@ import no.nav.tiltakspenger.utbetaling.domene.toUtbetalingDto
 import no.nav.tiltakspenger.utbetaling.service.BARNETILLEGG_SATS
 import no.nav.tiltakspenger.utbetaling.service.REDUSERT_SATS
 import no.nav.tiltakspenger.utbetaling.service.SATS
+import no.nav.tiltakspenger.utbetaling.service.mapIverksettDTOmedUtbetalinger
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.testcontainers.junit.jupiter.Testcontainers
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.temporal.ChronoUnit
+import java.util.*
 
 @Testcontainers
 internal class VedtakTest {
@@ -73,7 +76,7 @@ internal class VedtakTest {
             id = vedtakId,
             sakId = SakId.random(),
             gjeldendeVedtakId = "vedtakIdFraVedtak",
-            ident = "12345678901",
+            ident = "12828098533",
             fom = LocalDate.of(2024, 1, 1),
             tom = LocalDate.of(2024, 3, 1),
             antallBarn = 0,
@@ -96,12 +99,12 @@ internal class VedtakTest {
             ),
             forrigeVedtak = null,
         )
-        val dto = vedtak.toUtbetalingDto()
-        dto.forEach {
+        val dto = mapIverksettDTOmedUtbetalinger(vedtak, Utbetaling(vedtak.sakId, UUID.randomUUID(), vedtak.utbetalinger, vedtak.saksbehandler))
+        dto.vedtak.utbetalinger.forEach {
             println(it)
         }
 
-        dto shouldContainExactlyInAnyOrder listOf(
+        dto.vedtak.utbetalinger shouldContainExactlyInAnyOrder listOf(
             UtbetalingDto(beløpPerDag = SATS, fraOgMedDato = 1.januar(), tilOgMedDato = 1.januar(), stønadsdata = enkeltAmoUtenBarn()),
             UtbetalingDto(beløpPerDag = REDUSERT_SATS, fraOgMedDato = 2.januar(), tilOgMedDato = 3.januar(), stønadsdata = enkeltAmoUtenBarn()),
             UtbetalingDto(beløpPerDag = SATS, fraOgMedDato = 4.januar(), tilOgMedDato = 5.januar(), stønadsdata = enkeltAmoUtenBarn()),
