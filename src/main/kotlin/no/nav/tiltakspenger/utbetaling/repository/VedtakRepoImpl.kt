@@ -11,21 +11,19 @@ import no.nav.tiltakspenger.utbetaling.domene.VedtakId
 import org.intellij.lang.annotations.Language
 
 class VedtakRepoImpl(
-    private val utbetalingDagerRepo: UtbetalingDagerRepo = UtbetalingDagerRepo(),
+    private val utbetalingRepo: UtbetalingRepo = UtbetalingRepo(),
 ) : VedtakRepo {
     override fun lagre(vedtak: Vedtak) {
         sessionOf(DataSource.hikariDataSource).use {
-            it.transaction {
-                it.run(
+            it.transaction { tx ->
+                tx.run(
                     queryOf(
                         sqlLagre,
                         mapOf(
                             "id" to vedtak.id.toString(),
                             "sakId" to vedtak.sakId.toString(),
-                            "gjeldendeVedtakId" to vedtak.gjeldendeVedtakId,
+                            "utlosendeId" to vedtak.utløsendeId,
                             "ident" to vedtak.ident,
-                            "fom" to vedtak.fom,
-                            "tom" to vedtak.tom,
                             "antallBarn" to vedtak.antallBarn,
                             "brukerNavnkontor" to vedtak.brukerNavkontor,
                             "vedtakstidspunkt" to vedtak.vedtakstidspunkt,
@@ -34,7 +32,9 @@ class VedtakRepoImpl(
                             "forrigeVedtakId" to vedtak.forrigeVedtak?.toString(),
                         ),
                     ).asUpdate,
-                )
+                ).also {
+                    utbetalingRepo.lagreUtbetalingForVedtak(vedtak.id, vedtak.utbetalinger, tx)
+                }
             }
         }
     }
@@ -78,16 +78,14 @@ class VedtakRepoImpl(
         return Vedtak(
             id = vedtakId,
             sakId = SakId.fromDb(string("sakId")),
-            gjeldendeVedtakId = string("gjeldendeVedtakId"),
+            utløsendeId = string("utløsendeId"),
             ident = string("ident"),
-            fom = localDate("fom"),
-            tom = localDate("tom"),
             antallBarn = int("antallBarn"),
             brukerNavkontor = string("brukerNavkontor"),
             vedtakstidspunkt = localDateTime("vedtakstidspunkt"),
             saksbehandler = string("saksbehandler"),
             beslutter = string("beslutter"),
-            utbetalinger = utbetalingDagerRepo.hentDagerForVedtak(vedtakId, tx),
+            utbetalinger = utbetalingRepo.hentDagerForVedtak(vedtakId, tx),
             forrigeVedtak = stringOrNull("forrigeVedtakId")?.let { VedtakId.fromDb(it) },
         )
     }
@@ -97,10 +95,8 @@ class VedtakRepoImpl(
         insert into vedtak (
             id,              
             sakId,           
-            gjeldendeVedtakId,    
+            utløsendeId,    
             ident, 
-            fom,
-            tom,
             antallBarn,
             brukerNavkontor,  
             vedtakstidspunkt,
@@ -110,10 +106,8 @@ class VedtakRepoImpl(
         ) values (
             :id,              
             :sakId,                   
-            :gjeldendeVedtakId,    
+            :utlosendeId,    
             :ident,   
-            :fom,
-            :tom,
             :antallBarn,
             :brukerNavnkontor,    
             :vedtakstidspunkt,

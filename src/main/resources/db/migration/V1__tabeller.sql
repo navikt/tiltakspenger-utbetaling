@@ -21,10 +21,8 @@ create table vedtak
 (
     id                   varchar primary key,
     sakId                varchar not null,
-    gjeldendeVedtakId    varchar not null,
+    utløsendeId          varchar not null,
     ident                varchar not null,
-    fom                  date not null,
-    tom                  date not null,
     antallBarn           int not null,
     brukerNavkontor      varchar not null,
     vedtakstidspunkt     timestamp not null,
@@ -33,14 +31,18 @@ create table vedtak
     forrigeVedtakId      varchar null references vedtak(id)
 );
 
-create table utbetalingsperioder
+create table meldekortPeriode
 (
-    id                   varchar primary key,
+    meldekortId          varchar primary key,
     vedtakId             varchar not null references vedtak(id),
-    meldekortId          varchar not null,
-    beløp                numeric not null,
-    utfall               varchar not null,
-    fom                  date not null,
-    tom                  date not null,
-    tiltakskode          varchar not null
+    løpenr               int not null
+);
+
+create table utbetalingdag
+(
+    meldekortId          varchar not null references meldekortPeriode(meldekortId),
+    dato                 date not null,
+    status               varchar not null,
+    tiltaktype           varchar not null,
+    primary key (meldekortId, dato)
 );

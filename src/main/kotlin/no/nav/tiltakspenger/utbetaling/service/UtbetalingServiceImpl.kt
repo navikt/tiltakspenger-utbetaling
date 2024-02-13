@@ -16,13 +16,14 @@ import no.nav.tiltakspenger.utbetaling.domene.Utbetaling
 import no.nav.tiltakspenger.utbetaling.domene.UtbetalingDag
 import no.nav.tiltakspenger.utbetaling.domene.UtbetalingDagStatus
 import no.nav.tiltakspenger.utbetaling.domene.Vedtak
+import no.nav.tiltakspenger.utbetaling.domene.nyttVedtak
 import no.nav.tiltakspenger.utbetaling.repository.VedtakRepo
 import java.time.LocalDate
 
 const val SATS = 285
 const val REDUSERT_SATS = 214
 const val BARNETILLEGG_SATS = 55
-const val REDUSERT_BARNETILLEGG_SATS = 214
+const val REDUSERT_BARNETILLEGG_SATS = 42
 
 class UtbetalingServiceImpl(
     private val vedtakRepo: VedtakRepo,
@@ -38,13 +39,19 @@ class UtbetalingServiceImpl(
         val forrigeVedtak = vedtakRepo.hentForrigeUtbetalingVedtak(utbetaling.sakId)
         checkNotNull(forrigeVedtak) { "Fant ikke forrige utbetalingvedtak" }
 
-        return iverksettKlient.iverksett(mapIverksettDTOmedUtbetalinger(forrigeVedtak, utbetaling)).also {
-            if (it.statusCode.value == 202) vedtakRepo.lagre(forrigeVedtak)
+        val vedtak = forrigeVedtak.nyttVedtak(
+            saksbehandler = utbetaling.saksbehandler,
+            utløsendeId = utbetaling.utløsendeMeldekortId,
+            utbetalinger = utbetaling.utbetalingDager,
+        )
+
+        return iverksettKlient.iverksett(mapIverksettDTO(vedtak)).also {
+            if (it.statusCode.value == 202) vedtakRepo.lagre(vedtak)
         }
     }
 }
 
-fun mapIverksettDTOmedUtbetalinger(vedtak: Vedtak, utbetaling: Utbetaling) =
+fun mapIverksettDTO(vedtak: Vedtak) =
     IverksettDto(
         sakId = GeneriskIdSomUUID(vedtak.sakId.uuid()),
         behandlingId = GeneriskIdSomUUID(vedtak.id.uuid()),
@@ -53,73 +60,81 @@ fun mapIverksettDTOmedUtbetalinger(vedtak: Vedtak, utbetaling: Utbetaling) =
         ),
         vedtak = VedtaksdetaljerDto(
             vedtakstidspunkt = vedtak.vedtakstidspunkt, // tidspunkt fra meldekortbehanling
-            saksbehandlerId = utbetaling.saksbehandler,
-            beslutterId = utbetaling.saksbehandler,
+            saksbehandlerId = vedtak.saksbehandler,
+            beslutterId = vedtak.saksbehandler,
             brukersNavKontor = BrukersNavKontor(
                 enhet = vedtak.brukerNavkontor,
                 gjelderFom = LocalDate.of(2024, 1, 1), // finne ut hva vi setter denne til
             ),
-            utbetalinger = utbetaling.utbetalingDager.sortedBy { it.dato }.map { dag ->
-                UtbetalingDto(
-                    beløpPerDag = dag.mapSats(),
-                    fraOgMedDato = dag.dato,
-                    tilOgMedDato = dag.dato,
-                    stønadsdata = StønadsdataTiltakspengerDto(
-                        stønadstype = dag.mapStønadstype(),
-                        barnetillegg = false,
-                    ),
-                )
-            }.lagBarnetillegg(vedtak.antallBarn).fold(emptyList()) { acc, utbetalingDto -> acc.slåSammen(utbetalingDto) },
+            utbetalinger = vedtak.utbetalinger
+                .sortedBy { it.dato }
+                .groupBy { it.løpenr }
+                .map { (_, dager) ->
+                    dager
+                        .lagUtbetalingDtoPrDag(vedtak.antallBarn)
+                        .fold(emptyList<UtbetalingDto>()) { periodisertliste, nesteDag ->
+                            periodisertliste.slåSammen(nesteDag)
+                        }
+                }.flatten(),
         ),
-        forrigeIverksetting = ForrigeIverksettingDto(
-            behandlingId = GeneriskIdSomUUID(vedtak.id.uuid()),
-        ),
+        forrigeIverksetting = vedtak.forrigeVedtak?.let {
+            ForrigeIverksettingDto(
+                behandlingId = GeneriskIdSomUUID(it.uuid()),
+            )
+        },
     )
 
-private fun mapIverksettDTO(vedtak: Vedtak) =
-    IverksettDto(
-        sakId = GeneriskIdSomUUID(vedtak.sakId.uuid()),
-        behandlingId = GeneriskIdSomUUID(vedtak.id.uuid()),
-        personident = Personident(
-            verdi = vedtak.ident,
-        ),
-        vedtak = VedtaksdetaljerDto(
-            vedtakstidspunkt = vedtak.vedtakstidspunkt,
-            saksbehandlerId = vedtak.saksbehandler,
-            beslutterId = vedtak.beslutter,
-            brukersNavKontor = BrukersNavKontor(
-                enhet = vedtak.brukerNavkontor,
-                gjelderFom = LocalDate.now(), // hva skal vi sette denne til? Får vi denne fra NORG?
+private fun List<UtbetalingDag>.lagUtbetalingDtoPrDag(antallBarn: Int): List<UtbetalingDto> {
+    val dager = this.map { dag ->
+        UtbetalingDto(
+            beløpPerDag = dag.mapSats(),
+            fraOgMedDato = dag.dato,
+            tilOgMedDato = dag.dato,
+            stønadsdata = StønadsdataTiltakspengerDto(
+                stønadstype = dag.mapStønadstype(),
+                barnetillegg = false,
             ),
-            utbetalinger = emptyList(), //  vedtak.utbetalinger,
-        ),
-        forrigeIverksetting = ForrigeIverksettingDto(
-            behandlingId = GeneriskIdSomUUID(vedtak.id.uuid()),
-        ),
-    )
-
-private fun List<UtbetalingDto>.lagBarnetillegg(antallBarn: Int): List<UtbetalingDto> =
-    if (antallBarn == 0) {
-        this
-    } else {
-        this + this.map { it.copy(beløpPerDag = BARNETILLEGG_SATS * antallBarn) }
+        )
     }
+
+    return if (antallBarn > 0) {
+        dager + this.map { dag ->
+            UtbetalingDto(
+                beløpPerDag = dag.mapBarnetilleggSats(antallBarn),
+                fraOgMedDato = dag.dato,
+                tilOgMedDato = dag.dato,
+                stønadsdata = StønadsdataTiltakspengerDto(
+                    stønadstype = dag.mapStønadstype(),
+                    barnetillegg = true,
+                ),
+            )
+        }
+    } else {
+        dager
+    }
+}
 
 private fun List<UtbetalingDto>.slåSammen(neste: UtbetalingDto): List<UtbetalingDto> {
     if (this.isEmpty()) return listOf(neste)
     val forrige = this.last()
-    if (forrige.beløpPerDag == neste.beløpPerDag && forrige.stønadsdata.stønadstype == neste.stønadsdata.stønadstype) {
-        return this.dropLast(1) + forrige.copy(
+    return if (forrige.beløpPerDag == neste.beløpPerDag && forrige.stønadsdata.stønadstype == neste.stønadsdata.stønadstype) {
+        this.dropLast(1) + forrige.copy(
             tilOgMedDato = neste.tilOgMedDato,
         )
     } else {
-        return this + neste
+        this + neste
     }
 }
 
 private fun UtbetalingDag.mapSats(): Int = when (this.status) {
     UtbetalingDagStatus.FullUtbetaling -> SATS
     UtbetalingDagStatus.DelvisUtbetaling -> REDUSERT_SATS
+    UtbetalingDagStatus.IngenUtbetaling -> 0
+}
+
+private fun UtbetalingDag.mapBarnetilleggSats(antallBarn: Int): Int = when (this.status) {
+    UtbetalingDagStatus.FullUtbetaling -> BARNETILLEGG_SATS * antallBarn
+    UtbetalingDagStatus.DelvisUtbetaling -> REDUSERT_BARNETILLEGG_SATS * antallBarn
     UtbetalingDagStatus.IngenUtbetaling -> 0
 }
 

@@ -20,7 +20,6 @@ import no.nav.tiltakspenger.utbetaling.jacksonSerialization
 import no.nav.tiltakspenger.utbetaling.routes.defaultRequest
 import no.nav.tiltakspenger.utbetaling.service.UtbetalingServiceImpl
 import org.junit.jupiter.api.Test
-import java.time.LocalDate
 import java.time.LocalDateTime
 
 internal class UtbetalingRoutesTest {
@@ -59,10 +58,8 @@ internal class UtbetalingRoutesTest {
             val expectedVedtak = Vedtak(
                 id = capturedVedtak.captured.id,
                 sakId = SakId.fromDb("sak_01HGD8E4RY7KSZ1YVVB1NK1XGH"),
-                gjeldendeVedtakId = "ved_01HGD8E4RYT11M0P0AX99F05X8",
+                utløsendeId = "ved_01HGD8E4RYT11M0P0AX99F05X8",
                 ident = "12345678901",
-                fom = LocalDate.of(2024, 1, 1),
-                tom = LocalDate.of(2024, 3, 1),
                 antallBarn = 0,
                 brukerNavkontor = "0219",
                 vedtakstidspunkt = LocalDateTime.of(2024, 1, 24, 14, 35, 47),
@@ -79,10 +76,8 @@ internal class UtbetalingRoutesTest {
     private val rammevedtakJson = """
         {
             "sakId": "sak_01HGD8E4RY7KSZ1YVVB1NK1XGH",
-            "gjeldendeVedtakId": "ved_01HGD8E4RYT11M0P0AX99F05X8",
+            "utløsendeId": "ved_01HGD8E4RYT11M0P0AX99F05X8",
             "ident": "12345678901",
-            "fom": "2024-01-01",
-            "tom": "2024-03-01",
             "antallBarn": 0,
             "brukerNavkontor": "0219",
             "vedtaktidspunkt": "2024-01-24T14:35:47",

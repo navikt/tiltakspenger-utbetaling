@@ -10,7 +10,7 @@ import java.util.*
 
 data class UtbetalingDTO(
     val sakId: SakId,
-    val utløsendeMeldekortId: UUID,
+    val utløsendeMeldekortId: String,
     val utbetalingDager: List<UtbetalingDagDTO>,
     val saksbehandler: String,
 )
@@ -41,6 +41,8 @@ fun mapUtbetalingVedtak(dto: UtbetalingDTO) = Utbetaling(
                 UtbetalingDagStatusDTO.DelvisUtbetaling -> UtbetalingDagStatus.DelvisUtbetaling
                 UtbetalingDagStatusDTO.IngenUtbetaling -> UtbetalingDagStatus.IngenUtbetaling
             },
+            meldekortId = dag.meldekortId,
+            løpenr = dag.løpenr,
         )
     },
     saksbehandler = dto.saksbehandler,
