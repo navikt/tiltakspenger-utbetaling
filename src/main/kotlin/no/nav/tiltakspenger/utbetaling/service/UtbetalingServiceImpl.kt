@@ -75,7 +75,9 @@ fun mapIverksettDTO(vedtak: Vedtak) =
                         .fold(emptyList<UtbetalingDto>()) { periodisertliste, nesteDag ->
                             periodisertliste.slåSammen(nesteDag)
                         }
-                }.flatten(),
+                }
+                .flatten()
+                .filter { it.beløpPerDag > 0 },
         ),
         forrigeIverksetting = vedtak.forrigeVedtak?.let {
             ForrigeIverksettingDto(
