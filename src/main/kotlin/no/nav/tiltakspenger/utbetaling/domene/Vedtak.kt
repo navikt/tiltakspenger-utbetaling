@@ -23,6 +23,7 @@ fun Vedtak.nyttVedtak(
 ) = this.copy(
     id = VedtakId.random(),
     utløsendeId = utløsendeId,
+    vedtakstidspunkt = LocalDateTime.now(),
     saksbehandler = saksbehandler,
     beslutter = saksbehandler,
     utbetalinger = utbetalinger,
