@@ -64,7 +64,7 @@ fun mapIverksettDTO(vedtak: Vedtak) =
             beslutterId = vedtak.saksbehandler,
             brukersNavKontor = BrukersNavKontor(
                 enhet = vedtak.brukerNavkontor,
-                gjelderFom = LocalDate.of(2024, 1, 1), // finne ut hva vi setter denne til
+                gjelderFom = LocalDate.of(1970, 1, 1), // finne ut hva vi setter denne til
             ),
             utbetalinger = vedtak.utbetalinger
                 .sortedBy { it.dato }
