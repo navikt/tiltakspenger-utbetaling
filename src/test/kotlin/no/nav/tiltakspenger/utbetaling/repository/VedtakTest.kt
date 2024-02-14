@@ -63,7 +63,7 @@ internal class VedtakTest {
 
 private fun lagUtbetalingDag(
     dato: LocalDate,
-    tiltaktype: TiltakType = TiltakType.ENKELTAMO,
+    tiltaktype: TiltakType = TiltakType.ENKELAMO,
     status: UtbetalingDagStatus = UtbetalingDagStatus.FullUtbetaling,
     meldekortId1: UUID = UUID.randomUUID(),
     løpenr: Int = 1,

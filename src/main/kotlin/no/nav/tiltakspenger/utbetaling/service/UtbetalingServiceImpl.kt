@@ -139,6 +139,65 @@ private fun UtbetalingDag.mapBarnetilleggSats(antallBarn: Int): Int = when (this
 }
 
 private fun UtbetalingDag.mapStønadstype(): StønadTypeTiltakspenger = when (this.tiltaktype) {
+    TiltakType.AMBF1 -> TODO()
+    TiltakType.ABOPPF -> TODO()
+    TiltakType.ABUOPPF -> TODO()
+    TiltakType.ABIST -> TODO()
+    TiltakType.ABTBOPPF -> TODO()
+    TiltakType.ARBFORB -> StønadTypeTiltakspenger.ARBEIDSFORBEREDENDE_TRENING
+    TiltakType.AMO -> TODO()
+    TiltakType.AMOE -> TODO()
+    TiltakType.AMOB -> TODO()
+    TiltakType.AMOY -> TODO()
+    TiltakType.PRAKSORD -> TODO()
+    TiltakType.PRAKSKJERM -> TODO()
+    TiltakType.ARBRRHBAG -> TODO()
+    TiltakType.ARBRRHBSM -> TODO()
+    TiltakType.ARBRRHDAG -> StønadTypeTiltakspenger.ARBEIDSRETTET_REHABILITERING
+    TiltakType.ARBRDAGSM -> TODO()
+    TiltakType.ARBRRDOGN -> TODO()
+    TiltakType.ARBDOGNSM -> TODO()
+    TiltakType.ARBTREN -> StønadTypeTiltakspenger.ARBEIDSTRENING
+    TiltakType.AVKLARAG -> StønadTypeTiltakspenger.AVKLARING
+    TiltakType.AVKLARUS -> TODO()
+    TiltakType.AVKLARSP -> TODO()
+    TiltakType.AVKLARKV -> TODO()
+    TiltakType.AVKLARSV -> TODO()
+    TiltakType.DIGIOPPARB -> StønadTypeTiltakspenger.DIGITAL_JOBBKLUBB
+    TiltakType.ENKELAMO -> StønadTypeTiltakspenger.ENKELTPLASS_AMO
+    TiltakType.ENKFAGYRKE -> StønadTypeTiltakspenger.ENKELTPLASS_VGS_OG_HØYERE_YRKESFAG
+    TiltakType.KAT -> TODO()
+    TiltakType.VALS -> TODO()
+    TiltakType.FORSAMOENK -> TODO()
+    TiltakType.FORSFAGENK -> TODO()
+    TiltakType.FORSHOYUTD -> TODO()
+    TiltakType.FUNKSJASS -> TODO()
     TiltakType.GRUPPEAMO -> StønadTypeTiltakspenger.GRUPPE_AMO
-    TiltakType.ENKELTAMO -> StønadTypeTiltakspenger.ENKELTPLASS_AMO
+    TiltakType.GRUFAGYRKE -> StønadTypeTiltakspenger.GRUPPE_VGS_OG_HØYERE_YRKESFAG
+    TiltakType.HOYEREUTD -> StønadTypeTiltakspenger.HØYERE_UTDANNING
+    TiltakType.INDJOBSTOT -> StønadTypeTiltakspenger.INDIVIDUELL_JOBBSTØTTE
+    TiltakType.IPSUNG -> StønadTypeTiltakspenger.INDIVIDUELL_KARRIERESTØTTE_UNG
+    TiltakType.INDOPPFOLG -> TODO()
+    TiltakType.INKLUTILS -> TODO()
+    TiltakType.JOBBKLUBB -> TODO()
+    TiltakType.JOBBFOKUS -> TODO()
+    TiltakType.JOBBK -> StønadTypeTiltakspenger.JOBBKLUBB
+    TiltakType.JOBBBONUS -> TODO()
+    TiltakType.MENTOR -> TODO()
+    TiltakType.NETTAMO -> TODO()
+    TiltakType.INDOPPFAG -> StønadTypeTiltakspenger.OPPFØLGING
+    TiltakType.INDOPPFSP -> TODO()
+    TiltakType.INDOPPRF -> TODO()
+    TiltakType.REFINO -> TODO()
+    TiltakType.SPA -> TODO()
+    TiltakType.SUPPEMP -> TODO()
+    TiltakType.TILPERBED -> TODO()
+    TiltakType.UTDYRK -> TODO()
+    TiltakType.UTBHLETTPS -> TODO()
+    TiltakType.UTBHPSLD -> TODO()
+    TiltakType.UTBHSAMLI -> TODO()
+    TiltakType.UTVAOONAV -> StønadTypeTiltakspenger.UTVIDET_OPPFØLGING_I_NAV
+    TiltakType.UTVOPPFOPL -> StønadTypeTiltakspenger.UTVIDET_OPPFØLGING_I_OPPLÆRING
+    TiltakType.OPPLT2AAR -> TODO()
+    TiltakType.FORSOPPLEV -> StønadTypeTiltakspenger.FORSØK_OPPLÆRING_LENGRE_VARIGHET
 }
