@@ -42,6 +42,9 @@ spec:
         - application: tiltakspenger-vedtak
           namespace: tpts
           cluster: {{ cluster }}
+        - application: tiltakspenger-meldekort-api
+          namespace: tpts
+          cluster: {{ cluster }}
     outbound:
       rules:
         - application: tiltakspenger-iverksett
