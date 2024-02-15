@@ -61,7 +61,7 @@ class VedtakRepoImpl(
             it.transaction { txSession ->
                 txSession.run(
                     queryOf(
-                        sqlHentForSak,
+                        sqlHentSisteVedtakForSak,
                         mapOf(
                             "sakId" to sakId.toString(),
                         ),
@@ -124,9 +124,9 @@ class VedtakRepoImpl(
     """.trimIndent()
 
     @Language("PostgreSQL")
-    private val sqlHentForSak = """
+    private val sqlHentSisteVedtakForSak = """
         select * from vedtak
         where sakId = :sakId
-          and forrigeVedtakId is null
+        order by vedtakstidspunkt desc limit 1
     """.trimIndent()
 }
