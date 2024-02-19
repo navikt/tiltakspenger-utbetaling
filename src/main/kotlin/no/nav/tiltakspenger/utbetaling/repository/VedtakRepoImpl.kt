@@ -5,6 +5,7 @@ import kotliquery.TransactionalSession
 import kotliquery.queryOf
 import kotliquery.sessionOf
 import no.nav.tiltakspenger.utbetaling.db.DataSource
+import no.nav.tiltakspenger.utbetaling.domene.BehandlingId
 import no.nav.tiltakspenger.utbetaling.domene.SakId
 import no.nav.tiltakspenger.utbetaling.domene.Vedtak
 import no.nav.tiltakspenger.utbetaling.domene.VedtakId
@@ -44,13 +45,47 @@ class VedtakRepoImpl(
             it.transaction { txSession ->
                 txSession.run(
                     queryOf(
-                        sqlHentForVedtak,
+                        sqlHentVedtak,
                         mapOf(
                             "id" to vedtakId.toString(),
                         ),
                     ).map { row ->
                         row.toVedtak(txSession)
                     }.asSingle,
+                )
+            }
+        }
+    }
+
+    override fun hentSakIdForBehandling(behandlingId: BehandlingId): SakId? {
+        return sessionOf(DataSource.hikariDataSource).use {
+            it.transaction { txSession ->
+                txSession.run(
+                    queryOf(
+                        sqlHentSisteVedtakForSak,
+                        mapOf(
+                            "behandlingId" to behandlingId.toString(),
+                        ),
+                    ).map { row ->
+                        row.toSakId()
+                    }.asSingle,
+                )
+            }
+        }
+    }
+
+    override fun hentAlleVedtakForSak(sakId: SakId): List<Vedtak> {
+        return sessionOf(DataSource.hikariDataSource).use {
+            it.transaction { txSession ->
+                txSession.run(
+                    queryOf(
+                        sqlHentAlleVedtakForSak,
+                        mapOf(
+                            "sakId" to sakId.toString(),
+                        ),
+                    ).map { row ->
+                        row.toVedtak(txSession)
+                    }.asList,
                 )
             }
         }
@@ -71,6 +106,10 @@ class VedtakRepoImpl(
                 )
             }
         }
+    }
+
+    private fun Row.toSakId(): SakId? {
+        return stringOrNull("sakId")?.let { SakId.fromDb(it) }
     }
 
     private fun Row.toVedtak(tx: TransactionalSession): Vedtak {
@@ -118,9 +157,15 @@ class VedtakRepoImpl(
     """.trimIndent()
 
     @Language("PostgreSQL")
-    private val sqlHentForVedtak = """
+    private val sqlHentVedtak = """
         select * from vedtak
         where id = :id
+    """.trimIndent()
+
+    @Language("PostgreSQL")
+    private val sqlHentAlleVedtakForSak = """
+        select * from vedtak
+        where sakId = :sakId
     """.trimIndent()
 
     @Language("PostgreSQL")

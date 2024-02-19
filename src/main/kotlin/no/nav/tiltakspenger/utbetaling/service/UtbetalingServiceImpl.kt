@@ -11,11 +11,13 @@ import no.nav.dagpenger.kontrakter.iverksett.UtbetalingDto
 import no.nav.dagpenger.kontrakter.iverksett.VedtaksdetaljerDto
 import no.nav.tiltakspenger.utbetaling.client.iverksett.IverksettKlient
 import no.nav.tiltakspenger.utbetaling.client.iverksett.IverksettKlient.Response
+import no.nav.tiltakspenger.utbetaling.domene.BehandlingId
 import no.nav.tiltakspenger.utbetaling.domene.TiltakType
 import no.nav.tiltakspenger.utbetaling.domene.Utbetaling
 import no.nav.tiltakspenger.utbetaling.domene.UtbetalingDag
 import no.nav.tiltakspenger.utbetaling.domene.UtbetalingDagStatus
 import no.nav.tiltakspenger.utbetaling.domene.Vedtak
+import no.nav.tiltakspenger.utbetaling.domene.VedtakId
 import no.nav.tiltakspenger.utbetaling.domene.nyttVedtak
 import no.nav.tiltakspenger.utbetaling.repository.VedtakRepo
 import java.time.LocalDate
@@ -48,6 +50,16 @@ class UtbetalingServiceImpl(
         return iverksettKlient.iverksett(mapIverksettDTO(vedtak)).also {
             if (it.statusCode.value == 202) vedtakRepo.lagre(vedtak)
         }
+    }
+
+    override fun hentAlleVedtak(behandlingId: BehandlingId): List<Vedtak> {
+        val sakId = vedtakRepo.hentSakIdForBehandling(behandlingId)
+        checkNotNull(sakId) { "Klarte ikke å finne sakId for behandling $behandlingId" }
+        return vedtakRepo.hentAlleVedtakForSak(sakId)
+    }
+
+    override fun hentVedtak(vedtakId: VedtakId): Vedtak? {
+        return vedtakRepo.hentVedtak(vedtakId)
     }
 }
 
@@ -128,13 +140,13 @@ private fun List<UtbetalingDto>.slåSammen(neste: UtbetalingDto): List<Utbetalin
     }
 }
 
-private fun UtbetalingDag.mapSats(): Int = when (this.status) {
+fun UtbetalingDag.mapSats(): Int = when (this.status) {
     UtbetalingDagStatus.FullUtbetaling -> SATS
     UtbetalingDagStatus.DelvisUtbetaling -> REDUSERT_SATS
     UtbetalingDagStatus.IngenUtbetaling -> 0
 }
 
-private fun UtbetalingDag.mapBarnetilleggSats(antallBarn: Int): Int = when (this.status) {
+fun UtbetalingDag.mapBarnetilleggSats(antallBarn: Int): Int = when (this.status) {
     UtbetalingDagStatus.FullUtbetaling -> BARNETILLEGG_SATS * antallBarn
     UtbetalingDagStatus.DelvisUtbetaling -> REDUSERT_BARNETILLEGG_SATS * antallBarn
     UtbetalingDagStatus.IngenUtbetaling -> 0
