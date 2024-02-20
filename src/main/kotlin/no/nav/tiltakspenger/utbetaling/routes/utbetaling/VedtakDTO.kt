@@ -22,6 +22,7 @@ data class VedtakDagDTO(
     val beløp: Int,
     val dato: LocalDate,
     val tiltakType: String,
+    val status: String,
 )
 
 fun mapVedtak(vedtak: Vedtak): VedtakDTO {
@@ -38,6 +39,7 @@ fun mapVedtak(vedtak: Vedtak): VedtakDTO {
                 beløp = it.mapSats() + it.mapBarnetilleggSats(vedtak.antallBarn),
                 dato = it.dato,
                 tiltakType = it.tiltaktype.name,
+                status = it.status.name,
             )
         },
     )
