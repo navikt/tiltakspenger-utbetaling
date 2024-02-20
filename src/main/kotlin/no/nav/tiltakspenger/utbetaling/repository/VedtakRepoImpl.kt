@@ -62,7 +62,7 @@ class VedtakRepoImpl(
             it.transaction { txSession ->
                 txSession.run(
                     queryOf(
-                        sqlHentSisteVedtakForSak,
+                        sqlHentSakId,
                         mapOf(
                             "behandlingId" to behandlingId.toString(),
                         ),
@@ -166,6 +166,12 @@ class VedtakRepoImpl(
     private val sqlHentAlleVedtakForSak = """
         select * from vedtak
         where sakId = :sakId
+    """.trimIndent()
+
+    @Language("PostgreSQL")
+    private val sqlHentSakId = """
+        select sakid from vedtak
+        where utløsendeid = :behandlingId
     """.trimIndent()
 
     @Language("PostgreSQL")
