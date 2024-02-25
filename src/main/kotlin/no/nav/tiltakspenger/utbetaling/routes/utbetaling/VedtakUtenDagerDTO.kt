@@ -16,9 +16,9 @@ fun mapAlleVedtak(vedtakListe: List<Vedtak>): List<VedtakUtenDagerDTO> {
     return vedtakListe.map { vedtak ->
         VedtakUtenDagerDTO(
             id = vedtak.id.toString(),
-            fom = vedtak.utbetalinger.minByOrNull { it.dato }!!.dato,
-            tom = vedtak.utbetalinger.maxByOrNull { it.dato }!!.dato,
+            fom = vedtak.utbetalinger.groupBy { it.løpenr }.maxBy { it.key }.value.minBy { it.dato }.dato,
+            tom = vedtak.utbetalinger.groupBy { it.løpenr }.maxBy { it.key }.value.maxBy { it.dato }.dato,
             beløp = vedtak.utbetalinger.sumOf { it.mapSats() + it.mapBarnetilleggSats(vedtak.antallBarn) },
         )
-    }
+    }.sortedByDescending { it.fom }
 }

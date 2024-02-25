@@ -33,16 +33,19 @@ create table vedtak
 
 create table meldekortPeriode
 (
-    meldekortId          varchar primary key,
+    meldekortId          varchar not null,
     vedtakId             varchar not null references vedtak(id),
-    løpenr               int not null
+    løpenr               int not null,
+    primary key (meldekortId, vedtakId)
 );
 
 create table utbetalingdag
 (
-    meldekortId          varchar not null references meldekortPeriode(meldekortId),
+    vedtakId             varchar not null,
+    meldekortId          varchar not null,
     dato                 date not null,
     status               varchar not null,
     tiltaktype           varchar not null,
-    primary key (meldekortId, dato)
+    primary key (vedtakId, dato),
+    foreign key (vedtakId, meldekortId) references meldekortPeriode (vedtakId, meldekortId)
 );

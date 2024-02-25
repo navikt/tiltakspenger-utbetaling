@@ -29,16 +29,17 @@ class UtbetalingRepo() {
             ).asUpdate,
         ).also {
             dager.forEach {
-                lagreEnDag(it, tx)
+                lagreEnDag(vedtakId, it, tx)
             }
         }
     }
 
-    private fun lagreEnDag(utbetalingDag: UtbetalingDag, tx: TransactionalSession) {
+    private fun lagreEnDag(vedtakId: VedtakId, utbetalingDag: UtbetalingDag, tx: TransactionalSession) {
         tx.run(
             queryOf(
                 sqlLagreUtbetalingDag,
                 mapOf(
+                    "vedtakId" to vedtakId.toString(),
                     "meldekortId" to utbetalingDag.meldekortId.toString(),
                     "dato" to utbetalingDag.dato,
                     "status" to utbetalingDag.status.name,
@@ -71,13 +72,14 @@ class UtbetalingRepo() {
 
     @Language("PostgreSQL")
     private val sqlHentDager = """
-        select u.*, p.løpenr 
-          from utbetalingdag u 
-          
-          inner join meldekortPeriode p
-            on p.meldekortId = u.meldekortId
+        select u.*, p.løpenr
+          from utbetalingdag u
+        
+        inner join meldekortPeriode p
+                on p.meldekortId = u.meldekortId
+               and p.vedtakid = u.vedtakid
             
-         where p.vedtakId = :vedtakId
+        where p.vedtakId = :vedtakId
     """.trimIndent()
 
     @Language("PostgreSQL")
@@ -96,11 +98,13 @@ class UtbetalingRepo() {
     @Language("PostgreSQL")
     private val sqlLagreUtbetalingDag = """
             insert into utbetalingdag (      
+                vedtakId,
                 meldekortId,
                 dato,           
                 status,
                 tiltaktype
             ) values (
+                :vedtakId,
                 :meldekortId,              
                 :dato,                   
                 :status,

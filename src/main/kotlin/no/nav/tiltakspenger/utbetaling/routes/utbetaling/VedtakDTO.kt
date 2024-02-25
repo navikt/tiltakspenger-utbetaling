@@ -26,15 +26,16 @@ data class VedtakDagDTO(
 )
 
 fun mapVedtak(vedtak: Vedtak): VedtakDTO {
+    val løpenr = vedtak.utbetalinger.maxOfOrNull { it.løpenr } ?: 0
     return VedtakDTO(
         id = vedtak.id.toString(),
-        fom = vedtak.utbetalinger.minByOrNull { it.dato }?.dato ?: LocalDate.of(1970, 1, 1),
-        tom = vedtak.utbetalinger.maxByOrNull { it.dato }?.dato ?: LocalDate.of(9999, 12, 31),
+        fom = vedtak.utbetalinger.filter { it.løpenr == løpenr }.minByOrNull { it.dato }?.dato ?: LocalDate.of(1970, 1, 1),
+        tom = vedtak.utbetalinger.filter { it.løpenr == løpenr }.maxByOrNull { it.dato }?.dato ?: LocalDate.of(9999, 12, 31),
         sats = SATS,
         satsBarnetillegg = BARNETILLEGG_SATS,
         antallBarn = vedtak.antallBarn,
         totalbeløp = vedtak.utbetalinger.sumOf { it.mapSats() + it.mapBarnetilleggSats(vedtak.antallBarn) },
-        vedtakDager = vedtak.utbetalinger.map {
+        vedtakDager = vedtak.utbetalinger.filter { it.løpenr == løpenr }.sortedBy { it.dato }.map {
             VedtakDagDTO(
                 beløp = it.mapSats() + it.mapBarnetilleggSats(vedtak.antallBarn),
                 dato = it.dato,
