@@ -2,11 +2,11 @@ package no.nav.tiltakspenger.utbetaling.domene
 
 import java.time.LocalDate
 
-class Satser(){
+class Satser() {
     companion object {
         private val satser = listOf(
-            Sats(LocalDate.of(2023,1,1), LocalDate.of(2023,12,31),268, 201, 52, 39),
-            Sats(LocalDate.of(2024,1,1), LocalDate.of(9999,12,31),285, 214, 53, 40),
+            Sats(LocalDate.of(2023, 1, 1), LocalDate.of(2023, 12, 31), 268, 201, 52, 39),
+            Sats(LocalDate.of(2024, 1, 1), LocalDate.of(9999, 12, 31), 285, 214, 53, 40),
         )
 
         fun sats(date: LocalDate): Sats {

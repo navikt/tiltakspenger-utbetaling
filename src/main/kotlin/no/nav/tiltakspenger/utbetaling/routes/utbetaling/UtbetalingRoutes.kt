@@ -9,10 +9,8 @@ import io.ktor.server.routing.get
 import io.ktor.server.routing.post
 import mu.KotlinLogging
 import no.nav.tiltakspenger.utbetaling.domene.BehandlingId
-import no.nav.tiltakspenger.utbetaling.domene.Satser
 import no.nav.tiltakspenger.utbetaling.domene.VedtakId
 import no.nav.tiltakspenger.utbetaling.service.UtbetalingService
-import java.time.LocalDate
 
 private val LOG = KotlinLogging.logger {}
 
@@ -63,17 +61,12 @@ fun Route.utbetaling(utbetalingService: UtbetalingService) {
         call.respond(status = HttpStatusCode.OK, mapVedtak(vedtak))
     }
 
-    get("$utbetalingPath/hentGrunnlag/{meldekortId}") {
-        val id = call.parameters["meldekortId"]
-        LOG.info { "hent grunnlag for meldekort med id $id" }
+    post("$utbetalingPath/hentGrunnlag") {
+        LOG.info { "Mottatt kall på hentGrunnlag" }
+        val dto = call.receive<GrunnlagDTO>()
 
-        checkNotNull(id) { "Mangler meldekortId" }
-        val vedtakId = VedtakId.fromDb(id)
+        val grunnlag = utbetalingService.hentGrunnlag(dto)
 
-        val sats = Satser.sats(LocalDate.of(2024,1,1))
-        val vedtak = utbetalingService.hentVedtak(vedtakId)
-        checkNotNull(vedtak) { "Fant ikke vedtak" }
-
-        call.respond(status = HttpStatusCode.OK, mapVedtak(vedtak))
+        call.respond(status = HttpStatusCode.OK, mapGrunnlag(grunnlag))
     }
 }

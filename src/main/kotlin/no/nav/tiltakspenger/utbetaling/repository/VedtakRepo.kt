@@ -14,5 +14,7 @@ interface VedtakRepo {
 
     fun hentSakIdForBehandling(behandlingId: BehandlingId): SakId?
 
+    fun hentVedtakForBehandling(behandlingId: BehandlingId): Vedtak?
+
     fun hentForrigeUtbetalingVedtak(sakId: SakId): Vedtak?
 }
