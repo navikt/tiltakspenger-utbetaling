@@ -47,6 +47,6 @@ spec:
           cluster: {{ cluster }}
     outbound:
       rules:
-        - application: tiltakspenger-iverksett
+        - application: dp-iverksett
           namespace: teamdagpenger
       external:
