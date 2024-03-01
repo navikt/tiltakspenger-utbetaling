@@ -7,6 +7,7 @@ import no.nav.dagpenger.kontrakter.felles.StønadTypeTiltakspenger
 import no.nav.dagpenger.kontrakter.iverksett.StønadsdataTiltakspengerDto
 import no.nav.dagpenger.kontrakter.iverksett.UtbetalingDto
 import no.nav.tiltakspenger.utbetaling.domene.SakId
+import no.nav.tiltakspenger.utbetaling.domene.Satser
 import no.nav.tiltakspenger.utbetaling.domene.TiltakType
 import no.nav.tiltakspenger.utbetaling.domene.UtbetalingDag
 import no.nav.tiltakspenger.utbetaling.domene.UtbetalingDagStatus
@@ -19,6 +20,9 @@ import java.time.temporal.ChronoUnit
 import java.util.UUID
 
 class UtbetalingServiceTest {
+
+    val sats = Satser.sats(1.januar())
+
     @Test
     fun `map rammevedtak`() {
         val vedtakId = VedtakId.random()
@@ -78,12 +82,12 @@ class UtbetalingServiceTest {
         }
 
         dto.vedtak.utbetalinger shouldContainExactlyInAnyOrder listOf(
-            UtbetalingDto(beløpPerDag = SATS, fraOgMedDato = 1.januar(), tilOgMedDato = 1.januar(), stønadsdata = enkeltAmoUtenBarn()),
-            UtbetalingDto(beløpPerDag = REDUSERT_SATS, fraOgMedDato = 2.januar(), tilOgMedDato = 3.januar(), stønadsdata = enkeltAmoUtenBarn()),
-            UtbetalingDto(beløpPerDag = SATS, fraOgMedDato = 4.januar(), tilOgMedDato = 5.januar(), stønadsdata = enkeltAmoUtenBarn()),
-            UtbetalingDto(beløpPerDag = SATS, fraOgMedDato = 6.januar(), tilOgMedDato = 6.januar(), stønadsdata = gruppeAmoUtenBarn()),
-            UtbetalingDto(beløpPerDag = SATS, fraOgMedDato = 7.januar(), tilOgMedDato = 8.januar(), stønadsdata = enkeltAmoUtenBarn()),
-            UtbetalingDto(beløpPerDag = SATS, fraOgMedDato = 11.januar(), tilOgMedDato = 11.januar(), stønadsdata = enkeltAmoUtenBarn()),
+            UtbetalingDto(beløpPerDag = sats.sats, fraOgMedDato = 1.januar(), tilOgMedDato = 1.januar(), stønadsdata = enkeltAmoUtenBarn()),
+            UtbetalingDto(beløpPerDag = sats.satsDelvis, fraOgMedDato = 2.januar(), tilOgMedDato = 3.januar(), stønadsdata = enkeltAmoUtenBarn()),
+            UtbetalingDto(beløpPerDag = sats.sats, fraOgMedDato = 4.januar(), tilOgMedDato = 5.januar(), stønadsdata = enkeltAmoUtenBarn()),
+            UtbetalingDto(beløpPerDag = sats.sats, fraOgMedDato = 6.januar(), tilOgMedDato = 6.januar(), stønadsdata = gruppeAmoUtenBarn()),
+            UtbetalingDto(beløpPerDag = sats.sats, fraOgMedDato = 7.januar(), tilOgMedDato = 8.januar(), stønadsdata = enkeltAmoUtenBarn()),
+            UtbetalingDto(beløpPerDag = sats.sats, fraOgMedDato = 11.januar(), tilOgMedDato = 11.januar(), stønadsdata = enkeltAmoUtenBarn()),
         )
     }
 
@@ -123,19 +127,19 @@ class UtbetalingServiceTest {
         }
 
         dto.vedtak.utbetalinger shouldContainExactlyInAnyOrder listOf(
-            UtbetalingDto(beløpPerDag = SATS, fraOgMedDato = 1.januar(), tilOgMedDato = 1.januar(), stønadsdata = enkeltAmoUtenBarn()),
-            UtbetalingDto(beløpPerDag = REDUSERT_SATS, fraOgMedDato = 2.januar(), tilOgMedDato = 3.januar(), stønadsdata = enkeltAmoUtenBarn()),
-            UtbetalingDto(beløpPerDag = SATS, fraOgMedDato = 4.januar(), tilOgMedDato = 5.januar(), stønadsdata = enkeltAmoUtenBarn()),
-            UtbetalingDto(beløpPerDag = SATS, fraOgMedDato = 6.januar(), tilOgMedDato = 6.januar(), stønadsdata = gruppeAmoUtenBarn()),
-            UtbetalingDto(beløpPerDag = SATS, fraOgMedDato = 7.januar(), tilOgMedDato = 8.januar(), stønadsdata = enkeltAmoUtenBarn()),
-            UtbetalingDto(beløpPerDag = SATS, fraOgMedDato = 11.januar(), tilOgMedDato = 11.januar(), stønadsdata = enkeltAmoUtenBarn()),
+            UtbetalingDto(beløpPerDag = sats.sats, fraOgMedDato = 1.januar(), tilOgMedDato = 1.januar(), stønadsdata = enkeltAmoUtenBarn()),
+            UtbetalingDto(beløpPerDag = sats.satsDelvis, fraOgMedDato = 2.januar(), tilOgMedDato = 3.januar(), stønadsdata = enkeltAmoUtenBarn()),
+            UtbetalingDto(beløpPerDag = sats.sats, fraOgMedDato = 4.januar(), tilOgMedDato = 5.januar(), stønadsdata = enkeltAmoUtenBarn()),
+            UtbetalingDto(beløpPerDag = sats.sats, fraOgMedDato = 6.januar(), tilOgMedDato = 6.januar(), stønadsdata = gruppeAmoUtenBarn()),
+            UtbetalingDto(beløpPerDag = sats.sats, fraOgMedDato = 7.januar(), tilOgMedDato = 8.januar(), stønadsdata = enkeltAmoUtenBarn()),
+            UtbetalingDto(beløpPerDag = sats.sats, fraOgMedDato = 11.januar(), tilOgMedDato = 11.januar(), stønadsdata = enkeltAmoUtenBarn()),
 
-            UtbetalingDto(beløpPerDag = BARNETILLEGG_SATS * 2, fraOgMedDato = 1.januar(), tilOgMedDato = 1.januar(), stønadsdata = enkeltAmoMedBarn()),
-            UtbetalingDto(beløpPerDag = REDUSERT_BARNETILLEGG_SATS * 2, fraOgMedDato = 2.januar(), tilOgMedDato = 3.januar(), stønadsdata = enkeltAmoMedBarn()),
-            UtbetalingDto(beløpPerDag = BARNETILLEGG_SATS * 2, fraOgMedDato = 4.januar(), tilOgMedDato = 5.januar(), stønadsdata = enkeltAmoMedBarn()),
-            UtbetalingDto(beløpPerDag = BARNETILLEGG_SATS * 2, fraOgMedDato = 6.januar(), tilOgMedDato = 6.januar(), stønadsdata = gruppeAmoMedBarn()),
-            UtbetalingDto(beløpPerDag = BARNETILLEGG_SATS * 2, fraOgMedDato = 7.januar(), tilOgMedDato = 8.januar(), stønadsdata = enkeltAmoMedBarn()),
-            UtbetalingDto(beløpPerDag = BARNETILLEGG_SATS * 2, fraOgMedDato = 11.januar(), tilOgMedDato = 11.januar(), stønadsdata = enkeltAmoMedBarn()),
+            UtbetalingDto(beløpPerDag = sats.satsBarnetillegg * 2, fraOgMedDato = 1.januar(), tilOgMedDato = 1.januar(), stønadsdata = enkeltAmoMedBarn()),
+            UtbetalingDto(beløpPerDag = sats.satsBarnetilleggDelvis * 2, fraOgMedDato = 2.januar(), tilOgMedDato = 3.januar(), stønadsdata = enkeltAmoMedBarn()),
+            UtbetalingDto(beløpPerDag = sats.satsBarnetillegg * 2, fraOgMedDato = 4.januar(), tilOgMedDato = 5.januar(), stønadsdata = enkeltAmoMedBarn()),
+            UtbetalingDto(beløpPerDag = sats.satsBarnetillegg * 2, fraOgMedDato = 6.januar(), tilOgMedDato = 6.januar(), stønadsdata = gruppeAmoMedBarn()),
+            UtbetalingDto(beløpPerDag = sats.satsBarnetillegg * 2, fraOgMedDato = 7.januar(), tilOgMedDato = 8.januar(), stønadsdata = enkeltAmoMedBarn()),
+            UtbetalingDto(beløpPerDag = sats.satsBarnetillegg * 2, fraOgMedDato = 11.januar(), tilOgMedDato = 11.januar(), stønadsdata = enkeltAmoMedBarn()),
         )
     }
 
@@ -194,10 +198,10 @@ class UtbetalingServiceTest {
         }
 
         dto.vedtak.utbetalinger shouldContainExactlyInAnyOrder listOf(
-            UtbetalingDto(beløpPerDag = SATS, fraOgMedDato = 2.januar(), tilOgMedDato = 5.januar(), stønadsdata = enkeltAmoUtenBarn()),
-            UtbetalingDto(beløpPerDag = SATS, fraOgMedDato = 9.januar(), tilOgMedDato = 12.januar(), stønadsdata = enkeltAmoUtenBarn()),
-            UtbetalingDto(beløpPerDag = SATS, fraOgMedDato = 16.januar(), tilOgMedDato = 19.januar(), stønadsdata = enkeltAmoUtenBarn()),
-            UtbetalingDto(beløpPerDag = SATS, fraOgMedDato = 23.januar(), tilOgMedDato = 26.januar(), stønadsdata = enkeltAmoUtenBarn()),
+            UtbetalingDto(beløpPerDag = sats.sats, fraOgMedDato = 2.januar(), tilOgMedDato = 5.januar(), stønadsdata = enkeltAmoUtenBarn()),
+            UtbetalingDto(beløpPerDag = sats.sats, fraOgMedDato = 9.januar(), tilOgMedDato = 12.januar(), stønadsdata = enkeltAmoUtenBarn()),
+            UtbetalingDto(beløpPerDag = sats.sats, fraOgMedDato = 16.januar(), tilOgMedDato = 19.januar(), stønadsdata = enkeltAmoUtenBarn()),
+            UtbetalingDto(beløpPerDag = sats.sats, fraOgMedDato = 23.januar(), tilOgMedDato = 26.januar(), stønadsdata = enkeltAmoUtenBarn()),
         )
     }
 }

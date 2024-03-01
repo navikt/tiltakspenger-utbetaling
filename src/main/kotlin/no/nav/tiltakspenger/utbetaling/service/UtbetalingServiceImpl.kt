@@ -24,11 +24,6 @@ import no.nav.tiltakspenger.utbetaling.repository.VedtakRepo
 import no.nav.tiltakspenger.utbetaling.routes.utbetaling.GrunnlagDTO
 import java.time.LocalDate
 
-const val SATS = 285
-const val REDUSERT_SATS = 214
-const val BARNETILLEGG_SATS = 55
-const val REDUSERT_BARNETILLEGG_SATS = 42
-
 class UtbetalingServiceImpl(
     private val vedtakRepo: VedtakRepo,
     private val iverksettKlient: IverksettKlient,
@@ -192,14 +187,14 @@ private fun List<UtbetalingDto>.slåSammen(neste: UtbetalingDto): List<Utbetalin
 }
 
 fun UtbetalingDag.mapSats(): Int = when (this.status) {
-    UtbetalingDagStatus.FullUtbetaling -> SATS
-    UtbetalingDagStatus.DelvisUtbetaling -> REDUSERT_SATS
+    UtbetalingDagStatus.FullUtbetaling -> Satser.sats(this.dato).sats
+    UtbetalingDagStatus.DelvisUtbetaling -> Satser.sats(this.dato).satsDelvis
     UtbetalingDagStatus.IngenUtbetaling -> 0
 }
 
 fun UtbetalingDag.mapBarnetilleggSats(antallBarn: Int): Int = when (this.status) {
-    UtbetalingDagStatus.FullUtbetaling -> BARNETILLEGG_SATS * antallBarn
-    UtbetalingDagStatus.DelvisUtbetaling -> REDUSERT_BARNETILLEGG_SATS * antallBarn
+    UtbetalingDagStatus.FullUtbetaling -> Satser.sats(this.dato).satsBarnetillegg * antallBarn
+    UtbetalingDagStatus.DelvisUtbetaling -> Satser.sats(this.dato).satsBarnetilleggDelvis * antallBarn
     UtbetalingDagStatus.IngenUtbetaling -> 0
 }
 
