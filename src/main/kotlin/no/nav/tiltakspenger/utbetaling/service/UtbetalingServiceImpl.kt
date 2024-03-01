@@ -12,6 +12,7 @@ import no.nav.dagpenger.kontrakter.iverksett.VedtaksdetaljerDto
 import no.nav.tiltakspenger.utbetaling.client.iverksett.IverksettKlient
 import no.nav.tiltakspenger.utbetaling.client.iverksett.IverksettKlient.Response
 import no.nav.tiltakspenger.utbetaling.domene.BehandlingId
+import no.nav.tiltakspenger.utbetaling.domene.Satser
 import no.nav.tiltakspenger.utbetaling.domene.TiltakType
 import no.nav.tiltakspenger.utbetaling.domene.Utbetaling
 import no.nav.tiltakspenger.utbetaling.domene.UtbetalingDag
@@ -20,6 +21,7 @@ import no.nav.tiltakspenger.utbetaling.domene.Vedtak
 import no.nav.tiltakspenger.utbetaling.domene.VedtakId
 import no.nav.tiltakspenger.utbetaling.domene.nyttVedtak
 import no.nav.tiltakspenger.utbetaling.repository.VedtakRepo
+import no.nav.tiltakspenger.utbetaling.routes.utbetaling.GrunnlagDTO
 import java.time.LocalDate
 
 const val SATS = 285
@@ -60,6 +62,55 @@ class UtbetalingServiceImpl(
 
     override fun hentVedtak(vedtakId: VedtakId): Vedtak? {
         return vedtakRepo.hentVedtak(vedtakId)
+    }
+
+    override fun hentGrunnlag(grunnlagDTO: GrunnlagDTO): List<UtbetalingGrunnlagDag> {
+        val vedtak = vedtakRepo.hentVedtakForBehandling(grunnlagDTO.behandlingId)
+            ?: throw IllegalStateException("Fant ikke vedtak")
+
+        return grunnlagDTO.fom.datesUntil(grunnlagDTO.tom.plusDays(1)).map {
+            val satsForDag = Satser.sats(it)
+            UtbetalingGrunnlagDag(
+                antallBarn = vedtak.antallBarn,
+                sats = satsForDag.sats,
+                satsDelvis = satsForDag.satsDelvis,
+                satsBarn = satsForDag.satsBarnetillegg,
+                satsBarnDelvis = satsForDag.satsBarnetilleggDelvis,
+                fom = it,
+                tom = it,
+            )
+        }.toList()
+    }
+}
+
+data class UtbetalingGrunnlagDag(
+    val antallBarn: Int,
+    val sats: Int,
+    val satsDelvis: Int,
+    val satsBarn: Int,
+    val satsBarnDelvis: Int,
+    val fom: LocalDate,
+    val tom: LocalDate,
+) {
+    override fun equals(other: Any?): Boolean {
+        return other != null &&
+            other is UtbetalingGrunnlagDag &&
+            this.antallBarn == other.antallBarn &&
+            this.sats == other.sats &&
+            this.satsDelvis == other.satsDelvis &&
+            this.satsBarn == other.satsBarn &&
+            this.satsBarnDelvis == other.satsBarnDelvis
+    }
+
+    override fun hashCode(): Int {
+        var result = antallBarn
+        result = 31 * result + sats
+        result = 31 * result + satsDelvis
+        result = 31 * result + satsBarn
+        result = 31 * result + satsBarnDelvis
+        result = 31 * result + fom.hashCode()
+        result = 31 * result + tom.hashCode()
+        return result
     }
 }
 

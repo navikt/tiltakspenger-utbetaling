@@ -60,4 +60,13 @@ fun Route.utbetaling(utbetalingService: UtbetalingService) {
 
         call.respond(status = HttpStatusCode.OK, mapVedtak(vedtak))
     }
+
+    post("$utbetalingPath/hentGrunnlag") {
+        LOG.info { "Mottatt kall på hentGrunnlag" }
+        val dto = call.receive<GrunnlagDTO>()
+
+        val grunnlag = utbetalingService.hentGrunnlag(dto)
+
+        call.respond(status = HttpStatusCode.OK, mapGrunnlag(grunnlag))
+    }
 }

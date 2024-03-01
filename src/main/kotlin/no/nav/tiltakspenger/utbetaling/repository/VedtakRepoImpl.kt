@@ -91,6 +91,23 @@ class VedtakRepoImpl(
         }
     }
 
+    override fun hentVedtakForBehandling(behandlingId: BehandlingId): Vedtak? {
+        return sessionOf(DataSource.hikariDataSource).use {
+            it.transaction { txSession ->
+                txSession.run(
+                    queryOf(
+                        sqlHentVedtakForBehandling,
+                        mapOf(
+                            "behandlingId" to behandlingId.toString(),
+                        ),
+                    ).map { row ->
+                        row.toVedtak(txSession)
+                    }.asSingle,
+                )
+            }
+        }
+    }
+
     override fun hentForrigeUtbetalingVedtak(sakId: SakId): Vedtak? {
         return sessionOf(DataSource.hikariDataSource).use {
             it.transaction { txSession ->
@@ -179,5 +196,11 @@ class VedtakRepoImpl(
         select * from vedtak
         where sakId = :sakId
         order by vedtakstidspunkt desc limit 1
+    """.trimIndent()
+
+    @Language("PostgreSQL")
+    private val sqlHentVedtakForBehandling = """
+        select * from vedtak
+        where utløsendeId = :behandlingId
     """.trimIndent()
 }

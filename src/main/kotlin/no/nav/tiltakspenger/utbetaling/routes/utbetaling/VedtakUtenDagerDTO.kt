@@ -14,11 +14,12 @@ data class VedtakUtenDagerDTO(
 
 fun mapAlleVedtak(vedtakListe: List<Vedtak>): List<VedtakUtenDagerDTO> {
     return vedtakListe.map { vedtak ->
+        val utbetalingerForSisteLøpenummer = vedtak.utbetalinger.groupBy { it.løpenr }.maxBy { it.key }.value
         VedtakUtenDagerDTO(
             id = vedtak.id.toString(),
-            fom = vedtak.utbetalinger.groupBy { it.løpenr }.maxBy { it.key }.value.minBy { it.dato }.dato,
-            tom = vedtak.utbetalinger.groupBy { it.løpenr }.maxBy { it.key }.value.maxBy { it.dato }.dato,
-            beløp = vedtak.utbetalinger.sumOf { it.mapSats() + it.mapBarnetilleggSats(vedtak.antallBarn) },
+            fom = utbetalingerForSisteLøpenummer.minBy { it.dato }.dato,
+            tom = utbetalingerForSisteLøpenummer.maxBy { it.dato }.dato,
+            beløp = utbetalingerForSisteLøpenummer.sumOf { it.mapSats() + it.mapBarnetilleggSats(vedtak.antallBarn) },
         )
     }.sortedByDescending { it.fom }
 }
