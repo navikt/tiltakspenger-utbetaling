@@ -1,14 +1,7 @@
 package no.nav.tiltakspenger.utbetaling.routes.utbetaling
 
-import no.nav.tiltakspenger.utbetaling.domene.BehandlingId
 import no.nav.tiltakspenger.utbetaling.service.UtbetalingGrunnlagDag
 import java.time.LocalDate
-
-data class GrunnlagDTO(
-    val behandlingId: BehandlingId,
-    val fom: LocalDate,
-    val tom: LocalDate,
-)
 
 data class UtbetalingGrunnlagPeriodeDTO(
     val antallBarn: Int,

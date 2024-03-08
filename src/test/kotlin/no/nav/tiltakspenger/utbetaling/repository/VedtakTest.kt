@@ -10,17 +10,18 @@ import no.nav.tiltakspenger.utbetaling.domene.UtbetalingDagStatus
 import no.nav.tiltakspenger.utbetaling.domene.Vedtak
 import no.nav.tiltakspenger.utbetaling.domene.VedtakId
 import no.nav.tiltakspenger.utbetaling.service.januar
+import no.nav.tiltakspenger.utbetaling.service.ports.VedtakRepo
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.testcontainers.junit.jupiter.Testcontainers
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.temporal.ChronoUnit
-import java.util.*
+import java.util.UUID
 
 @Testcontainers
 internal class VedtakTest {
-    private val utbetalingRepo = UtbetalingRepo()
+    private val utbetalingRepo = UtbetalingDAO()
     private val vedtakRepo: VedtakRepo = VedtakRepoImpl(utbetalingRepo)
 
     init {
@@ -75,6 +76,7 @@ private fun lagUtbetalingDag(
         meldekortId = meldekortId1,
         løpenr = løpenr,
     )
+
 private fun lagVedtak(
     vedtakId: VedtakId = VedtakId.random(),
     antallBarn: Int = 0,

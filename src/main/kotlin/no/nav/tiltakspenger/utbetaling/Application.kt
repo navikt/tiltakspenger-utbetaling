@@ -14,6 +14,7 @@ import io.ktor.server.routing.routing
 import mu.KotlinLogging
 import no.nav.tiltakspenger.utbetaling.Configuration.httpPort
 import no.nav.tiltakspenger.utbetaling.auth.AzureTokenProvider
+import no.nav.tiltakspenger.utbetaling.client.iverksett.IverksettGatewayImpl
 import no.nav.tiltakspenger.utbetaling.client.iverksett.IverksettKlient
 import no.nav.tiltakspenger.utbetaling.db.flywayMigrate
 import no.nav.tiltakspenger.utbetaling.exception.ExceptionHandler
@@ -40,8 +41,9 @@ fun Application.module() {
     flywayMigrate()
     val tokenProvider = AzureTokenProvider(config = Configuration.oauthConfigIverksett())
     val iverksettKlient = IverksettKlient(getToken = tokenProvider::getToken)
+    val iverksettGateway = IverksettGatewayImpl(iverksettKlient)
     val vedtakRepo = VedtakRepoImpl()
-    val utbetalingService = UtbetalingServiceImpl(vedtakRepo, iverksettKlient)
+    val utbetalingService = UtbetalingServiceImpl(vedtakRepo, iverksettGateway)
 
     jacksonSerialization()
     routing {

@@ -10,14 +10,23 @@ import no.nav.tiltakspenger.utbetaling.domene.VedtakId
 import org.intellij.lang.annotations.Language
 import java.util.UUID
 
-class UtbetalingRepo() {
-    fun lagreUtbetalingForVedtak(vedtakId: VedtakId, utbetalingsdager: List<UtbetalingDag>, tx: TransactionalSession) {
+class UtbetalingDAO {
+    fun lagreUtbetalingForVedtak(
+        vedtakId: VedtakId,
+        utbetalingsdager: List<UtbetalingDag>,
+        tx: TransactionalSession,
+    ) {
         utbetalingsdager.groupBy({ it.meldekortId }, { it }).forEach { (meldekortId, dager) ->
             lagrePeriode(vedtakId, meldekortId, dager, tx)
         }
     }
 
-    private fun lagrePeriode(vedtakId: VedtakId, meldekortId: UUID, dager: List<UtbetalingDag>, tx: TransactionalSession) {
+    private fun lagrePeriode(
+        vedtakId: VedtakId,
+        meldekortId: UUID,
+        dager: List<UtbetalingDag>,
+        tx: TransactionalSession,
+    ) {
         tx.run(
             queryOf(
                 sqlLagreMeldekortPeriode,

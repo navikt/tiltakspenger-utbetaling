@@ -9,10 +9,11 @@ import no.nav.tiltakspenger.utbetaling.domene.BehandlingId
 import no.nav.tiltakspenger.utbetaling.domene.SakId
 import no.nav.tiltakspenger.utbetaling.domene.Vedtak
 import no.nav.tiltakspenger.utbetaling.domene.VedtakId
+import no.nav.tiltakspenger.utbetaling.service.ports.VedtakRepo
 import org.intellij.lang.annotations.Language
 
 class VedtakRepoImpl(
-    private val utbetalingRepo: UtbetalingRepo = UtbetalingRepo(),
+    private val utbetalingRepo: UtbetalingDAO = UtbetalingDAO(),
 ) : VedtakRepo {
     override fun lagre(vedtak: Vedtak) {
         sessionOf(DataSource.hikariDataSource).use {

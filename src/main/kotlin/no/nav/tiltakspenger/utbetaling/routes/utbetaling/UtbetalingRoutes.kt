@@ -9,7 +9,9 @@ import io.ktor.server.routing.get
 import io.ktor.server.routing.post
 import mu.KotlinLogging
 import no.nav.tiltakspenger.utbetaling.domene.BehandlingId
+import no.nav.tiltakspenger.utbetaling.domene.GrunnlagDTO
 import no.nav.tiltakspenger.utbetaling.domene.VedtakId
+import no.nav.tiltakspenger.utbetaling.routes.utbetaling.VedtakDTOMapper.mapVedtak
 import no.nav.tiltakspenger.utbetaling.service.UtbetalingService
 
 private val LOG = KotlinLogging.logger {}
@@ -24,7 +26,10 @@ fun Route.utbetaling(utbetalingService: UtbetalingService) {
         val rammevedtak = mapRammevedtak(rammevedtakDTO)
         val response = utbetalingService.mottaRammevedtakOgSendTilIverksett(rammevedtak)
 
-        call.respond(status = response.statusCode, response.melding)
+        call.respond(
+            status = HttpStatusCode.fromValue(response.opprinneligStatusCodeValue),
+            response.opprinneligStatusCodeMessage,
+        )
     }
 
     post("$utbetalingPath/utbetalingvedtak") {
@@ -34,7 +39,10 @@ fun Route.utbetaling(utbetalingService: UtbetalingService) {
         val utbetaling = mapUtbetalingVedtak(utbetalingDTO)
         val response = utbetalingService.mottaUtbetalingOgSendTilIverksett(utbetaling)
 
-        call.respond(status = response.statusCode, response.melding)
+        call.respond(
+            status = HttpStatusCode.fromValue(response.opprinneligStatusCodeValue),
+            response.opprinneligStatusCodeMessage,
+        )
     }
 
     get("$utbetalingPath/hentAlleForBehandling/{behandlingId}") {

@@ -1,4 +1,4 @@
-package no.nav.tiltakspenger.utbetaling.repository
+package no.nav.tiltakspenger.utbetaling.service.ports
 
 import no.nav.tiltakspenger.utbetaling.domene.BehandlingId
 import no.nav.tiltakspenger.utbetaling.domene.SakId
