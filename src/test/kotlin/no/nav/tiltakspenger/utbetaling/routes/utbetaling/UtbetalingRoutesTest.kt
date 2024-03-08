@@ -14,6 +14,7 @@ import io.mockk.coEvery
 import io.mockk.mockk
 import io.mockk.slot
 import no.nav.tiltakspenger.utbetaling.client.iverksett.IverksettKlient
+import no.nav.tiltakspenger.utbetaling.client.iverksett.IverksettMapper
 import no.nav.tiltakspenger.utbetaling.domene.SakId
 import no.nav.tiltakspenger.utbetaling.domene.Vedtak
 import no.nav.tiltakspenger.utbetaling.jacksonSerialization
@@ -32,7 +33,9 @@ internal class UtbetalingRoutesTest {
             melding = "ok",
         )
         val capturedVedtak = slot<Vedtak>()
-        coEvery { utbetalingServiceMock.mottaRammevedtakOgSendTilIverksett(capture(capturedVedtak)) } returns okResponse
+        coEvery { utbetalingServiceMock.mottaRammevedtakOgSendTilIverksett(capture(capturedVedtak)) } returns IverksettMapper.mapResponse(
+            okResponse,
+        )
         testApplication {
             application {
                 jacksonSerialization()
