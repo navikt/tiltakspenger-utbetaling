@@ -13,6 +13,7 @@ import org.intellij.lang.annotations.Language
 
 class VedtakRepoImpl(
     private val utbetalingRepo: UtbetalingRepo = UtbetalingRepo(),
+    private val utfallsperiodeDAO: UtfallsperiodeDAO = UtfallsperiodeDAO(),
 ) : VedtakRepo {
     override fun lagre(vedtak: Vedtak) {
         sessionOf(DataSource.hikariDataSource).use {
@@ -25,7 +26,6 @@ class VedtakRepoImpl(
                             "sakId" to vedtak.sakId.toString(),
                             "utlosendeId" to vedtak.utløsendeId,
                             "ident" to vedtak.ident,
-                            "antallBarn" to vedtak.antallBarn,
                             "brukerNavnkontor" to vedtak.brukerNavkontor,
                             "vedtakstidspunkt" to vedtak.vedtakstidspunkt,
                             "saksbehandler" to vedtak.saksbehandler,
@@ -35,6 +35,7 @@ class VedtakRepoImpl(
                     ).asUpdate,
                 ).also {
                     utbetalingRepo.lagreUtbetalingForVedtak(vedtak.id, vedtak.utbetalinger, tx)
+                    utfallsperiodeDAO.lagre(vedtak.id, vedtak.utfallsperioder, tx)
                 }
             }
         }
@@ -136,12 +137,12 @@ class VedtakRepoImpl(
             sakId = SakId.fromDb(string("sakId")),
             utløsendeId = string("utløsendeId"),
             ident = string("ident"),
-            antallBarn = int("antallBarn"),
             brukerNavkontor = string("brukerNavkontor"),
             vedtakstidspunkt = localDateTime("vedtakstidspunkt"),
             saksbehandler = string("saksbehandler"),
             beslutter = string("beslutter"),
             utbetalinger = utbetalingRepo.hentDagerForVedtak(vedtakId, tx),
+            utfallsperioder = utfallsperiodeDAO.hent(vedtakId, tx),
             forrigeVedtak = stringOrNull("forrigeVedtakId")?.let { VedtakId.fromDb(it) },
         )
     }
@@ -153,7 +154,6 @@ class VedtakRepoImpl(
             sakId,           
             utløsendeId,    
             ident, 
-            antallBarn,
             brukerNavkontor,  
             vedtakstidspunkt,
             saksbehandler,   
@@ -164,7 +164,6 @@ class VedtakRepoImpl(
             :sakId,                   
             :utlosendeId,    
             :ident,   
-            :antallBarn,
             :brukerNavnkontor,    
             :vedtakstidspunkt,
             :saksbehandler,   

@@ -15,10 +15,13 @@ import io.mockk.mockk
 import io.mockk.slot
 import no.nav.tiltakspenger.utbetaling.client.iverksett.IverksettKlient
 import no.nav.tiltakspenger.utbetaling.domene.SakId
+import no.nav.tiltakspenger.utbetaling.domene.UtfallForPeriode
+import no.nav.tiltakspenger.utbetaling.domene.Utfallsperiode
 import no.nav.tiltakspenger.utbetaling.domene.Vedtak
 import no.nav.tiltakspenger.utbetaling.jacksonSerialization
 import no.nav.tiltakspenger.utbetaling.routes.defaultRequest
 import no.nav.tiltakspenger.utbetaling.service.UtbetalingServiceImpl
+import no.nav.tiltakspenger.utbetaling.service.januar
 import org.junit.jupiter.api.Test
 import java.time.LocalDateTime
 
@@ -60,12 +63,19 @@ internal class UtbetalingRoutesTest {
                 sakId = SakId.fromDb("sak_01HGD8E4RY7KSZ1YVVB1NK1XGH"),
                 utløsendeId = "ved_01HGD8E4RYT11M0P0AX99F05X8",
                 ident = "12345678901",
-                antallBarn = 0,
                 brukerNavkontor = "0219",
                 vedtakstidspunkt = LocalDateTime.of(2024, 1, 24, 14, 35, 47),
                 saksbehandler = "saksbehandler",
                 beslutter = "beslutter",
                 utbetalinger = emptyList(),
+                utfallsperioder = listOf(
+                    Utfallsperiode(
+                        fom = 1.januar(2024),
+                        tom = 31.januar(2024),
+                        antallBarn = 0,
+                        utfall = UtfallForPeriode.GIR_RETT_TILTAKSPENGER,
+                    ),
+                ),
                 forrigeVedtak = null,
             )
 
@@ -78,10 +88,15 @@ internal class UtbetalingRoutesTest {
             "sakId": "sak_01HGD8E4RY7KSZ1YVVB1NK1XGH",
             "utløsendeId": "ved_01HGD8E4RYT11M0P0AX99F05X8",
             "ident": "12345678901",
-            "antallBarn": 0,
             "brukerNavkontor": "0219",
             "vedtaktidspunkt": "2024-01-24T14:35:47",
             "saksbehandler": "saksbehandler",
+            "utfallsperioder": [{
+                "fom": "2024-01-01",
+                "tom": "2024-01-31",
+                "antallBarn": 0,
+                "utfall": "GIR_RETT_TILTAKSPENGER"
+            }],
             "beslutter": "beslutter"
         }
     """.trimIndent()

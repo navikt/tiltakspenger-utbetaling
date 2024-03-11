@@ -23,12 +23,21 @@ create table vedtak
     sakId                varchar not null,
     utløsendeId          varchar not null,
     ident                varchar not null,
-    antallBarn           int not null,
     brukerNavkontor      varchar not null,
     vedtakstidspunkt     timestamp not null,
     saksbehandler        varchar not null,
     beslutter            varchar not null,
     forrigeVedtakId      varchar null references vedtak(id)
+);
+
+CREATE TABLE utfallsperiode
+(
+    id                  VARCHAR PRIMARY KEY,
+    vedtak_id           VARCHAR                  NOT NULL REFERENCES vedtak (id),
+    fom                 DATE                     NOT NULL,
+    tom                 DATE                     NOT NULL,
+    antall_barn         INT                      NOT NULL,
+    utfall              VARCHAR                  NOT NULL
 );
 
 create table meldekortPeriode

@@ -1,6 +1,7 @@
 package no.nav.tiltakspenger.utbetaling.routes.utbetaling
 
 import no.nav.tiltakspenger.utbetaling.domene.Vedtak
+import no.nav.tiltakspenger.utbetaling.domene.antallBarn
 import no.nav.tiltakspenger.utbetaling.service.mapBarnetilleggSats
 import no.nav.tiltakspenger.utbetaling.service.mapSats
 import java.time.LocalDate
@@ -19,7 +20,7 @@ fun mapAlleVedtak(vedtakListe: List<Vedtak>): List<VedtakUtenDagerDTO> {
             id = vedtak.id.toString(),
             fom = utbetalingerForSisteLøpenummer.minBy { it.dato }.dato,
             tom = utbetalingerForSisteLøpenummer.maxBy { it.dato }.dato,
-            beløp = utbetalingerForSisteLøpenummer.sumOf { it.mapSats() + it.mapBarnetilleggSats(vedtak.antallBarn) },
+            beløp = utbetalingerForSisteLøpenummer.sumOf { it.mapSats() + it.mapBarnetilleggSats(vedtak.utfallsperioder.antallBarn(it.dato)) },
         )
     }.sortedByDescending { it.fom }
 }

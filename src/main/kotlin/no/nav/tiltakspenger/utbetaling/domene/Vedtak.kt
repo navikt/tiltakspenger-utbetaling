@@ -1,5 +1,6 @@
 package no.nav.tiltakspenger.utbetaling.domene
 
+import java.time.LocalDate
 import java.time.LocalDateTime
 
 data class Vedtak(
@@ -8,15 +9,20 @@ data class Vedtak(
     val utløsendeId: String,
     val ident: String,
     val vedtakstidspunkt: LocalDateTime,
-    val antallBarn: Int,
     val brukerNavkontor: String,
     val saksbehandler: String,
     val beslutter: String,
     val utbetalinger: List<UtbetalingDag>,
+    val utfallsperioder: List<Utfallsperiode>,
     val forrigeVedtak: VedtakId?,
 )
 
-fun Vedtak.nyttVedtak(
+fun List<Utfallsperiode>.antallBarn(date: LocalDate): Int {
+    return this.find { it.fom <= date && it.tom >= date }?.antallBarn
+        ?: throw IllegalArgumentException("Fant ingen barn for dato $date")
+}
+
+fun Vedtak.nyttUtbetalingVedtak(
     saksbehandler: String,
     utløsendeId: String,
     utbetalinger: List<UtbetalingDag>,

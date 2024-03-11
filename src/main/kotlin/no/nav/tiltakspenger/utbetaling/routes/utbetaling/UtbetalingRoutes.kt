@@ -21,6 +21,7 @@ fun Route.utbetaling(utbetalingService: UtbetalingService) {
         LOG.info { "Mottatt rammevedtak på $utbetalingPath/rammevedtak" }
         val rammevedtakDTO = call.receive<RammevedtakDTO>()
 
+        LOG.info { "Rammevedtak : $rammevedtakDTO" }
         val rammevedtak = mapRammevedtak(rammevedtakDTO)
         val response = utbetalingService.mottaRammevedtakOgSendTilIverksett(rammevedtak)
 
