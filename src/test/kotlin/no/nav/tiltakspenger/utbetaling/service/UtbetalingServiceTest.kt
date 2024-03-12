@@ -11,6 +11,8 @@ import no.nav.tiltakspenger.utbetaling.domene.Satser
 import no.nav.tiltakspenger.utbetaling.domene.TiltakType
 import no.nav.tiltakspenger.utbetaling.domene.UtbetalingDag
 import no.nav.tiltakspenger.utbetaling.domene.UtbetalingDagStatus
+import no.nav.tiltakspenger.utbetaling.domene.UtfallForPeriode
+import no.nav.tiltakspenger.utbetaling.domene.Utfallsperiode
 import no.nav.tiltakspenger.utbetaling.domene.Vedtak
 import no.nav.tiltakspenger.utbetaling.domene.VedtakId
 import org.junit.jupiter.api.Test
@@ -32,12 +34,12 @@ class UtbetalingServiceTest {
             sakId = sakId,
             utløsendeId = "vedtakIdFraVedtak",
             ident = "12828098533",
-            antallBarn = 0,
             brukerNavkontor = "0219",
             vedtakstidspunkt = LocalDateTime.now().truncatedTo(ChronoUnit.MILLIS),
             saksbehandler = "saksbehandler",
             beslutter = "beslutter",
             utbetalinger = emptyList(),
+            utfallsperioder = emptyList(),
             forrigeVedtak = null,
         )
         val dto = mapIverksettDTO(vedtak)
@@ -56,7 +58,6 @@ class UtbetalingServiceTest {
             sakId = SakId.random(),
             utløsendeId = "vedtakIdFraVedtak",
             ident = "12828098533",
-            antallBarn = 0,
             brukerNavkontor = "0219",
             vedtakstidspunkt = LocalDateTime.now().truncatedTo(ChronoUnit.MILLIS),
             saksbehandler = "saksbehandler",
@@ -73,6 +74,14 @@ class UtbetalingServiceTest {
                 UtbetalingDag(dato = 9.januar(), tiltaktype = TiltakType.ENKELAMO, status = UtbetalingDagStatus.IngenUtbetaling, meldekortId = meldekortId, løpenr = løpenr),
                 UtbetalingDag(dato = 10.januar(), tiltaktype = TiltakType.ENKELAMO, status = UtbetalingDagStatus.IngenUtbetaling, meldekortId = meldekortId, løpenr = løpenr),
                 UtbetalingDag(dato = 11.januar(), tiltaktype = TiltakType.ENKELAMO, status = UtbetalingDagStatus.FullUtbetaling, meldekortId = meldekortId, løpenr = løpenr),
+            ),
+            utfallsperioder = listOf(
+                Utfallsperiode(
+                    fom = 1.januar(),
+                    tom = 11.januar(),
+                    antallBarn = 0,
+                    utfall = UtfallForPeriode.GIR_RETT_TILTAKSPENGER,
+                ),
             ),
             forrigeVedtak = null,
         )
@@ -101,7 +110,6 @@ class UtbetalingServiceTest {
             sakId = SakId.random(),
             utløsendeId = "vedtakIdFraVedtak",
             ident = "12828098533",
-            antallBarn = 2,
             brukerNavkontor = "0219",
             vedtakstidspunkt = LocalDateTime.now().truncatedTo(ChronoUnit.MILLIS),
             saksbehandler = "saksbehandler",
@@ -118,6 +126,14 @@ class UtbetalingServiceTest {
                 UtbetalingDag(dato = 9.januar(), tiltaktype = TiltakType.ENKELAMO, status = UtbetalingDagStatus.IngenUtbetaling, meldekortId = meldekortId, løpenr = løpenr),
                 UtbetalingDag(dato = 10.januar(), tiltaktype = TiltakType.ENKELAMO, status = UtbetalingDagStatus.IngenUtbetaling, meldekortId = meldekortId, løpenr = løpenr),
                 UtbetalingDag(dato = 11.januar(), tiltaktype = TiltakType.ENKELAMO, status = UtbetalingDagStatus.FullUtbetaling, meldekortId = meldekortId, løpenr = løpenr),
+            ),
+            utfallsperioder = listOf(
+                Utfallsperiode(
+                    fom = 1.januar(),
+                    tom = 11.januar(),
+                    antallBarn = 2,
+                    utfall = UtfallForPeriode.GIR_RETT_TILTAKSPENGER,
+                ),
             ),
             forrigeVedtak = null,
         )
@@ -149,46 +165,55 @@ class UtbetalingServiceTest {
         val meldekortId = UUID.randomUUID()
         val dato = DayFactory(1.januar())
 
+        val utbetalinger = listOf(
+            UtbetalingDag(dato = dato.hent(), tiltaktype = TiltakType.ENKELAMO, status = UtbetalingDagStatus.IngenUtbetaling, meldekortId = meldekortId, løpenr = 1),
+            UtbetalingDag(dato = dato.hent(), tiltaktype = TiltakType.ENKELAMO, status = UtbetalingDagStatus.FullUtbetaling, meldekortId = meldekortId, løpenr = 1),
+            UtbetalingDag(dato = dato.hent(), tiltaktype = TiltakType.ENKELAMO, status = UtbetalingDagStatus.FullUtbetaling, meldekortId = meldekortId, løpenr = 1),
+            UtbetalingDag(dato = dato.hent(), tiltaktype = TiltakType.ENKELAMO, status = UtbetalingDagStatus.FullUtbetaling, meldekortId = meldekortId, løpenr = 1),
+            UtbetalingDag(dato = dato.hent(), tiltaktype = TiltakType.ENKELAMO, status = UtbetalingDagStatus.FullUtbetaling, meldekortId = meldekortId, løpenr = 1),
+            UtbetalingDag(dato = dato.hent(), tiltaktype = TiltakType.ENKELAMO, status = UtbetalingDagStatus.IngenUtbetaling, meldekortId = meldekortId, løpenr = 1),
+            UtbetalingDag(dato = dato.hent(), tiltaktype = TiltakType.ENKELAMO, status = UtbetalingDagStatus.IngenUtbetaling, meldekortId = meldekortId, løpenr = 1),
+            UtbetalingDag(dato = dato.hent(), tiltaktype = TiltakType.ENKELAMO, status = UtbetalingDagStatus.IngenUtbetaling, meldekortId = meldekortId, løpenr = 1),
+            UtbetalingDag(dato = dato.hent(), tiltaktype = TiltakType.ENKELAMO, status = UtbetalingDagStatus.FullUtbetaling, meldekortId = meldekortId, løpenr = 1),
+            UtbetalingDag(dato = dato.hent(), tiltaktype = TiltakType.ENKELAMO, status = UtbetalingDagStatus.FullUtbetaling, meldekortId = meldekortId, løpenr = 1),
+            UtbetalingDag(dato = dato.hent(), tiltaktype = TiltakType.ENKELAMO, status = UtbetalingDagStatus.FullUtbetaling, meldekortId = meldekortId, løpenr = 1),
+            UtbetalingDag(dato = dato.hent(), tiltaktype = TiltakType.ENKELAMO, status = UtbetalingDagStatus.FullUtbetaling, meldekortId = meldekortId, løpenr = 1),
+            UtbetalingDag(dato = dato.hent(), tiltaktype = TiltakType.ENKELAMO, status = UtbetalingDagStatus.IngenUtbetaling, meldekortId = meldekortId, løpenr = 1),
+            UtbetalingDag(dato = dato.hent(), tiltaktype = TiltakType.ENKELAMO, status = UtbetalingDagStatus.IngenUtbetaling, meldekortId = meldekortId, løpenr = 1),
+
+            UtbetalingDag(dato = dato.hent(), tiltaktype = TiltakType.ENKELAMO, status = UtbetalingDagStatus.IngenUtbetaling, meldekortId = meldekortId, løpenr = 2),
+            UtbetalingDag(dato = dato.hent(), tiltaktype = TiltakType.ENKELAMO, status = UtbetalingDagStatus.FullUtbetaling, meldekortId = meldekortId, løpenr = 2),
+            UtbetalingDag(dato = dato.hent(), tiltaktype = TiltakType.ENKELAMO, status = UtbetalingDagStatus.FullUtbetaling, meldekortId = meldekortId, løpenr = 2),
+            UtbetalingDag(dato = dato.hent(), tiltaktype = TiltakType.ENKELAMO, status = UtbetalingDagStatus.FullUtbetaling, meldekortId = meldekortId, løpenr = 2),
+            UtbetalingDag(dato = dato.hent(), tiltaktype = TiltakType.ENKELAMO, status = UtbetalingDagStatus.FullUtbetaling, meldekortId = meldekortId, løpenr = 2),
+            UtbetalingDag(dato = dato.hent(), tiltaktype = TiltakType.ENKELAMO, status = UtbetalingDagStatus.IngenUtbetaling, meldekortId = meldekortId, løpenr = 2),
+            UtbetalingDag(dato = dato.hent(), tiltaktype = TiltakType.ENKELAMO, status = UtbetalingDagStatus.IngenUtbetaling, meldekortId = meldekortId, løpenr = 2),
+            UtbetalingDag(dato = dato.hent(), tiltaktype = TiltakType.ENKELAMO, status = UtbetalingDagStatus.IngenUtbetaling, meldekortId = meldekortId, løpenr = 2),
+            UtbetalingDag(dato = dato.hent(), tiltaktype = TiltakType.ENKELAMO, status = UtbetalingDagStatus.FullUtbetaling, meldekortId = meldekortId, løpenr = 2),
+            UtbetalingDag(dato = dato.hent(), tiltaktype = TiltakType.ENKELAMO, status = UtbetalingDagStatus.FullUtbetaling, meldekortId = meldekortId, løpenr = 2),
+            UtbetalingDag(dato = dato.hent(), tiltaktype = TiltakType.ENKELAMO, status = UtbetalingDagStatus.FullUtbetaling, meldekortId = meldekortId, løpenr = 2),
+            UtbetalingDag(dato = dato.hent(), tiltaktype = TiltakType.ENKELAMO, status = UtbetalingDagStatus.FullUtbetaling, meldekortId = meldekortId, løpenr = 2),
+            UtbetalingDag(dato = dato.hent(), tiltaktype = TiltakType.ENKELAMO, status = UtbetalingDagStatus.IngenUtbetaling, meldekortId = meldekortId, løpenr = 2),
+            UtbetalingDag(dato = dato.hent(), tiltaktype = TiltakType.ENKELAMO, status = UtbetalingDagStatus.IngenUtbetaling, meldekortId = meldekortId, løpenr = 2),
+        )
+
         val vedtak = Vedtak(
             id = vedtakId,
             sakId = SakId.random(),
             utløsendeId = "vedtakIdFraVedtak",
             ident = "12828098533",
-            antallBarn = 0,
             brukerNavkontor = "0219",
             vedtakstidspunkt = LocalDateTime.now().truncatedTo(ChronoUnit.MILLIS),
             saksbehandler = "saksbehandler",
             beslutter = "beslutter",
-            utbetalinger = listOf(
-                UtbetalingDag(dato = dato.hent(), tiltaktype = TiltakType.ENKELAMO, status = UtbetalingDagStatus.IngenUtbetaling, meldekortId = meldekortId, løpenr = 1),
-                UtbetalingDag(dato = dato.hent(), tiltaktype = TiltakType.ENKELAMO, status = UtbetalingDagStatus.FullUtbetaling, meldekortId = meldekortId, løpenr = 1),
-                UtbetalingDag(dato = dato.hent(), tiltaktype = TiltakType.ENKELAMO, status = UtbetalingDagStatus.FullUtbetaling, meldekortId = meldekortId, løpenr = 1),
-                UtbetalingDag(dato = dato.hent(), tiltaktype = TiltakType.ENKELAMO, status = UtbetalingDagStatus.FullUtbetaling, meldekortId = meldekortId, løpenr = 1),
-                UtbetalingDag(dato = dato.hent(), tiltaktype = TiltakType.ENKELAMO, status = UtbetalingDagStatus.FullUtbetaling, meldekortId = meldekortId, løpenr = 1),
-                UtbetalingDag(dato = dato.hent(), tiltaktype = TiltakType.ENKELAMO, status = UtbetalingDagStatus.IngenUtbetaling, meldekortId = meldekortId, løpenr = 1),
-                UtbetalingDag(dato = dato.hent(), tiltaktype = TiltakType.ENKELAMO, status = UtbetalingDagStatus.IngenUtbetaling, meldekortId = meldekortId, løpenr = 1),
-                UtbetalingDag(dato = dato.hent(), tiltaktype = TiltakType.ENKELAMO, status = UtbetalingDagStatus.IngenUtbetaling, meldekortId = meldekortId, løpenr = 1),
-                UtbetalingDag(dato = dato.hent(), tiltaktype = TiltakType.ENKELAMO, status = UtbetalingDagStatus.FullUtbetaling, meldekortId = meldekortId, løpenr = 1),
-                UtbetalingDag(dato = dato.hent(), tiltaktype = TiltakType.ENKELAMO, status = UtbetalingDagStatus.FullUtbetaling, meldekortId = meldekortId, løpenr = 1),
-                UtbetalingDag(dato = dato.hent(), tiltaktype = TiltakType.ENKELAMO, status = UtbetalingDagStatus.FullUtbetaling, meldekortId = meldekortId, løpenr = 1),
-                UtbetalingDag(dato = dato.hent(), tiltaktype = TiltakType.ENKELAMO, status = UtbetalingDagStatus.FullUtbetaling, meldekortId = meldekortId, løpenr = 1),
-                UtbetalingDag(dato = dato.hent(), tiltaktype = TiltakType.ENKELAMO, status = UtbetalingDagStatus.IngenUtbetaling, meldekortId = meldekortId, løpenr = 1),
-                UtbetalingDag(dato = dato.hent(), tiltaktype = TiltakType.ENKELAMO, status = UtbetalingDagStatus.IngenUtbetaling, meldekortId = meldekortId, løpenr = 1),
-
-                UtbetalingDag(dato = dato.hent(), tiltaktype = TiltakType.ENKELAMO, status = UtbetalingDagStatus.IngenUtbetaling, meldekortId = meldekortId, løpenr = 2),
-                UtbetalingDag(dato = dato.hent(), tiltaktype = TiltakType.ENKELAMO, status = UtbetalingDagStatus.FullUtbetaling, meldekortId = meldekortId, løpenr = 2),
-                UtbetalingDag(dato = dato.hent(), tiltaktype = TiltakType.ENKELAMO, status = UtbetalingDagStatus.FullUtbetaling, meldekortId = meldekortId, løpenr = 2),
-                UtbetalingDag(dato = dato.hent(), tiltaktype = TiltakType.ENKELAMO, status = UtbetalingDagStatus.FullUtbetaling, meldekortId = meldekortId, løpenr = 2),
-                UtbetalingDag(dato = dato.hent(), tiltaktype = TiltakType.ENKELAMO, status = UtbetalingDagStatus.FullUtbetaling, meldekortId = meldekortId, løpenr = 2),
-                UtbetalingDag(dato = dato.hent(), tiltaktype = TiltakType.ENKELAMO, status = UtbetalingDagStatus.IngenUtbetaling, meldekortId = meldekortId, løpenr = 2),
-                UtbetalingDag(dato = dato.hent(), tiltaktype = TiltakType.ENKELAMO, status = UtbetalingDagStatus.IngenUtbetaling, meldekortId = meldekortId, løpenr = 2),
-                UtbetalingDag(dato = dato.hent(), tiltaktype = TiltakType.ENKELAMO, status = UtbetalingDagStatus.IngenUtbetaling, meldekortId = meldekortId, løpenr = 2),
-                UtbetalingDag(dato = dato.hent(), tiltaktype = TiltakType.ENKELAMO, status = UtbetalingDagStatus.FullUtbetaling, meldekortId = meldekortId, løpenr = 2),
-                UtbetalingDag(dato = dato.hent(), tiltaktype = TiltakType.ENKELAMO, status = UtbetalingDagStatus.FullUtbetaling, meldekortId = meldekortId, løpenr = 2),
-                UtbetalingDag(dato = dato.hent(), tiltaktype = TiltakType.ENKELAMO, status = UtbetalingDagStatus.FullUtbetaling, meldekortId = meldekortId, løpenr = 2),
-                UtbetalingDag(dato = dato.hent(), tiltaktype = TiltakType.ENKELAMO, status = UtbetalingDagStatus.FullUtbetaling, meldekortId = meldekortId, løpenr = 2),
-                UtbetalingDag(dato = dato.hent(), tiltaktype = TiltakType.ENKELAMO, status = UtbetalingDagStatus.IngenUtbetaling, meldekortId = meldekortId, løpenr = 2),
-                UtbetalingDag(dato = dato.hent(), tiltaktype = TiltakType.ENKELAMO, status = UtbetalingDagStatus.IngenUtbetaling, meldekortId = meldekortId, løpenr = 2),
+            utbetalinger = utbetalinger,
+            utfallsperioder = listOf(
+                Utfallsperiode(
+                    fom = utbetalinger.minBy { it.dato }.dato,
+                    tom = utbetalinger.maxBy { it.dato }.dato,
+                    antallBarn = 0,
+                    utfall = UtfallForPeriode.GIR_RETT_TILTAKSPENGER,
+                ),
             ),
             forrigeVedtak = null,
         )

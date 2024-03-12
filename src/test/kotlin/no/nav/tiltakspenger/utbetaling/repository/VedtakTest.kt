@@ -7,6 +7,8 @@ import no.nav.tiltakspenger.utbetaling.domene.SakId
 import no.nav.tiltakspenger.utbetaling.domene.TiltakType
 import no.nav.tiltakspenger.utbetaling.domene.UtbetalingDag
 import no.nav.tiltakspenger.utbetaling.domene.UtbetalingDagStatus
+import no.nav.tiltakspenger.utbetaling.domene.UtfallForPeriode
+import no.nav.tiltakspenger.utbetaling.domene.Utfallsperiode
 import no.nav.tiltakspenger.utbetaling.domene.Vedtak
 import no.nav.tiltakspenger.utbetaling.domene.VedtakId
 import no.nav.tiltakspenger.utbetaling.service.januar
@@ -85,11 +87,18 @@ private fun lagVedtak(
     sakId = SakId.random(),
     utløsendeId = "vedtakIdFraVedtak",
     ident = "12345678901",
-    antallBarn = antallBarn,
     brukerNavkontor = "0219",
     vedtakstidspunkt = LocalDateTime.now().truncatedTo(ChronoUnit.MILLIS),
     saksbehandler = "saksbehandler",
     beslutter = "beslutter",
     utbetalinger = utbetalinger,
+    utfallsperioder = listOf(
+        Utfallsperiode(
+            fom = utbetalinger.minByOrNull { it.dato }?.dato ?: 1.januar(),
+            tom = utbetalinger.maxByOrNull { it.dato }?.dato ?: 11.januar(),
+            antallBarn = antallBarn,
+            utfall = UtfallForPeriode.GIR_RETT_TILTAKSPENGER,
+        ),
+    ),
     forrigeVedtak = forrigeVedtakId,
 )

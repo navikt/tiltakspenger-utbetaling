@@ -17,9 +17,11 @@ import no.nav.tiltakspenger.utbetaling.domene.TiltakType
 import no.nav.tiltakspenger.utbetaling.domene.Utbetaling
 import no.nav.tiltakspenger.utbetaling.domene.UtbetalingDag
 import no.nav.tiltakspenger.utbetaling.domene.UtbetalingDagStatus
+import no.nav.tiltakspenger.utbetaling.domene.Utfallsperiode
 import no.nav.tiltakspenger.utbetaling.domene.Vedtak
 import no.nav.tiltakspenger.utbetaling.domene.VedtakId
-import no.nav.tiltakspenger.utbetaling.domene.nyttVedtak
+import no.nav.tiltakspenger.utbetaling.domene.antallBarn
+import no.nav.tiltakspenger.utbetaling.domene.nyttUtbetalingVedtak
 import no.nav.tiltakspenger.utbetaling.repository.VedtakRepo
 import no.nav.tiltakspenger.utbetaling.routes.utbetaling.GrunnlagDTO
 import java.time.LocalDate
@@ -38,7 +40,7 @@ class UtbetalingServiceImpl(
         val forrigeVedtak = vedtakRepo.hentForrigeUtbetalingVedtak(utbetaling.sakId)
         checkNotNull(forrigeVedtak) { "Fant ikke forrige utbetalingvedtak" }
 
-        val vedtak = forrigeVedtak.nyttVedtak(
+        val vedtak = forrigeVedtak.nyttUtbetalingVedtak(
             saksbehandler = utbetaling.saksbehandler,
             utløsendeId = utbetaling.utløsendeMeldekortId,
             utbetalinger = utbetaling.utbetalingDager,
@@ -66,7 +68,7 @@ class UtbetalingServiceImpl(
         return grunnlagDTO.fom.datesUntil(grunnlagDTO.tom.plusDays(1)).map {
             val satsForDag = Satser.sats(it)
             UtbetalingGrunnlagDag(
-                antallBarn = vedtak.antallBarn,
+                antallBarn = vedtak.utfallsperioder.antallBarn(it),
                 sats = satsForDag.sats,
                 satsDelvis = satsForDag.satsDelvis,
                 satsBarn = satsForDag.satsBarnetillegg,
@@ -122,20 +124,21 @@ fun mapIverksettDTO(vedtak: Vedtak) =
             beslutterId = vedtak.saksbehandler,
             brukersNavKontor = BrukersNavKontor(
                 enhet = vedtak.brukerNavkontor,
-                gjelderFom = LocalDate.of(1970, 1, 1), // finne ut hva vi setter denne til
             ),
             utbetalinger = vedtak.utbetalinger
+                .asSequence()
                 .sortedBy { it.dato }
                 .groupBy { it.løpenr }
                 .map { (_, dager) ->
                     dager
-                        .lagUtbetalingDtoPrDag(vedtak.antallBarn)
+                        .lagUtbetalingDtoPrDag(vedtak.utfallsperioder)
                         .fold(emptyList<UtbetalingDto>()) { periodisertliste, nesteDag ->
                             periodisertliste.slåSammen(nesteDag)
                         }
                 }
                 .flatten()
-                .filter { it.beløpPerDag > 0 },
+                .filter { it.beløpPerDag > 0 }
+                .toList(),
         ),
         forrigeIverksetting = vedtak.forrigeVedtak?.let {
             ForrigeIverksettingDto(
@@ -144,7 +147,7 @@ fun mapIverksettDTO(vedtak: Vedtak) =
         },
     )
 
-private fun List<UtbetalingDag>.lagUtbetalingDtoPrDag(antallBarn: Int): List<UtbetalingDto> {
+private fun List<UtbetalingDag>.lagUtbetalingDtoPrDag(utfallsperioder: List<Utfallsperiode>): List<UtbetalingDto> {
     val dager = this.map { dag ->
         UtbetalingDto(
             beløpPerDag = dag.mapSats(),
@@ -157,10 +160,10 @@ private fun List<UtbetalingDag>.lagUtbetalingDtoPrDag(antallBarn: Int): List<Utb
         )
     }
 
-    return if (antallBarn > 0) {
+    return if (utfallsperioder.any { it.antallBarn > 0 }) {
         dager + this.map { dag ->
             UtbetalingDto(
-                beløpPerDag = dag.mapBarnetilleggSats(antallBarn),
+                beløpPerDag = dag.mapBarnetilleggSats(utfallsperioder.antallBarn(dag.dato)),
                 fraOgMedDato = dag.dato,
                 tilOgMedDato = dag.dato,
                 stønadsdata = StønadsdataTiltakspengerDto(
