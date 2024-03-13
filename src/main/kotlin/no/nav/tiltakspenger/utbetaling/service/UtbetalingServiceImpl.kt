@@ -131,13 +131,14 @@ fun mapIverksettDTO(vedtak: Vedtak) =
                 .groupBy { it.løpenr }
                 .map { (_, dager) ->
                     dager
-                        .lagUtbetalingDtoPrDag(vedtak.utfallsperioder)
-                        .fold(emptyList<UtbetalingDto>()) { periodisertliste, nesteDag ->
+                        .lagUtbetalingDtoMedTiltaktypePerDag(vedtak.utfallsperioder)
+                        .fold(emptyList<UtbetalingDtoMedTiltaktype>()) { periodisertliste, nesteDag ->
                             periodisertliste.slåSammen(nesteDag)
                         }
                 }
                 .flatten()
                 .filter { it.beløpPerDag > 0 }
+                .toUtbetalingDto()
                 .toList(),
         ),
         forrigeIverksetting = vedtak.forrigeVedtak?.let {
@@ -147,14 +148,39 @@ fun mapIverksettDTO(vedtak: Vedtak) =
         },
     )
 
-private fun List<UtbetalingDag>.lagUtbetalingDtoPrDag(utfallsperioder: List<Utfallsperiode>): List<UtbetalingDto> {
-    val dager = this.map { dag ->
+data class UtbetalingDtoMedTiltaktype(
+    val beløpPerDag: Int,
+    val fraOgMedDato: LocalDate,
+    val tilOgMedDato: LocalDate,
+    val stønadsdata: StønadsdataDtoMedTiltaktype,
+)
+data class StønadsdataDtoMedTiltaktype(
+    val stønadstype: TiltakType,
+    val barnetillegg: Boolean,
+)
+
+private fun List<UtbetalingDtoMedTiltaktype>.toUtbetalingDto(): List<UtbetalingDto> {
+    return this.map {
         UtbetalingDto(
+            beløpPerDag = it.beløpPerDag,
+            fraOgMedDato = it.fraOgMedDato,
+            tilOgMedDato = it.tilOgMedDato,
+            stønadsdata = StønadsdataTiltakspengerDto(
+                stønadstype = it.stønadsdata.stønadstype.mapStønadstype(),
+                barnetillegg = it.stønadsdata.barnetillegg,
+            ),
+        )
+    }
+}
+
+private fun List<UtbetalingDag>.lagUtbetalingDtoMedTiltaktypePerDag(utfallsperioder: List<Utfallsperiode>): List<UtbetalingDtoMedTiltaktype> {
+    val dager = this.map { dag ->
+        UtbetalingDtoMedTiltaktype(
             beløpPerDag = dag.mapSats(),
             fraOgMedDato = dag.dato,
             tilOgMedDato = dag.dato,
-            stønadsdata = StønadsdataTiltakspengerDto(
-                stønadstype = dag.mapStønadstype(),
+            stønadsdata = StønadsdataDtoMedTiltaktype(
+                stønadstype = dag.tiltaktype,
                 barnetillegg = false,
             ),
         )
@@ -162,12 +188,12 @@ private fun List<UtbetalingDag>.lagUtbetalingDtoPrDag(utfallsperioder: List<Utfa
 
     return if (utfallsperioder.any { it.antallBarn > 0 }) {
         dager + this.map { dag ->
-            UtbetalingDto(
+            UtbetalingDtoMedTiltaktype(
                 beløpPerDag = dag.mapBarnetilleggSats(utfallsperioder.antallBarn(dag.dato)),
                 fraOgMedDato = dag.dato,
                 tilOgMedDato = dag.dato,
-                stønadsdata = StønadsdataTiltakspengerDto(
-                    stønadstype = dag.mapStønadstype(),
+                stønadsdata = StønadsdataDtoMedTiltaktype(
+                    stønadstype = dag.tiltaktype,
                     barnetillegg = true,
                 ),
             )
@@ -177,7 +203,7 @@ private fun List<UtbetalingDag>.lagUtbetalingDtoPrDag(utfallsperioder: List<Utfa
     }
 }
 
-private fun List<UtbetalingDto>.slåSammen(neste: UtbetalingDto): List<UtbetalingDto> {
+private fun List<UtbetalingDtoMedTiltaktype>.slåSammen(neste: UtbetalingDtoMedTiltaktype): List<UtbetalingDtoMedTiltaktype> {
     if (this.isEmpty()) return listOf(neste)
     val forrige = this.last()
     return if (forrige.beløpPerDag == neste.beløpPerDag && forrige.stønadsdata.stønadstype == neste.stønadsdata.stønadstype) {
@@ -201,7 +227,7 @@ fun UtbetalingDag.mapBarnetilleggSats(antallBarn: Int): Int = when (this.status)
     UtbetalingDagStatus.IngenUtbetaling -> 0
 }
 
-private fun UtbetalingDag.mapStønadstype(): StønadTypeTiltakspenger = when (this.tiltaktype) {
+private fun TiltakType.mapStønadstype(): StønadTypeTiltakspenger = when (this) {
     TiltakType.AMBF1 -> TODO()
     TiltakType.ABOPPF -> TODO()
     TiltakType.ABUOPPF -> TODO()
@@ -263,4 +289,5 @@ private fun UtbetalingDag.mapStønadstype(): StønadTypeTiltakspenger = when (th
     TiltakType.UTVOPPFOPL -> StønadTypeTiltakspenger.UTVIDET_OPPFØLGING_I_OPPLÆRING
     TiltakType.OPPLT2AAR -> TODO()
     TiltakType.FORSOPPLEV -> StønadTypeTiltakspenger.FORSØK_OPPLÆRING_LENGRE_VARIGHET
+    TiltakType.UTEN_TILTAK -> throw IllegalStateException("Skal ikke være mulig å sende utbetaling for dag uten tiltak")
 }

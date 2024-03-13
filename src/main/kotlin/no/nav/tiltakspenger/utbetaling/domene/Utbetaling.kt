@@ -86,4 +86,5 @@ enum class TiltakType {
     UTVOPPFOPL,
     OPPLT2AAR,
     FORSOPPLEV,
+    UTEN_TILTAK,
 }
