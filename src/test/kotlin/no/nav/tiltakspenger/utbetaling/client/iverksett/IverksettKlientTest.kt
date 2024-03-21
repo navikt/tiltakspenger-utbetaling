@@ -3,7 +3,6 @@ package no.nav.tiltakspenger.utbetaling.client.iverksett
 import io.ktor.client.engine.mock.MockEngine
 import io.ktor.client.engine.mock.respond
 import kotlinx.coroutines.test.runTest
-import no.nav.dagpenger.kontrakter.felles.GeneriskIdSomUUID
 import no.nav.dagpenger.kontrakter.felles.Personident
 import no.nav.dagpenger.kontrakter.iverksett.IverksettDto
 import no.nav.dagpenger.kontrakter.iverksett.VedtaksdetaljerDto
@@ -48,8 +47,8 @@ internal class IverksettKlientTest {
 //    }
 
     private val okIverksettDto = IverksettDto(
-        sakId = GeneriskIdSomUUID(SakId.random().uuid()),
-        behandlingId = GeneriskIdSomUUID(BehandlingId.random().uuid()),
+        sakId = SakId("sakId").verdi,
+        behandlingId = BehandlingId.random().uuidPart(),
         personident = Personident(
             verdi = "21848397986",
         ),

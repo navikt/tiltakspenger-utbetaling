@@ -60,7 +60,7 @@ internal class UtbetalingRoutesTest {
 
             val expectedVedtak = Vedtak(
                 id = capturedVedtak.captured.id,
-                sakId = SakId.fromDb("sak_01HGD8E4RY7KSZ1YVVB1NK1XGH"),
+                sakId = SakId("202401011001"),
                 utløsendeId = "ved_01HGD8E4RYT11M0P0AX99F05X8",
                 ident = "12345678901",
                 brukerNavkontor = "0219",
@@ -85,7 +85,7 @@ internal class UtbetalingRoutesTest {
 
     private val rammevedtakJson = """
         {
-            "sakId": "sak_01HGD8E4RY7KSZ1YVVB1NK1XGH",
+            "sakId": "202401011001",
             "utløsendeId": "ved_01HGD8E4RYT11M0P0AX99F05X8",
             "ident": "12345678901",
             "brukerNavkontor": "0219",

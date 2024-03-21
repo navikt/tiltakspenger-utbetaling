@@ -2,7 +2,6 @@ package no.nav.tiltakspenger.utbetaling.service
 
 import io.kotest.matchers.collections.shouldContainExactlyInAnyOrder
 import io.kotest.matchers.shouldBe
-import no.nav.dagpenger.kontrakter.felles.GeneriskIdSomUUID
 import no.nav.dagpenger.kontrakter.felles.StønadTypeTiltakspenger
 import no.nav.dagpenger.kontrakter.iverksett.StønadsdataTiltakspengerDto
 import no.nav.dagpenger.kontrakter.iverksett.UtbetalingDto
@@ -28,7 +27,7 @@ class UtbetalingServiceTest {
     @Test
     fun `map rammevedtak`() {
         val vedtakId = VedtakId.random()
-        val sakId = SakId.random()
+        val sakId = SakId("SakId")
         val vedtak = Vedtak(
             id = vedtakId,
             sakId = sakId,
@@ -43,7 +42,7 @@ class UtbetalingServiceTest {
             forrigeVedtak = null,
         )
         val dto = mapIverksettDTO(vedtak)
-        dto.sakId shouldBe GeneriskIdSomUUID(sakId.uuid())
+        dto.sakId shouldBe "SakId"
         dto.forrigeIverksetting shouldBe null
         dto.vedtak.utbetalinger shouldBe emptyList()
     }
@@ -55,7 +54,7 @@ class UtbetalingServiceTest {
         val løpenr = 1
         val vedtak = Vedtak(
             id = vedtakId,
-            sakId = SakId.random(),
+            sakId = SakId("SakId"),
             utløsendeId = "vedtakIdFraVedtak",
             ident = "12828098533",
             brukerNavkontor = "0219",
@@ -107,7 +106,7 @@ class UtbetalingServiceTest {
         val løpenr = 1
         val vedtak = Vedtak(
             id = vedtakId,
-            sakId = SakId.random(),
+            sakId = SakId("SakId"),
             utløsendeId = "vedtakIdFraVedtak",
             ident = "12828098533",
             brukerNavkontor = "0219",
@@ -199,7 +198,7 @@ class UtbetalingServiceTest {
 
         val vedtak = Vedtak(
             id = vedtakId,
-            sakId = SakId.random(),
+            sakId = SakId("SakId"),
             utløsendeId = "vedtakIdFraVedtak",
             ident = "12828098533",
             brukerNavkontor = "0219",

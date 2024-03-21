@@ -34,7 +34,7 @@ enum class UtfallForPeriodeDTO {
 
 fun mapRammevedtak(dto: RammevedtakDTO) = Vedtak(
     id = VedtakId.random(),
-    sakId = SakId.fromDb(dto.sakId),
+    sakId = SakId(dto.sakId),
     utløsendeId = dto.utløsendeId,
     ident = dto.ident,
     brukerNavkontor = dto.brukerNavkontor,

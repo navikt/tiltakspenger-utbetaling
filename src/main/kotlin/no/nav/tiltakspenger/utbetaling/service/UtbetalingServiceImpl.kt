@@ -1,7 +1,6 @@
 package no.nav.tiltakspenger.utbetaling.service
 
 import no.nav.dagpenger.kontrakter.felles.BrukersNavKontor
-import no.nav.dagpenger.kontrakter.felles.GeneriskIdSomUUID
 import no.nav.dagpenger.kontrakter.felles.Personident
 import no.nav.dagpenger.kontrakter.felles.StønadTypeTiltakspenger
 import no.nav.dagpenger.kontrakter.iverksett.ForrigeIverksettingDto
@@ -113,8 +112,8 @@ data class UtbetalingGrunnlagDag(
 
 fun mapIverksettDTO(vedtak: Vedtak) =
     IverksettDto(
-        sakId = GeneriskIdSomUUID(vedtak.sakId.uuid()),
-        behandlingId = GeneriskIdSomUUID(vedtak.id.uuid()),
+        sakId = vedtak.sakId.verdi,
+        behandlingId = vedtak.id.uuidPart(), // GeneriskIdSomUUID(vedtak.id.uuid()),
         personident = Personident(
             verdi = vedtak.ident,
         ),
@@ -143,7 +142,7 @@ fun mapIverksettDTO(vedtak: Vedtak) =
         ),
         forrigeIverksetting = vedtak.forrigeVedtak?.let {
             ForrigeIverksettingDto(
-                behandlingId = GeneriskIdSomUUID(it.uuid()),
+                behandlingId = it.uuidPart(), // GeneriskIdSomUUID(it.uuid()),
             )
         },
     )

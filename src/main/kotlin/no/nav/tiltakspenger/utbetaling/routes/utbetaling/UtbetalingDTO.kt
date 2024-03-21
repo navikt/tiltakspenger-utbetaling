@@ -6,10 +6,10 @@ import no.nav.tiltakspenger.utbetaling.domene.Utbetaling
 import no.nav.tiltakspenger.utbetaling.domene.UtbetalingDag
 import no.nav.tiltakspenger.utbetaling.domene.UtbetalingDagStatus
 import java.time.LocalDate
-import java.util.*
+import java.util.UUID
 
 data class UtbetalingDTO(
-    val sakId: SakId,
+    val sakId: String,
     val utløsendeMeldekortId: String,
     val utbetalingDager: List<UtbetalingDagDTO>,
     val saksbehandler: String,
@@ -30,7 +30,7 @@ enum class UtbetalingDagStatusDTO {
 }
 
 fun mapUtbetalingVedtak(dto: UtbetalingDTO) = Utbetaling(
-    sakId = dto.sakId,
+    sakId = SakId(dto.sakId),
     utløsendeMeldekortId = dto.utløsendeMeldekortId,
     utbetalingDager = dto.utbetalingDager.map { dag ->
         UtbetalingDag(

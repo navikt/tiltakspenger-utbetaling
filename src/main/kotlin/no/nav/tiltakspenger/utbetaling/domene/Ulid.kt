@@ -9,6 +9,7 @@ interface Ulid : Comparable<Ulid> {
     fun prefixPart(): String
     fun ulidPart(): String
     fun uuid(): UUID = ulidToUuid(ulidPart())
+    fun uuidPart(): String
     override fun toString(): String
 }
 
@@ -37,6 +38,8 @@ data class UlidBase(private val stringValue: String) : Ulid {
     override fun prefixPart(): String = stringValue.split("_").first()
     override fun ulidPart(): String = stringValue.split("_").last()
     override fun toString() = stringValue
+    override fun uuidPart() = this.ulidPart().substring(11, 26)
+
     override fun compareTo(other: Ulid) = this.toString().compareTo(other.toString())
 }
 
@@ -48,17 +51,6 @@ data class VedtakId private constructor(private val ulid: UlidBase) : Ulid by ul
         fun fromDb(stringValue: String) = VedtakId(ulid = UlidBase(stringValue))
 
         fun fromUUID(uuid: UUID) = VedtakId(ulid = UlidBase("${PREFIX}_${uuidToUlid(uuid)}"))
-    }
-}
-
-data class SakId private constructor(private val ulid: UlidBase) : Ulid by ulid {
-    companion object {
-        private const val PREFIX = "sak"
-        fun random() = SakId(ulid = UlidBase("${PREFIX}_${ULID.randomULID()}"))
-
-        fun fromDb(stringValue: String) = SakId(ulid = UlidBase(stringValue))
-
-        fun fromUUID(uuid: UUID) = SakId(ulid = UlidBase("${PREFIX}_${uuidToUlid(uuid)}"))
     }
 }
 

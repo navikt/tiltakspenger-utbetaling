@@ -23,7 +23,7 @@ class VedtakRepoImpl(
                         sqlLagre,
                         mapOf(
                             "id" to vedtak.id.toString(),
-                            "sakId" to vedtak.sakId.toString(),
+                            "sakId" to vedtak.sakId.verdi,
                             "utlosendeId" to vedtak.utløsendeId,
                             "ident" to vedtak.ident,
                             "brukerNavnkontor" to vedtak.brukerNavkontor,
@@ -82,7 +82,7 @@ class VedtakRepoImpl(
                     queryOf(
                         sqlHentAlleVedtakForSak,
                         mapOf(
-                            "sakId" to sakId.toString(),
+                            "sakId" to sakId.verdi,
                         ),
                     ).map { row ->
                         row.toVedtak(txSession)
@@ -116,7 +116,7 @@ class VedtakRepoImpl(
                     queryOf(
                         sqlHentSisteVedtakForSak,
                         mapOf(
-                            "sakId" to sakId.toString(),
+                            "sakId" to sakId.verdi,
                         ),
                     ).map { row ->
                         row.toVedtak(txSession)
@@ -127,14 +127,14 @@ class VedtakRepoImpl(
     }
 
     private fun Row.toSakId(): SakId? {
-        return stringOrNull("sakId")?.let { SakId.fromDb(it) }
+        return stringOrNull("sakId")?.let { SakId(it) }
     }
 
     private fun Row.toVedtak(tx: TransactionalSession): Vedtak {
         val vedtakId = VedtakId.fromDb(string("id"))
         return Vedtak(
             id = vedtakId,
-            sakId = SakId.fromDb(string("sakId")),
+            sakId = SakId(string("sakId")),
             utløsendeId = string("utløsendeId"),
             ident = string("ident"),
             brukerNavkontor = string("brukerNavkontor"),

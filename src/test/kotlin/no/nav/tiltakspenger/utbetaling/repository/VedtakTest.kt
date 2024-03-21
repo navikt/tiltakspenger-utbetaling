@@ -84,7 +84,7 @@ private fun lagVedtak(
     forrigeVedtakId: VedtakId? = null,
 ) = Vedtak(
     id = vedtakId,
-    sakId = SakId.random(),
+    sakId = SakId("SakId"),
     utløsendeId = "vedtakIdFraVedtak",
     ident = "12345678901",
     brukerNavkontor = "0219",
