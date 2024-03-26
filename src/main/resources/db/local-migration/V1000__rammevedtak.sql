@@ -1,1 +1,0 @@
-INSERT INTO public.vedtak (id, sakid, utløsendeId, ident, brukerNavkontor, vedtakstidspunkt, saksbehandler, beslutter, forrigeVedtakId) VALUES ('ved_01HGD8E4RY7KSZ1YVVB1NK1XGH', '202401011001', 'ved_01HGD8E4RYT11M0P0AX99F05X8', '21848397986', '0219', '2024-01-24 14:35:47.000000', 'Z12345X', 'Z123456', null);
