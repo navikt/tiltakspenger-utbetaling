@@ -4,7 +4,7 @@ val ktorVersjon = "2.3.7"
 val jacksonVersjon = "2.16.1"
 val kotestVersjon = "5.8.0"
 val tokenSupportVersjon = "3.2.0"
-val iverksettVersjon = "3.0_20240314121254_de10ebc"
+val iverksettVersjon = "1.0_20240408113510_4a2db84"
 val flywayVersjon = "10.6.0"
 val testContainersVersion = "1.19.4"
 val kotlinxCoroutinesVersion = "1.7.3"
@@ -37,7 +37,7 @@ dependencies {
     implementation("com.natpryce:konfig:1.6.10.0")
     implementation("com.aallam.ulid:ulid-kotlin:1.3.0")
 
-    implementation("no.nav.dagpenger.kontrakter:iverksett:$iverksettVersjon")
+    implementation("no.nav.utsjekk.kontrakter:iverksett:$iverksettVersjon")
 
     implementation("io.ktor:ktor-server-netty:$ktorVersjon")
     implementation("io.ktor:ktor-serialization-jackson:$ktorVersjon")

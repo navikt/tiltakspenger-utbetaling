@@ -12,10 +12,10 @@ import io.ktor.http.ContentType
 import io.ktor.http.HttpStatusCode
 import io.ktor.http.contentType
 import mu.KotlinLogging
-import no.nav.dagpenger.kontrakter.iverksett.IverksettDto
 import no.nav.tiltakspenger.utbetaling.Configuration
 import no.nav.tiltakspenger.utbetaling.auth.defaultHttpClient
 import no.nav.tiltakspenger.utbetaling.auth.defaultObjectMapper
+import no.nav.utsjekk.kontrakter.iverksett.IverksettDto
 
 private val log = KotlinLogging.logger {}
 

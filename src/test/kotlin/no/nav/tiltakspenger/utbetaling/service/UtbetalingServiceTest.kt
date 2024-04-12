@@ -2,9 +2,6 @@ package no.nav.tiltakspenger.utbetaling.service
 
 import io.kotest.matchers.collections.shouldContainExactlyInAnyOrder
 import io.kotest.matchers.shouldBe
-import no.nav.dagpenger.kontrakter.felles.StønadTypeTiltakspenger
-import no.nav.dagpenger.kontrakter.iverksett.StønadsdataTiltakspengerDto
-import no.nav.dagpenger.kontrakter.iverksett.UtbetalingDto
 import no.nav.tiltakspenger.utbetaling.domene.SakId
 import no.nav.tiltakspenger.utbetaling.domene.Satser
 import no.nav.tiltakspenger.utbetaling.domene.TiltakType
@@ -14,6 +11,9 @@ import no.nav.tiltakspenger.utbetaling.domene.UtfallForPeriode
 import no.nav.tiltakspenger.utbetaling.domene.Utfallsperiode
 import no.nav.tiltakspenger.utbetaling.domene.Vedtak
 import no.nav.tiltakspenger.utbetaling.domene.VedtakId
+import no.nav.utsjekk.kontrakter.felles.StønadTypeTiltakspenger
+import no.nav.utsjekk.kontrakter.iverksett.StønadsdataTiltakspengerDto
+import no.nav.utsjekk.kontrakter.iverksett.UtbetalingDto
 import org.junit.jupiter.api.Test
 import java.time.LocalDate
 import java.time.LocalDateTime

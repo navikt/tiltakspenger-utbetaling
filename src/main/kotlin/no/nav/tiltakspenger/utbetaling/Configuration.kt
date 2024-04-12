@@ -61,16 +61,16 @@ object Configuration {
     private val devProperties = ConfigurationMap(
         mapOf(
             "application.profile" to Profile.DEV.toString(),
-            "IVERKSETT_SCOPE" to "api://dev-gcp.teamdagpenger.dp-iverksett/.default",
-            "IVERKSETT_URL" to "http://dp-iverksett.teamdagpenger",
+            "IVERKSETT_SCOPE" to "api://dev-gcp.helved.utsjekk/.default",
+            "IVERKSETT_URL" to "http://utsjekk.helved",
         ),
     )
 
     private val prodProperties = ConfigurationMap(
         mapOf(
             "application.profile" to Profile.PROD.toString(),
-            "IVERKSETT_SCOPE" to "api://prod-gcp.teamdagpenger.dp-iverksett/.default",
-            "IVERKSETT_URL" to "https://dp-iverksett.teamdagpenger",
+            "IVERKSETT_SCOPE" to "api://prod-gcp.helved.utsjekk/.default",
+            "IVERKSETT_URL" to "https://utsjekk.helved",
         ),
     )
 
