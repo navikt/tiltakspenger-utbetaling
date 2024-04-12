@@ -1,13 +1,5 @@
 package no.nav.tiltakspenger.utbetaling.service
 
-import no.nav.dagpenger.kontrakter.felles.BrukersNavKontor
-import no.nav.dagpenger.kontrakter.felles.Personident
-import no.nav.dagpenger.kontrakter.felles.StønadTypeTiltakspenger
-import no.nav.dagpenger.kontrakter.iverksett.ForrigeIverksettingDto
-import no.nav.dagpenger.kontrakter.iverksett.IverksettDto
-import no.nav.dagpenger.kontrakter.iverksett.StønadsdataTiltakspengerDto
-import no.nav.dagpenger.kontrakter.iverksett.UtbetalingDto
-import no.nav.dagpenger.kontrakter.iverksett.VedtaksdetaljerDto
 import no.nav.tiltakspenger.utbetaling.client.iverksett.IverksettKlient
 import no.nav.tiltakspenger.utbetaling.client.iverksett.IverksettKlient.Response
 import no.nav.tiltakspenger.utbetaling.domene.BehandlingId
@@ -23,6 +15,14 @@ import no.nav.tiltakspenger.utbetaling.domene.antallBarn
 import no.nav.tiltakspenger.utbetaling.domene.nyttUtbetalingVedtak
 import no.nav.tiltakspenger.utbetaling.repository.VedtakRepo
 import no.nav.tiltakspenger.utbetaling.routes.utbetaling.GrunnlagDTO
+import no.nav.utsjekk.kontrakter.felles.BrukersNavKontor
+import no.nav.utsjekk.kontrakter.felles.Personident
+import no.nav.utsjekk.kontrakter.felles.StønadTypeTiltakspenger
+import no.nav.utsjekk.kontrakter.iverksett.ForrigeIverksettingDto
+import no.nav.utsjekk.kontrakter.iverksett.IverksettDto
+import no.nav.utsjekk.kontrakter.iverksett.StønadsdataTiltakspengerDto
+import no.nav.utsjekk.kontrakter.iverksett.UtbetalingDto
+import no.nav.utsjekk.kontrakter.iverksett.VedtaksdetaljerDto
 import java.time.LocalDate
 
 class UtbetalingServiceImpl(

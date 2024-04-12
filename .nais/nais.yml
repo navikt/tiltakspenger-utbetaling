@@ -50,6 +50,6 @@ spec:
           cluster: {{ cluster }}
     outbound:
       rules:
-        - application: dp-iverksett
-          namespace: teamdagpenger
+        - application: utsjekk
+          namespace: helved
       external:
