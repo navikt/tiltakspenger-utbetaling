@@ -1,5 +1,5 @@
 val javaVersjon = JavaVersion.VERSION_21
-val mockkVersjon = "1.13.11"
+val mockkVersjon = "1.13.12"
 val ktorVersjon = "2.3.12"
 val jacksonVersjon = "2.17.2"
 val kotestVersjon = "5.9.1"
