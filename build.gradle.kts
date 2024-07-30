@@ -5,7 +5,7 @@ val jacksonVersjon = "2.17.2"
 val kotestVersjon = "5.9.1"
 val tokenSupportVersjon = "3.2.0"
 val iverksettVersjon = "1.0_20240606152736_ac08381"
-val flywayVersjon = "10.16.0"
+val flywayVersjon = "10.17.0"
 val testContainersVersion = "1.20.0"
 val kotlinxCoroutinesVersion = "1.8.1"
 
