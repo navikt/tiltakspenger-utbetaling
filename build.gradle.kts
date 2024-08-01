@@ -6,7 +6,7 @@ val kotestVersjon = "5.9.1"
 val tokenSupportVersjon = "3.2.0"
 val iverksettVersjon = "1.0_20240606152736_ac08381"
 val flywayVersjon = "10.17.0"
-val testContainersVersion = "1.20.0"
+val testContainersVersion = "1.20.1"
 val kotlinxCoroutinesVersion = "1.8.1"
 
 val githubUser: String by project
