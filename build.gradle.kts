@@ -8,6 +8,7 @@ val iverksettVersjon = "1.0_20240606152736_ac08381"
 val flywayVersjon = "10.17.0"
 val testContainersVersion = "1.20.1"
 val kotlinxCoroutinesVersion = "1.8.1"
+val felleslibVersion = "0.0.171"
 
 val githubUser: String by project
 val githubPassword: String by project
@@ -36,6 +37,9 @@ dependencies {
     implementation("org.jetbrains:annotations:24.1.0")
     implementation("com.natpryce:konfig:1.6.10.0")
     implementation("com.aallam.ulid:ulid-kotlin:1.3.0")
+
+
+    implementation("com.github.navikt.tiltakspenger-libs:common:$felleslibVersion")
 
     implementation("no.nav.utsjekk.kontrakter:iverksett:$iverksettVersjon")
 

@@ -1,6 +1,6 @@
 package no.nav.tiltakspenger.utbetaling.routes.utbetaling
 
-import no.nav.tiltakspenger.utbetaling.domene.BehandlingId
+import no.nav.tiltakspenger.libs.common.BehandlingId
 import no.nav.tiltakspenger.utbetaling.service.UtbetalingGrunnlagDag
 import java.time.LocalDate
 

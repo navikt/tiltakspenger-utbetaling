@@ -8,8 +8,8 @@ import io.ktor.server.routing.Route
 import io.ktor.server.routing.get
 import io.ktor.server.routing.post
 import mu.KotlinLogging
-import no.nav.tiltakspenger.utbetaling.domene.BehandlingId
-import no.nav.tiltakspenger.utbetaling.domene.VedtakId
+import no.nav.tiltakspenger.libs.common.BehandlingId
+import no.nav.tiltakspenger.libs.common.VedtakId
 import no.nav.tiltakspenger.utbetaling.service.UtbetalingService
 
 private val LOG = KotlinLogging.logger {}
@@ -43,7 +43,7 @@ fun Route.utbetaling(utbetalingService: UtbetalingService) {
         LOG.info { "hent alle utbetalingsvedtak for behandling $id" }
 
         checkNotNull(id) { "Mangler BehandlingId" }
-        val behandlingId = BehandlingId.fromDb(id)
+        val behandlingId = BehandlingId.fromString(id)
         val vedtak = utbetalingService.hentAlleVedtak(behandlingId).filterNot { it.utbetalinger.isEmpty() }
 
         call.respond(status = HttpStatusCode.OK, mapAlleVedtak(vedtak))

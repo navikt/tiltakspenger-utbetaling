@@ -1,10 +1,10 @@
 package no.nav.tiltakspenger.utbetaling.service
 
+import no.nav.tiltakspenger.libs.common.BehandlingId
+import no.nav.tiltakspenger.libs.common.VedtakId
 import no.nav.tiltakspenger.utbetaling.client.iverksett.IverksettKlient.Response
-import no.nav.tiltakspenger.utbetaling.domene.BehandlingId
 import no.nav.tiltakspenger.utbetaling.domene.Utbetaling
 import no.nav.tiltakspenger.utbetaling.domene.Vedtak
-import no.nav.tiltakspenger.utbetaling.domene.VedtakId
 import no.nav.tiltakspenger.utbetaling.routes.utbetaling.GrunnlagDTO
 
 interface UtbetalingService {

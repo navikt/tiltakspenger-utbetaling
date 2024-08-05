@@ -3,10 +3,10 @@ package no.nav.tiltakspenger.utbetaling.repository
 import kotliquery.Row
 import kotliquery.TransactionalSession
 import kotliquery.queryOf
-import no.nav.tiltakspenger.utbetaling.domene.UlidBase.Companion.random
+import no.nav.tiltakspenger.libs.common.UlidBase.Companion.random
+import no.nav.tiltakspenger.libs.common.VedtakId
 import no.nav.tiltakspenger.utbetaling.domene.UtfallForPeriode
 import no.nav.tiltakspenger.utbetaling.domene.Utfallsperiode
-import no.nav.tiltakspenger.utbetaling.domene.VedtakId
 import org.intellij.lang.annotations.Language
 
 class UtfallsperiodeDAO {

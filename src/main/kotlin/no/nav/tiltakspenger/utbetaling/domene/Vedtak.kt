@@ -1,5 +1,6 @@
 package no.nav.tiltakspenger.utbetaling.domene
 
+import no.nav.tiltakspenger.libs.common.VedtakId
 import java.time.LocalDate
 import java.time.LocalDateTime
 

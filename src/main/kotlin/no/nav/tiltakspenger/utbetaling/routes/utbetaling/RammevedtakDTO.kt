@@ -1,10 +1,10 @@
 package no.nav.tiltakspenger.utbetaling.routes.utbetaling
 
+import no.nav.tiltakspenger.libs.common.VedtakId
 import no.nav.tiltakspenger.utbetaling.domene.SakId
 import no.nav.tiltakspenger.utbetaling.domene.UtfallForPeriode
 import no.nav.tiltakspenger.utbetaling.domene.Utfallsperiode
 import no.nav.tiltakspenger.utbetaling.domene.Vedtak
-import no.nav.tiltakspenger.utbetaling.domene.VedtakId
 import java.time.LocalDate
 import java.time.LocalDateTime
 

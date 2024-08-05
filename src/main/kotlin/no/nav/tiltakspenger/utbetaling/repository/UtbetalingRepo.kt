@@ -3,10 +3,10 @@ package no.nav.tiltakspenger.utbetaling.repository
 import kotliquery.Row
 import kotliquery.TransactionalSession
 import kotliquery.queryOf
+import no.nav.tiltakspenger.libs.common.VedtakId
 import no.nav.tiltakspenger.utbetaling.domene.TiltakType
 import no.nav.tiltakspenger.utbetaling.domene.UtbetalingDag
 import no.nav.tiltakspenger.utbetaling.domene.UtbetalingDagStatus
-import no.nav.tiltakspenger.utbetaling.domene.VedtakId
 import org.intellij.lang.annotations.Language
 import java.util.UUID
 

@@ -1,9 +1,9 @@
 package no.nav.tiltakspenger.utbetaling.repository
 
-import no.nav.tiltakspenger.utbetaling.domene.BehandlingId
+import no.nav.tiltakspenger.libs.common.BehandlingId
+import no.nav.tiltakspenger.libs.common.VedtakId
 import no.nav.tiltakspenger.utbetaling.domene.SakId
 import no.nav.tiltakspenger.utbetaling.domene.Vedtak
-import no.nav.tiltakspenger.utbetaling.domene.VedtakId
 
 interface VedtakRepo {
     fun lagre(vedtak: Vedtak)
