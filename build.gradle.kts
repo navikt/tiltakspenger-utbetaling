@@ -1,3 +1,5 @@
+import org.jetbrains.kotlin.gradle.dsl.JvmTarget
+
 val javaVersjon = JavaVersion.VERSION_21
 val mockkVersjon = "1.13.12"
 val ktorVersjon = "2.3.12"
@@ -109,17 +111,23 @@ java {
 
 spotless {
     kotlin {
+        // TODO jah: Denne versjonen er fra 23. januar 2023: https://github.com/pinterest/ktlint/releases/tag/0.48.2
         ktlint("0.48.2")
     }
 }
 
 tasks {
-    compileKotlin {
-        kotlinOptions.jvmTarget = javaVersjon.toString()
-    }
-    compileTestKotlin {
-        kotlinOptions.jvmTarget = javaVersjon.toString()
-        kotlinOptions.freeCompilerArgs += "-opt-in=kotlin.RequiresOptIn"
+    kotlin {
+        compileKotlin {
+            compilerOptions {
+                jvmTarget.set(JvmTarget.JVM_21)
+            }
+        }
+        compileTestKotlin {
+            compilerOptions {
+                jvmTarget.set(JvmTarget.JVM_21)
+            }
+        }
     }
     test {
         // JUnit 5 support
