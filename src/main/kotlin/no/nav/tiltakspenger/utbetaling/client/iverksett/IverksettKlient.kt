@@ -15,7 +15,7 @@ import mu.KotlinLogging
 import no.nav.tiltakspenger.utbetaling.Configuration
 import no.nav.tiltakspenger.utbetaling.auth.defaultHttpClient
 import no.nav.tiltakspenger.utbetaling.auth.defaultObjectMapper
-import no.nav.utsjekk.kontrakter.iverksett.IverksettDto
+import no.nav.utsjekk.kontrakter.iverksett.IverksettV2Dto
 
 private val log = KotlinLogging.logger {}
 
@@ -37,10 +37,11 @@ class IverksettKlient(
         val statusCode: HttpStatusCode,
         val melding: String,
     )
-    override suspend fun iverksett(iverksettDto: IverksettDto): Response {
+
+    override suspend fun iverksett(iverksettDto: IverksettV2Dto): Response {
         try {
             val httpResponse =
-                httpClient.post("${config.baseUrl}/api/iverksetting") {
+                httpClient.post("${config.baseUrl}/api/iverksetting/v2") {
                     header(navCallIdHeader, navCallIdHeader)
                     bearerAuth(getToken())
                     accept(ContentType.Application.Json)

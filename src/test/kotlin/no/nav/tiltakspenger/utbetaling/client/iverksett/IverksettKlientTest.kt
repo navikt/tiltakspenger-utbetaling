@@ -6,8 +6,8 @@ import kotlinx.coroutines.test.runTest
 import no.nav.tiltakspenger.libs.common.BehandlingId
 import no.nav.tiltakspenger.utbetaling.domene.SakId
 import no.nav.utsjekk.kontrakter.felles.Personident
-import no.nav.utsjekk.kontrakter.iverksett.IverksettDto
-import no.nav.utsjekk.kontrakter.iverksett.VedtaksdetaljerDto
+import no.nav.utsjekk.kontrakter.iverksett.IverksettV2Dto
+import no.nav.utsjekk.kontrakter.iverksett.VedtaksdetaljerV2Dto
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertDoesNotThrow
 import java.time.LocalDateTime
@@ -46,17 +46,16 @@ internal class IverksettKlientTest {
 //        )
 //    }
 
-    private val okIverksettDto = IverksettDto(
+    private val okIverksettDto = IverksettV2Dto(
         sakId = SakId("sakId").verdi,
         behandlingId = BehandlingId.random().uuidPart(),
         personident = Personident(
             verdi = "21848397986",
         ),
-        vedtak = VedtaksdetaljerDto(
+        vedtak = VedtaksdetaljerV2Dto(
             vedtakstidspunkt = LocalDateTime.of(2024, 1, 1, 1, 1),
             saksbehandlerId = "saksbehandler",
             beslutterId = "beslutter",
-            brukersNavKontor = null,
             utbetalinger = emptyList(),
         ),
         forrigeIverksetting = null,
