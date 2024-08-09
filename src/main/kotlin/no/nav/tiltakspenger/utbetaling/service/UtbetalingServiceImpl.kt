@@ -9,20 +9,19 @@ import no.nav.tiltakspenger.utbetaling.domene.TiltakType
 import no.nav.tiltakspenger.utbetaling.domene.Utbetaling
 import no.nav.tiltakspenger.utbetaling.domene.UtbetalingDag
 import no.nav.tiltakspenger.utbetaling.domene.UtbetalingDagStatus
-import no.nav.tiltakspenger.utbetaling.domene.Utfallsperiode
 import no.nav.tiltakspenger.utbetaling.domene.Vedtak
 import no.nav.tiltakspenger.utbetaling.domene.antallBarn
 import no.nav.tiltakspenger.utbetaling.domene.nyttUtbetalingVedtak
 import no.nav.tiltakspenger.utbetaling.repository.VedtakRepo
 import no.nav.tiltakspenger.utbetaling.routes.utbetaling.GrunnlagDTO
-import no.nav.utsjekk.kontrakter.felles.BrukersNavKontor
 import no.nav.utsjekk.kontrakter.felles.Personident
+import no.nav.utsjekk.kontrakter.felles.Satstype
 import no.nav.utsjekk.kontrakter.felles.StønadTypeTiltakspenger
-import no.nav.utsjekk.kontrakter.iverksett.ForrigeIverksettingDto
-import no.nav.utsjekk.kontrakter.iverksett.IverksettDto
-import no.nav.utsjekk.kontrakter.iverksett.StønadsdataTiltakspengerDto
-import no.nav.utsjekk.kontrakter.iverksett.UtbetalingDto
-import no.nav.utsjekk.kontrakter.iverksett.VedtaksdetaljerDto
+import no.nav.utsjekk.kontrakter.iverksett.ForrigeIverksettingV2Dto
+import no.nav.utsjekk.kontrakter.iverksett.IverksettV2Dto
+import no.nav.utsjekk.kontrakter.iverksett.StønadsdataTiltakspengerV2Dto
+import no.nav.utsjekk.kontrakter.iverksett.UtbetalingV2Dto
+import no.nav.utsjekk.kontrakter.iverksett.VedtaksdetaljerV2Dto
 import java.time.LocalDate
 
 class UtbetalingServiceImpl(
@@ -111,37 +110,34 @@ data class UtbetalingGrunnlagDag(
 }
 
 fun mapIverksettDTO(vedtak: Vedtak) =
-    IverksettDto(
+    IverksettV2Dto(
         sakId = vedtak.sakId.verdi,
         behandlingId = vedtak.id.uuidPart(), // GeneriskIdSomUUID(vedtak.id.uuid()),
         personident = Personident(
             verdi = vedtak.ident,
         ),
-        vedtak = VedtaksdetaljerDto(
+        vedtak = VedtaksdetaljerV2Dto(
             vedtakstidspunkt = vedtak.vedtakstidspunkt, // tidspunkt fra meldekortbehanling
             saksbehandlerId = vedtak.saksbehandler,
             beslutterId = vedtak.saksbehandler,
-            brukersNavKontor = BrukersNavKontor(
-                enhet = vedtak.brukerNavkontor,
-            ),
             utbetalinger = vedtak.utbetalinger
                 .asSequence()
                 .sortedBy { it.dato }
                 .groupBy { it.løpenr }
                 .map { (_, dager) ->
                     dager
-                        .lagUtbetalingDtoMedTiltaktypePerDag(vedtak.utfallsperioder)
+                        .lagUtbetalingDtoMedTiltaktypePerDag(vedtak)
                         .fold(emptyList<UtbetalingDtoMedTiltaktype>()) { periodisertliste, nesteDag ->
                             periodisertliste.slåSammen(nesteDag)
                         }
                 }
                 .flatten()
                 .filter { it.beløpPerDag > 0 }
-                .toUtbetalingDto()
+                .toUtbetalingDto(vedtak.brukerNavkontor)
                 .toList(),
         ),
         forrigeIverksetting = vedtak.forrigeVedtak?.let {
-            ForrigeIverksettingDto(
+            ForrigeIverksettingV2Dto(
                 behandlingId = it.uuidPart(), // GeneriskIdSomUUID(it.uuid()),
             )
         },
@@ -153,26 +149,30 @@ data class UtbetalingDtoMedTiltaktype(
     val tilOgMedDato: LocalDate,
     val stønadsdata: StønadsdataDtoMedTiltaktype,
 )
+
 data class StønadsdataDtoMedTiltaktype(
     val stønadstype: TiltakType,
     val barnetillegg: Boolean,
+    val brukersNavKontor: String,
 )
 
-private fun List<UtbetalingDtoMedTiltaktype>.toUtbetalingDto(): List<UtbetalingDto> {
+private fun List<UtbetalingDtoMedTiltaktype>.toUtbetalingDto(brukersNavKontor: String): List<UtbetalingV2Dto> {
     return this.map {
-        UtbetalingDto(
-            beløpPerDag = it.beløpPerDag,
+        UtbetalingV2Dto(
+            beløp = it.beløpPerDag.toUInt(),
+            satstype = Satstype.DAGLIG,
             fraOgMedDato = it.fraOgMedDato,
             tilOgMedDato = it.tilOgMedDato,
-            stønadsdata = StønadsdataTiltakspengerDto(
+            stønadsdata = StønadsdataTiltakspengerV2Dto(
                 stønadstype = it.stønadsdata.stønadstype.mapStønadstype(),
                 barnetillegg = it.stønadsdata.barnetillegg,
+                brukersNavKontor = brukersNavKontor,
             ),
         )
     }
 }
 
-private fun List<UtbetalingDag>.lagUtbetalingDtoMedTiltaktypePerDag(utfallsperioder: List<Utfallsperiode>): List<UtbetalingDtoMedTiltaktype> {
+private fun List<UtbetalingDag>.lagUtbetalingDtoMedTiltaktypePerDag(vedtak: Vedtak): List<UtbetalingDtoMedTiltaktype> {
     val dager = this.map { dag ->
         UtbetalingDtoMedTiltaktype(
             beløpPerDag = dag.mapSats(),
@@ -181,19 +181,21 @@ private fun List<UtbetalingDag>.lagUtbetalingDtoMedTiltaktypePerDag(utfallsperio
             stønadsdata = StønadsdataDtoMedTiltaktype(
                 stønadstype = dag.tiltaktype,
                 barnetillegg = false,
+                brukersNavKontor = vedtak.brukerNavkontor,
             ),
         )
     }
 
-    return if (utfallsperioder.any { it.antallBarn > 0 }) {
+    return if (vedtak.utfallsperioder.any { it.antallBarn > 0 }) {
         dager + this.map { dag ->
             UtbetalingDtoMedTiltaktype(
-                beløpPerDag = dag.mapBarnetilleggSats(utfallsperioder.antallBarn(dag.dato)),
+                beløpPerDag = dag.mapBarnetilleggSats(vedtak.utfallsperioder.antallBarn(dag.dato)),
                 fraOgMedDato = dag.dato,
                 tilOgMedDato = dag.dato,
                 stønadsdata = StønadsdataDtoMedTiltaktype(
                     stønadstype = dag.tiltaktype,
                     barnetillegg = true,
+                    brukersNavKontor = vedtak.brukerNavkontor,
                 ),
             )
         }

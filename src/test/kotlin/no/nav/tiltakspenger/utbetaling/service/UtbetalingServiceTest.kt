@@ -11,9 +11,10 @@ import no.nav.tiltakspenger.utbetaling.domene.UtbetalingDagStatus
 import no.nav.tiltakspenger.utbetaling.domene.UtfallForPeriode
 import no.nav.tiltakspenger.utbetaling.domene.Utfallsperiode
 import no.nav.tiltakspenger.utbetaling.domene.Vedtak
+import no.nav.utsjekk.kontrakter.felles.Satstype
 import no.nav.utsjekk.kontrakter.felles.StønadTypeTiltakspenger
-import no.nav.utsjekk.kontrakter.iverksett.StønadsdataTiltakspengerDto
-import no.nav.utsjekk.kontrakter.iverksett.UtbetalingDto
+import no.nav.utsjekk.kontrakter.iverksett.StønadsdataTiltakspengerV2Dto
+import no.nav.utsjekk.kontrakter.iverksett.UtbetalingV2Dto
 import org.junit.jupiter.api.Test
 import java.time.LocalDate
 import java.time.LocalDateTime
@@ -90,12 +91,12 @@ class UtbetalingServiceTest {
         }
 
         dto.vedtak.utbetalinger shouldContainExactlyInAnyOrder listOf(
-            UtbetalingDto(beløpPerDag = sats.sats, fraOgMedDato = 1.januar(), tilOgMedDato = 1.januar(), stønadsdata = enkeltAmoUtenBarn()),
-            UtbetalingDto(beløpPerDag = sats.satsDelvis, fraOgMedDato = 2.januar(), tilOgMedDato = 3.januar(), stønadsdata = enkeltAmoUtenBarn()),
-            UtbetalingDto(beløpPerDag = sats.sats, fraOgMedDato = 4.januar(), tilOgMedDato = 5.januar(), stønadsdata = enkeltAmoUtenBarn()),
-            UtbetalingDto(beløpPerDag = sats.sats, fraOgMedDato = 6.januar(), tilOgMedDato = 6.januar(), stønadsdata = gruppeAmoUtenBarn()),
-            UtbetalingDto(beløpPerDag = sats.sats, fraOgMedDato = 7.januar(), tilOgMedDato = 8.januar(), stønadsdata = enkeltAmoUtenBarn()),
-            UtbetalingDto(beløpPerDag = sats.sats, fraOgMedDato = 11.januar(), tilOgMedDato = 11.januar(), stønadsdata = enkeltAmoUtenBarn()),
+            UtbetalingV2Dto(beløp = sats.sats.toUInt(), satstype = Satstype.DAGLIG, fraOgMedDato = 1.januar(), tilOgMedDato = 1.januar(), stønadsdata = enkeltAmoUtenBarn()),
+            UtbetalingV2Dto(beløp = sats.satsDelvis.toUInt(), satstype = Satstype.DAGLIG, fraOgMedDato = 2.januar(), tilOgMedDato = 3.januar(), stønadsdata = enkeltAmoUtenBarn()),
+            UtbetalingV2Dto(beløp = sats.sats.toUInt(), satstype = Satstype.DAGLIG, fraOgMedDato = 4.januar(), tilOgMedDato = 5.januar(), stønadsdata = enkeltAmoUtenBarn()),
+            UtbetalingV2Dto(beløp = sats.sats.toUInt(), satstype = Satstype.DAGLIG, fraOgMedDato = 6.januar(), tilOgMedDato = 6.januar(), stønadsdata = gruppeAmoUtenBarn()),
+            UtbetalingV2Dto(beløp = sats.sats.toUInt(), satstype = Satstype.DAGLIG, fraOgMedDato = 7.januar(), tilOgMedDato = 8.januar(), stønadsdata = enkeltAmoUtenBarn()),
+            UtbetalingV2Dto(beløp = sats.sats.toUInt(), satstype = Satstype.DAGLIG, fraOgMedDato = 11.januar(), tilOgMedDato = 11.januar(), stønadsdata = enkeltAmoUtenBarn()),
         )
     }
 
@@ -142,19 +143,19 @@ class UtbetalingServiceTest {
         }
 
         dto.vedtak.utbetalinger shouldContainExactlyInAnyOrder listOf(
-            UtbetalingDto(beløpPerDag = sats.sats, fraOgMedDato = 1.januar(), tilOgMedDato = 1.januar(), stønadsdata = enkeltAmoUtenBarn()),
-            UtbetalingDto(beløpPerDag = sats.satsDelvis, fraOgMedDato = 2.januar(), tilOgMedDato = 3.januar(), stønadsdata = enkeltAmoUtenBarn()),
-            UtbetalingDto(beløpPerDag = sats.sats, fraOgMedDato = 4.januar(), tilOgMedDato = 5.januar(), stønadsdata = enkeltAmoUtenBarn()),
-            UtbetalingDto(beløpPerDag = sats.sats, fraOgMedDato = 6.januar(), tilOgMedDato = 6.januar(), stønadsdata = gruppeAmoUtenBarn()),
-            UtbetalingDto(beløpPerDag = sats.sats, fraOgMedDato = 7.januar(), tilOgMedDato = 8.januar(), stønadsdata = enkeltAmoUtenBarn()),
-            UtbetalingDto(beløpPerDag = sats.sats, fraOgMedDato = 11.januar(), tilOgMedDato = 11.januar(), stønadsdata = enkeltAmoUtenBarn()),
+            UtbetalingV2Dto(beløp = sats.sats.toUInt(), satstype = Satstype.DAGLIG, fraOgMedDato = 1.januar(), tilOgMedDato = 1.januar(), stønadsdata = enkeltAmoUtenBarn()),
+            UtbetalingV2Dto(beløp = sats.satsDelvis.toUInt(), satstype = Satstype.DAGLIG, fraOgMedDato = 2.januar(), tilOgMedDato = 3.januar(), stønadsdata = enkeltAmoUtenBarn()),
+            UtbetalingV2Dto(beløp = sats.sats.toUInt(), satstype = Satstype.DAGLIG, fraOgMedDato = 4.januar(), tilOgMedDato = 5.januar(), stønadsdata = enkeltAmoUtenBarn()),
+            UtbetalingV2Dto(beløp = sats.sats.toUInt(), satstype = Satstype.DAGLIG, fraOgMedDato = 6.januar(), tilOgMedDato = 6.januar(), stønadsdata = gruppeAmoUtenBarn()),
+            UtbetalingV2Dto(beløp = sats.sats.toUInt(), satstype = Satstype.DAGLIG, fraOgMedDato = 7.januar(), tilOgMedDato = 8.januar(), stønadsdata = enkeltAmoUtenBarn()),
+            UtbetalingV2Dto(beløp = sats.sats.toUInt(), satstype = Satstype.DAGLIG, fraOgMedDato = 11.januar(), tilOgMedDato = 11.januar(), stønadsdata = enkeltAmoUtenBarn()),
 
-            UtbetalingDto(beløpPerDag = sats.satsBarnetillegg * 2, fraOgMedDato = 1.januar(), tilOgMedDato = 1.januar(), stønadsdata = enkeltAmoMedBarn()),
-            UtbetalingDto(beløpPerDag = sats.satsBarnetilleggDelvis * 2, fraOgMedDato = 2.januar(), tilOgMedDato = 3.januar(), stønadsdata = enkeltAmoMedBarn()),
-            UtbetalingDto(beløpPerDag = sats.satsBarnetillegg * 2, fraOgMedDato = 4.januar(), tilOgMedDato = 5.januar(), stønadsdata = enkeltAmoMedBarn()),
-            UtbetalingDto(beløpPerDag = sats.satsBarnetillegg * 2, fraOgMedDato = 6.januar(), tilOgMedDato = 6.januar(), stønadsdata = gruppeAmoMedBarn()),
-            UtbetalingDto(beløpPerDag = sats.satsBarnetillegg * 2, fraOgMedDato = 7.januar(), tilOgMedDato = 8.januar(), stønadsdata = enkeltAmoMedBarn()),
-            UtbetalingDto(beløpPerDag = sats.satsBarnetillegg * 2, fraOgMedDato = 11.januar(), tilOgMedDato = 11.januar(), stønadsdata = enkeltAmoMedBarn()),
+            UtbetalingV2Dto(beløp = sats.satsBarnetillegg.toUInt() * 2u, satstype = Satstype.DAGLIG, fraOgMedDato = 1.januar(), tilOgMedDato = 1.januar(), stønadsdata = enkeltAmoMedBarn()),
+            UtbetalingV2Dto(beløp = sats.satsBarnetilleggDelvis.toUInt() * 2u, satstype = Satstype.DAGLIG, fraOgMedDato = 2.januar(), tilOgMedDato = 3.januar(), stønadsdata = enkeltAmoMedBarn()),
+            UtbetalingV2Dto(beløp = sats.satsBarnetillegg.toUInt() * 2u, satstype = Satstype.DAGLIG, fraOgMedDato = 4.januar(), tilOgMedDato = 5.januar(), stønadsdata = enkeltAmoMedBarn()),
+            UtbetalingV2Dto(beløp = sats.satsBarnetillegg.toUInt() * 2u, satstype = Satstype.DAGLIG, fraOgMedDato = 6.januar(), tilOgMedDato = 6.januar(), stønadsdata = gruppeAmoMedBarn()),
+            UtbetalingV2Dto(beløp = sats.satsBarnetillegg.toUInt() * 2u, satstype = Satstype.DAGLIG, fraOgMedDato = 7.januar(), tilOgMedDato = 8.januar(), stønadsdata = enkeltAmoMedBarn()),
+            UtbetalingV2Dto(beløp = sats.satsBarnetillegg.toUInt() * 2u, satstype = Satstype.DAGLIG, fraOgMedDato = 11.januar(), tilOgMedDato = 11.januar(), stønadsdata = enkeltAmoMedBarn()),
         )
     }
 
@@ -222,10 +223,10 @@ class UtbetalingServiceTest {
         }
 
         dto.vedtak.utbetalinger shouldContainExactlyInAnyOrder listOf(
-            UtbetalingDto(beløpPerDag = sats.sats, fraOgMedDato = 2.januar(), tilOgMedDato = 5.januar(), stønadsdata = enkeltAmoUtenBarn()),
-            UtbetalingDto(beløpPerDag = sats.sats, fraOgMedDato = 9.januar(), tilOgMedDato = 12.januar(), stønadsdata = enkeltAmoUtenBarn()),
-            UtbetalingDto(beløpPerDag = sats.sats, fraOgMedDato = 16.januar(), tilOgMedDato = 19.januar(), stønadsdata = enkeltAmoUtenBarn()),
-            UtbetalingDto(beløpPerDag = sats.sats, fraOgMedDato = 23.januar(), tilOgMedDato = 26.januar(), stønadsdata = enkeltAmoUtenBarn()),
+            UtbetalingV2Dto(beløp = sats.sats.toUInt(), satstype = Satstype.DAGLIG, fraOgMedDato = 2.januar(), tilOgMedDato = 5.januar(), stønadsdata = enkeltAmoUtenBarn()),
+            UtbetalingV2Dto(beløp = sats.sats.toUInt(), satstype = Satstype.DAGLIG, fraOgMedDato = 9.januar(), tilOgMedDato = 12.januar(), stønadsdata = enkeltAmoUtenBarn()),
+            UtbetalingV2Dto(beløp = sats.sats.toUInt(), satstype = Satstype.DAGLIG, fraOgMedDato = 16.januar(), tilOgMedDato = 19.januar(), stønadsdata = enkeltAmoUtenBarn()),
+            UtbetalingV2Dto(beløp = sats.sats.toUInt(), satstype = Satstype.DAGLIG, fraOgMedDato = 23.januar(), tilOgMedDato = 26.januar(), stønadsdata = enkeltAmoUtenBarn()),
         )
     }
 }
@@ -238,27 +239,31 @@ class DayFactory(
 
 fun LocalDate.hent() = this.plusDays(1)
 
-private fun gruppeAmoUtenBarn() =
-    StønadsdataTiltakspengerDto(
+private fun gruppeAmoUtenBarn(brukersNavKontor: String = "0219") =
+    StønadsdataTiltakspengerV2Dto(
         stønadstype = StønadTypeTiltakspenger.GRUPPE_AMO,
         barnetillegg = false,
+        brukersNavKontor = brukersNavKontor,
     )
 
-private fun gruppeAmoMedBarn() =
-    StønadsdataTiltakspengerDto(
+private fun gruppeAmoMedBarn(brukersNavKontor: String = "0219") =
+    StønadsdataTiltakspengerV2Dto(
         stønadstype = StønadTypeTiltakspenger.GRUPPE_AMO,
         barnetillegg = true,
+        brukersNavKontor = brukersNavKontor,
     )
 
-private fun enkeltAmoUtenBarn() =
-    StønadsdataTiltakspengerDto(
+private fun enkeltAmoUtenBarn(brukersNavKontor: String = "0219") =
+    StønadsdataTiltakspengerV2Dto(
         stønadstype = StønadTypeTiltakspenger.ENKELTPLASS_AMO,
         barnetillegg = false,
+        brukersNavKontor = brukersNavKontor,
     )
-private fun enkeltAmoMedBarn() =
-    StønadsdataTiltakspengerDto(
+private fun enkeltAmoMedBarn(brukersNavKontor: String = "0219") =
+    StønadsdataTiltakspengerV2Dto(
         stønadstype = StønadTypeTiltakspenger.ENKELTPLASS_AMO,
         barnetillegg = true,
+        brukersNavKontor = brukersNavKontor,
     )
 
 fun Int.januar(year: Int = 2024) = LocalDate.of(year, 1, this)
