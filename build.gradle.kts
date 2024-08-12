@@ -10,7 +10,7 @@ val iverksettVersjon = "1.0_20240806133347_fac03ce"
 val flywayVersjon = "10.17.0"
 val testContainersVersion = "1.20.1"
 val kotlinxCoroutinesVersion = "1.8.1"
-val felleslibVersion = "0.0.171"
+val felleslibVersion = "0.0.182"
 
 val githubUser: String by project
 val githubPassword: String by project
