@@ -17,7 +17,7 @@ val githubPassword: String by project
 
 plugins {
     application
-    kotlin("jvm") version "2.0.0"
+    kotlin("jvm") version "2.0.10"
     id("com.diffplug.spotless") version "6.25.0"
 }
 
