@@ -54,7 +54,7 @@ fun Route.utbetaling(utbetalingService: UtbetalingService) {
         LOG.info { "hent vedtak for id $id" }
 
         checkNotNull(id) { "Mangler VedtakId" }
-        val vedtakId = VedtakId.fromDb(id)
+        val vedtakId = VedtakId.fromString(id)
 
         val vedtak = utbetalingService.hentVedtak(vedtakId)
         checkNotNull(vedtak) { "Fant ikke vedtak" }

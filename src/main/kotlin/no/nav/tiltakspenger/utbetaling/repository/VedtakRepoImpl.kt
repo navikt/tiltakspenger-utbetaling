@@ -18,31 +18,32 @@ class VedtakRepoImpl(
     override fun lagre(vedtak: Vedtak) {
         sessionOf(DataSource.hikariDataSource).use {
             it.transaction { tx ->
-                tx.run(
-                    queryOf(
-                        sqlLagre,
-                        mapOf(
-                            "id" to vedtak.id.toString(),
-                            "sakId" to vedtak.sakId.verdi,
-                            "utlosendeId" to vedtak.utløsendeId,
-                            "ident" to vedtak.ident,
-                            "brukerNavnkontor" to vedtak.brukerNavkontor,
-                            "vedtakstidspunkt" to vedtak.vedtakstidspunkt,
-                            "saksbehandler" to vedtak.saksbehandler,
-                            "beslutter" to vedtak.beslutter,
-                            "forrigeVedtakId" to vedtak.forrigeVedtak?.toString(),
-                        ),
-                    ).asUpdate,
-                ).also {
-                    utbetalingRepo.lagreUtbetalingForVedtak(vedtak.id, vedtak.utbetalinger, tx)
-                    utfallsperiodeDAO.lagre(vedtak.id, vedtak.utfallsperioder, tx)
-                }
+                tx
+                    .run(
+                        queryOf(
+                            sqlLagre,
+                            mapOf(
+                                "id" to vedtak.id.toString(),
+                                "sakId" to vedtak.sakId.verdi,
+                                "utlosendeId" to vedtak.utløsendeId,
+                                "ident" to vedtak.ident,
+                                "brukerNavnkontor" to vedtak.brukerNavkontor,
+                                "vedtakstidspunkt" to vedtak.vedtakstidspunkt,
+                                "saksbehandler" to vedtak.saksbehandler,
+                                "beslutter" to vedtak.beslutter,
+                                "forrigeVedtakId" to vedtak.forrigeVedtak?.toString(),
+                            ),
+                        ).asUpdate,
+                    ).also {
+                        utbetalingRepo.lagreUtbetalingForVedtak(vedtak.id, vedtak.utbetalinger, tx)
+                        utfallsperiodeDAO.lagre(vedtak.id, vedtak.utfallsperioder, tx)
+                    }
             }
         }
     }
 
-    override fun hentVedtak(vedtakId: VedtakId): Vedtak? {
-        return sessionOf(DataSource.hikariDataSource).use {
+    override fun hentVedtak(vedtakId: VedtakId): Vedtak? =
+        sessionOf(DataSource.hikariDataSource).use {
             it.transaction { txSession ->
                 txSession.run(
                     queryOf(
@@ -56,10 +57,9 @@ class VedtakRepoImpl(
                 )
             }
         }
-    }
 
-    override fun hentSakIdForBehandling(behandlingId: BehandlingId): SakId? {
-        return sessionOf(DataSource.hikariDataSource).use {
+    override fun hentSakIdForBehandling(behandlingId: BehandlingId): SakId? =
+        sessionOf(DataSource.hikariDataSource).use {
             it.transaction { txSession ->
                 txSession.run(
                     queryOf(
@@ -73,10 +73,9 @@ class VedtakRepoImpl(
                 )
             }
         }
-    }
 
-    override fun hentAlleVedtakForSak(sakId: SakId): List<Vedtak> {
-        return sessionOf(DataSource.hikariDataSource).use {
+    override fun hentAlleVedtakForSak(sakId: SakId): List<Vedtak> =
+        sessionOf(DataSource.hikariDataSource).use {
             it.transaction { txSession ->
                 txSession.run(
                     queryOf(
@@ -90,10 +89,9 @@ class VedtakRepoImpl(
                 )
             }
         }
-    }
 
-    override fun hentVedtakForBehandling(behandlingId: BehandlingId): Vedtak? {
-        return sessionOf(DataSource.hikariDataSource).use {
+    override fun hentVedtakForBehandling(behandlingId: BehandlingId): Vedtak? =
+        sessionOf(DataSource.hikariDataSource).use {
             it.transaction { txSession ->
                 txSession.run(
                     queryOf(
@@ -107,10 +105,9 @@ class VedtakRepoImpl(
                 )
             }
         }
-    }
 
-    override fun hentForrigeUtbetalingVedtak(sakId: SakId): Vedtak? {
-        return sessionOf(DataSource.hikariDataSource).use {
+    override fun hentForrigeUtbetalingVedtak(sakId: SakId): Vedtak? =
+        sessionOf(DataSource.hikariDataSource).use {
             it.transaction { txSession ->
                 txSession.run(
                     queryOf(
@@ -124,14 +121,11 @@ class VedtakRepoImpl(
                 )
             }
         }
-    }
 
-    private fun Row.toSakId(): SakId? {
-        return stringOrNull("sakId")?.let { SakId(it) }
-    }
+    private fun Row.toSakId(): SakId? = stringOrNull("sakId")?.let { SakId(it) }
 
     private fun Row.toVedtak(tx: TransactionalSession): Vedtak {
-        val vedtakId = VedtakId.fromDb(string("id"))
+        val vedtakId = VedtakId.fromString(string("id"))
         return Vedtak(
             id = vedtakId,
             sakId = SakId(string("sakId")),
@@ -143,12 +137,13 @@ class VedtakRepoImpl(
             beslutter = string("beslutter"),
             utbetalinger = utbetalingRepo.hentDagerForVedtak(vedtakId, tx),
             utfallsperioder = utfallsperiodeDAO.hent(vedtakId, tx),
-            forrigeVedtak = stringOrNull("forrigeVedtakId")?.let { VedtakId.fromDb(it) },
+            forrigeVedtak = stringOrNull("forrigeVedtakId")?.let { VedtakId.fromString(it) },
         )
     }
 
     @Language("PostgreSQL")
-    private val sqlLagre = """
+    private val sqlLagre =
+        """
         insert into vedtak (
             id,              
             sakId,           
@@ -170,36 +165,41 @@ class VedtakRepoImpl(
             :beslutter,
             :forrigeVedtakId
         )
-    """.trimIndent()
+        """.trimIndent()
 
     @Language("PostgreSQL")
-    private val sqlHentVedtak = """
+    private val sqlHentVedtak =
+        """
         select * from vedtak
         where id = :id
-    """.trimIndent()
+        """.trimIndent()
 
     @Language("PostgreSQL")
-    private val sqlHentAlleVedtakForSak = """
+    private val sqlHentAlleVedtakForSak =
+        """
         select * from vedtak
         where sakId = :sakId
-    """.trimIndent()
+        """.trimIndent()
 
     @Language("PostgreSQL")
-    private val sqlHentSakId = """
+    private val sqlHentSakId =
+        """
         select sakid from vedtak
         where utløsendeid = :behandlingId
-    """.trimIndent()
+        """.trimIndent()
 
     @Language("PostgreSQL")
-    private val sqlHentSisteVedtakForSak = """
+    private val sqlHentSisteVedtakForSak =
+        """
         select * from vedtak
         where sakId = :sakId
         order by vedtakstidspunkt desc limit 1
-    """.trimIndent()
+        """.trimIndent()
 
     @Language("PostgreSQL")
-    private val sqlHentVedtakForBehandling = """
+    private val sqlHentVedtakForBehandling =
+        """
         select * from vedtak
         where utløsendeId = :behandlingId
-    """.trimIndent()
+        """.trimIndent()
 }
