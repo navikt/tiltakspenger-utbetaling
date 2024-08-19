@@ -58,3 +58,15 @@ create table utbetalingdag
     primary key (vedtakId, dato),
     foreign key (vedtakId, meldekortId) references meldekortPeriode (vedtakId, meldekortId)
 );
+
+create table statistikk
+(
+    postering_id              varchar                  null,
+    sakId                     varchar                  null,
+    beløp                     decimal                  null,
+    beløp_beskrivelse         varchar                  null,
+    aarsak                    varchar                  null,
+    postering_dato            date                     null,
+    gyldig_fra_dato_postering date                     null,
+    gyldig_til_dato_postering date                     null
+);

@@ -17,6 +17,7 @@ import no.nav.tiltakspenger.utbetaling.auth.AzureTokenProvider
 import no.nav.tiltakspenger.utbetaling.client.iverksett.IverksettKlient
 import no.nav.tiltakspenger.utbetaling.db.flywayMigrate
 import no.nav.tiltakspenger.utbetaling.exception.ExceptionHandler
+import no.nav.tiltakspenger.utbetaling.repository.StatistikkRepoImpl
 import no.nav.tiltakspenger.utbetaling.repository.VedtakRepoImpl
 import no.nav.tiltakspenger.utbetaling.routes.healthRoutes
 import no.nav.tiltakspenger.utbetaling.routes.utbetaling.utbetaling
@@ -41,7 +42,8 @@ fun Application.module() {
     val tokenProvider = AzureTokenProvider(config = Configuration.oauthConfigIverksett())
     val iverksettKlient = IverksettKlient(getToken = tokenProvider::getToken)
     val vedtakRepo = VedtakRepoImpl()
-    val utbetalingService = UtbetalingServiceImpl(vedtakRepo, iverksettKlient)
+    val statistikkRepo = StatistikkRepoImpl()
+    val utbetalingService = UtbetalingServiceImpl(vedtakRepo, iverksettKlient, statistikkRepo)
 
     jacksonSerialization()
     routing {

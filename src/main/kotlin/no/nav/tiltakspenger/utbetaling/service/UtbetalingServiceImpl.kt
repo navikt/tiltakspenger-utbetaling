@@ -12,6 +12,7 @@ import no.nav.tiltakspenger.utbetaling.domene.UtbetalingDagStatus
 import no.nav.tiltakspenger.utbetaling.domene.Vedtak
 import no.nav.tiltakspenger.utbetaling.domene.antallBarn
 import no.nav.tiltakspenger.utbetaling.domene.nyttUtbetalingVedtak
+import no.nav.tiltakspenger.utbetaling.repository.StatistikkRepo
 import no.nav.tiltakspenger.utbetaling.repository.VedtakRepo
 import no.nav.tiltakspenger.utbetaling.routes.utbetaling.GrunnlagDTO
 import no.nav.utsjekk.kontrakter.felles.Personident
@@ -27,6 +28,7 @@ import java.time.LocalDate
 class UtbetalingServiceImpl(
     private val vedtakRepo: VedtakRepo,
     private val iverksettKlient: IverksettKlient,
+    private val statistikkRepo: StatistikkRepo,
 ) : UtbetalingService {
 
     override suspend fun mottaRammevedtakOgSendTilIverksett(vedtak: Vedtak): Response =
@@ -44,8 +46,14 @@ class UtbetalingServiceImpl(
             utbetalinger = utbetaling.utbetalingDager,
         )
 
-        return iverksettKlient.iverksett(mapIverksettDTO(vedtak)).also {
-            if (it.statusCode.value == 202) vedtakRepo.lagre(vedtak)
+        // litt kjipt å bruke helved sine dto'er som domene klasser egentlig. Burde kanskje lage våre egne?
+        val iverksettDTO = mapIverksettDTO(vedtak)
+        return iverksettKlient.iverksett(iverksettDTO).also {
+            if (it.statusCode.value == 202) {
+                // her er det nok fint med en transaksjon. Regner med at det fikser Hestad når han flytter utbetaling inn i vedtak
+                vedtakRepo.lagre(vedtak)
+                statistikkRepo.lagre(mapStatistikk(iverksettDTO))
+            }
         }
     }
 
