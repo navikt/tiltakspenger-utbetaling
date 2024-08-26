@@ -125,7 +125,7 @@ class VedtakRepoImpl(
     private fun Row.toSakId(): SakId? = stringOrNull("sakId")?.let { SakId(it) }
 
     private fun Row.toVedtak(tx: TransactionalSession): Vedtak {
-        val vedtakId = VedtakId.fromDb(string("id"))
+        val vedtakId = VedtakId.fromString(string("id"))
         return Vedtak(
             id = vedtakId,
             sakId = SakId(string("sakId")),
@@ -137,7 +137,7 @@ class VedtakRepoImpl(
             beslutter = string("beslutter"),
             utbetalinger = utbetalingRepo.hentDagerForVedtak(vedtakId, tx),
             utfallsperioder = utfallsperiodeDAO.hent(vedtakId, tx),
-            forrigeVedtak = stringOrNull("forrigeVedtakId")?.let { VedtakId.fromDb(it) },
+            forrigeVedtak = stringOrNull("forrigeVedtakId")?.let { VedtakId.fromString(it) },
         )
     }
 
